@@ -2,7 +2,7 @@ import React from 'react'
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { GlobalStyle } from './styles/GlobalStyle'
-import Routes from './client/routes'
+import Routes from './routes'
 import 'antd/dist/antd.css'
 
 const mainElement = document.createElement('div')
