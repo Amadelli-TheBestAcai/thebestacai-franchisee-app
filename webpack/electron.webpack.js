@@ -9,6 +9,9 @@ module.exports = {
   devtool: 'source-map',
   entry: path.resolve(rootPath, 'electron', 'main.ts'),
   target: 'electron-main',
+  externals: {
+    knex: 'commonjs knex'
+  },
   module: {
     rules: [
       {

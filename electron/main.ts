@@ -2,8 +2,8 @@ import { app, BrowserWindow } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
 import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
-import { inicializeControllers } from './src'
 
+import { inicializeControllers } from './src'
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow () {
@@ -47,3 +47,6 @@ app.on('ready', createWindow)
     }
   })
 app.allowRendererProcessReuse = true
+
+
+
