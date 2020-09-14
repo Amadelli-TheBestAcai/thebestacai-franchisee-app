@@ -1,9 +1,6 @@
-## Electron + TypeScript + React
-Boilerplate for a project using Electron, React and Typescript
+## Instalação
 
-## Installation
-
-Use a package manager of your choice (npm, yarn, etc.) in order to install all dependencies
+Baixar dependências do projeto
 
 ```bash
 npm install
@@ -13,9 +10,15 @@ npm install
 yarn install
 ```
 
-## Usage
-In order to run this project 2 scripts will need to be executed `dev:react` and `dev:electron`, run each one in a different terminal and always run `dev:react` before `dev:electron`, or `dev` to run them in order automatically
+## Instalação
 
+Criar banco de dados
+
+```bash
+yarn typeorm migration:run
+```
+
+## Usage
 ```bash
 npm run dev:react
 ```
@@ -23,14 +26,14 @@ npm run dev:react
 npm run dev:electron
 ```
 
-or
+ou
 
 ```bash
 npm run dev
 ```
 
 ## Packaging
-To generate a project package run `package`
+Gerar executável
 
 ```bash
 npm run package

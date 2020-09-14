@@ -1,0 +1,13 @@
+{
+    "name": "default",
+    "type": "sqlite",
+    "database": "db",
+    "synchronize": "true",
+    "logging": ["error"],
+    "entities": ["electron/src/models/*.{ts,js}"],
+    "migrations": ["electron/src/database/migrations/*.{ts,js}"],
+    "cli": {
+        "entitiesDir": "electron/src/models",
+        "migrationsDir": "electron/src/database/migrations"
+    }
+}
