@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getToken } from './auth'
 
-const API_URL = 'http://thebestacai-api.herokuapp.com'
+const API_URL = 'http://hml-thebestacai-api.herokuapp.com'
 const api = axios.create({
   baseURL: API_URL,
   responseType: 'json'
