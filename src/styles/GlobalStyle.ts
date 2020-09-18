@@ -11,4 +11,8 @@ export const GlobalStyle = createGlobalStyle`
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
   }
+
+  :root {
+    --hover: #f2b74945
+  }
 `

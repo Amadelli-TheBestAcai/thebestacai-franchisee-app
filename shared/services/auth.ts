@@ -1,24 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 
+import { User } from '../models/entities/user'
+import { UserRoles } from '../models/enums/userRole'
+
 export const TOKEN_KEY = 'access-token'
-export const TOKEN_SECRET_KEY = 'A2aF103fP7899.RfKMfs78STuXTTeSMABXJp77lJCIttNqlMal1Vea.AUSW.'
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  franchisee: number;
-};
-
-enum UserRoles {
-  Master = 0,
-  Administrador = 1,
-  Franqueado = 2,
-  Gerente = 3,
-  Funcionário = 4,
-}
+export const TOKEN_SECRET_KEY =
+  'A2aF103fP7899.RfKMfs78STuXTTeSMABXJp77lJCIttNqlMal1Vea.AUSW.'
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY)
 

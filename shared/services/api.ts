@@ -4,7 +4,7 @@ import { getToken } from './auth'
 const API_URL = 'http://hml-thebestacai-api.herokuapp.com'
 const api = axios.create({
   baseURL: API_URL,
-  responseType: 'json'
+  responseType: 'json',
 })
 
 api.interceptors.request.use((config) => {
