@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
 import { getTokenInfo } from '../../../shared/services/auth'
 
 import { Product } from '../../../shared/models/entities/product'
 import { User } from '../../../shared/models/entities/user'
+import { Payment } from '../../../shared/models/entities/payment'
+import { PaymentType } from '../../../shared/models/enums/paymentType'
 
 import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
@@ -28,6 +31,11 @@ import {
 const Home: React.FC = () => {
   const [user, setUser] = useState<User>()
   const [items, setItems] = useState<Product[]>([])
+  const [payments, setPayments] = useState<Payment[]>([])
+  const [payment, setPayment] = useState(0)
+  const [paymentType, setPaymentType] = useState(0)
+  const [paymentModal, setPaymentModal] = useState(false)
+  const [totalSale, setTotalSale] = useState(0)
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -38,33 +46,66 @@ const Home: React.FC = () => {
   }, [])
 
   const handleItem = (item: Product): void => {
-    console.log(item)
+    console.log(payments)
+  }
+
+  const handlePayment = (type: number, defaultValue?: number): void => {
+    setPaymentModal(true)
+    setPaymentType(type)
+    if (defaultValue) {
+      setPayment(defaultValue)
+    }
+  }
+
+  const keyMap = {
+    MONEY: 'a',
+    C_CREDIT: 's',
+    C_DEBIT: 'd',
+    TICKET: 't',
+  }
+
+  const handlers = {
+    MONEY: () => handlePayment(PaymentType.MONEY),
+    C_CREDIT: () => handlePayment(PaymentType.CREDIT_CARD, totalSale),
+    C_DEBIT: () => handlePayment(PaymentType.DEBIT_CARD, totalSale),
+    TICKET: () => handlePayment(PaymentType.TICKET, totalSale),
   }
 
   return (
-    <Container>
-      <TopSide></TopSide>
-      <MainContainer>
-        <LeftSide>
-          <BalanceContainer></BalanceContainer>
-          <ProductsContainer>
-            {user && <Products store={user.store} handleItem={handleItem} />}
-          </ProductsContainer>
-        </LeftSide>
-        <RightSide>
-          <Content>
-            <ItemsContainer></ItemsContainer>
-            <PaymentsContainer>
-              <PaymentsTypesContainer>
-                <Payments />
-              </PaymentsTypesContainer>
-              <FinishContainer></FinishContainer>
-            </PaymentsContainer>
-          </Content>
-        </RightSide>
-      </MainContainer>
-      <Footer></Footer>
-    </Container>
+    <HotKeys keyMap={keyMap} handlers={handlers}>
+      <Container>
+        <TopSide></TopSide>
+        <MainContainer>
+          <LeftSide>
+            <BalanceContainer></BalanceContainer>
+            <ProductsContainer>
+              {user && <Products store={user.store} handleItem={handleItem} />}
+            </ProductsContainer>
+          </LeftSide>
+          <RightSide>
+            <Content>
+              <ItemsContainer></ItemsContainer>
+              <PaymentsContainer>
+                <PaymentsTypesContainer>
+                  <Payments
+                    setPayments={setPayments}
+                    paymentType={paymentType}
+                    payment={payment}
+                    totalSale={totalSale}
+                    setPayment={setPayment}
+                    handleClick={handlePayment}
+                    setModalState={setPaymentModal}
+                    modalStatus={paymentModal}
+                  />
+                </PaymentsTypesContainer>
+                <FinishContainer></FinishContainer>
+              </PaymentsContainer>
+            </Content>
+          </RightSide>
+        </MainContainer>
+        <Footer></Footer>
+      </Container>
+    </HotKeys>
   )
 }
 

@@ -59,4 +59,6 @@ export const Button = styled(ButtonAnt)`
 
 export const Modal = styled(ModalAnt)``
 
-export const Input = styled(InputAnt)``
+export const Input = styled(InputAnt)`
+  direction: rtl;
+`
