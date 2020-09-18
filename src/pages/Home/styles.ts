@@ -66,30 +66,13 @@ export const PaymentsContainer = styled.div`
 export const PaymentsTypesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 55%;
   height: 100%;
-`
-
-export const PaymentsHeader = styled.div`
-  display: flex;
-  width: 100%;
-  height: 30%;
-`
-
-export const PaymentsList = styled.div`
-  display: flex;
-  width: 100%;
-  height: 70%;
-  overflow-y: scroll;
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  }
 `
 
 export const FinishContainer = styled.div`
   display: flex;
-  width: 60%;
+  width: 45%;
   height: 100%;
 `
 

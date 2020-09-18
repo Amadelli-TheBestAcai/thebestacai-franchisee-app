@@ -6,7 +6,9 @@ import { getTokenInfo } from '../../../shared/services/auth'
 import { Product } from '../../../shared/models/entities/product'
 import { User } from '../../../shared/models/entities/user'
 
-import Products from '../../containers/ProductsContainer'
+import Products from '../../containers/Products'
+import Payments from '../../containers/Payments'
+
 import {
   Container,
   TopSide,
@@ -21,8 +23,6 @@ import {
   PaymentsContainer,
   PaymentsTypesContainer,
   FinishContainer,
-  PaymentsList,
-  PaymentsHeader,
 } from './styles'
 
 const Home: React.FC = () => {
@@ -32,7 +32,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     const getUserInfo = async () => {
       const userInfo = await getTokenInfo()
-      console.log(userInfo)
       setUser(userInfo)
     }
     getUserInfo()
@@ -41,11 +40,10 @@ const Home: React.FC = () => {
   const handleItem = (item: Product): void => {
     console.log(item)
   }
+
   return (
     <Container>
-      <TopSide>
-        <button onClick={() => console.log(user)}>click</button>
-      </TopSide>
+      <TopSide></TopSide>
       <MainContainer>
         <LeftSide>
           <BalanceContainer></BalanceContainer>
@@ -58,8 +56,7 @@ const Home: React.FC = () => {
             <ItemsContainer></ItemsContainer>
             <PaymentsContainer>
               <PaymentsTypesContainer>
-                <PaymentsHeader></PaymentsHeader>
-                <PaymentsList></PaymentsList>
+                <Payments />
               </PaymentsTypesContainer>
               <FinishContainer></FinishContainer>
             </PaymentsContainer>

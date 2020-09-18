@@ -1,11 +1,12 @@
 import styled from 'styled-components'
 
-import { Row, Col, Button as ButtonAnt } from 'antd'
+import { Row, Col, Button as ButtonAnt, Modal as ModalAnt } from 'antd'
 
 export const Container = styled(Row)`
   width: 100%;
   margin-bottom: 10px;
   :hover {
+    border-radius: 5px;
     background: var(--hover);
   }
 `
