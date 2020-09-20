@@ -25,7 +25,9 @@ export const PaymentsHeader = styled.div`
 
 export const PaymentsList = styled.div`
   display: flex;
+  flex-direction: column;
   width: 100%;
+  max-height: 15vh;
   flex-grow: 1;
   overflow-y: scroll;
   ::-webkit-scrollbar {

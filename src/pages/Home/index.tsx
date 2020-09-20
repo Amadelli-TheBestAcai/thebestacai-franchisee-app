@@ -88,6 +88,7 @@ const Home: React.FC = () => {
               <PaymentsContainer>
                 <PaymentsTypesContainer>
                   <Payments
+                    payments={payments}
                     setPayments={setPayments}
                     paymentType={paymentType}
                     payment={payment}

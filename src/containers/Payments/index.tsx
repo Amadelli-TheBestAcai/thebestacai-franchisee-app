@@ -3,6 +3,8 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { PaymentType } from '../../../shared/models/enums/paymentType'
 import { Payment as PaymentModel } from '../../../shared/models/entities/payment'
 
+import Payment from '../../components/Payment'
+
 import {
   Container,
   PaymentsHeader,
@@ -19,6 +21,7 @@ interface IProps {
   payment: number
   modalStatus: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
+  payments: PaymentModel[]
   setPayments: Dispatch<SetStateAction<PaymentModel[]>>
   setPayment: Dispatch<SetStateAction<number>>
   paymentType: number
@@ -28,6 +31,7 @@ interface IProps {
 
 const PaymentsContainer: React.FC<IProps> = ({
   payment,
+  payments,
   setPayment,
   modalStatus,
   paymentType,
@@ -36,12 +40,6 @@ const PaymentsContainer: React.FC<IProps> = ({
   totalSale,
   setPayments,
 }) => {
-  const onModalOk = (): void => {
-    addPayment()
-    setPayment(0)
-    setModalState(false)
-  }
-
   const onModalCancel = (): void => {
     setModalState(false)
     setPayment(0)
@@ -50,6 +48,8 @@ const PaymentsContainer: React.FC<IProps> = ({
   const addPayment = (): void => {
     const newPayment: PaymentModel = { type: paymentType, amount: payment }
     setPayments((oldPayments) => [newPayment, ...oldPayments])
+    setPayment(0)
+    setModalState(false)
   }
 
   return (
@@ -79,16 +79,21 @@ const PaymentsContainer: React.FC<IProps> = ({
           <Description>Excluir</Description>
         </Column>
       </PaymentListHeader>
-      <PaymentsList></PaymentsList>
+      <PaymentsList>
+        {payments.map((payment, index) => (
+          <Payment key={index} {...payment} />
+        ))}
+      </PaymentsList>
       <Modal
         width={250}
         visible={modalStatus}
         onCancel={onModalCancel}
-        onOk={onModalOk}
+        onOk={addPayment}
         closable={true}
       >
         Valor:
         <Input
+          onPressEnter={addPayment}
           type="number"
           autoFocus={true}
           onChange={({ target: { value } }) => setPayment(+value)}
