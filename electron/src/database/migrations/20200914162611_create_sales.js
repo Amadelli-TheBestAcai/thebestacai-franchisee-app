@@ -1,5 +1,5 @@
-
-exports.up = async knex => knex.schema.createTable('sales', table => {
+exports.up = async (knex) =>
+  knex.schema.createTable('sales', (table) => {
     table.increments('id')
     table.integer('client_id')
     table.decimal('quantity', 8, 2)
@@ -9,4 +9,4 @@ exports.up = async knex => knex.schema.createTable('sales', table => {
     table.decimal('discount', 8, 2)
   })
 
-exports.down = async knex => knex.schema.dropTable('sales')
+exports.down = async (knex) => knex.schema.dropTable('sales')
