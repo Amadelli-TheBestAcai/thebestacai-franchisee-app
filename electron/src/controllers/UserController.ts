@@ -3,6 +3,7 @@ import UserService from '../services/UserService'
 
 ipcMain.on('user:login', async (event, { isConnected, ...user }) => {
   try {
+    console.log(isConnected)
     const response = await UserService.login(user, isConnected)
     event.reply('user:login', response)
   } catch (err) {

@@ -1,7 +1,7 @@
 import UserRepository from '../repositories/UserRepository'
 import jwt_decode from 'jwt-decode'
-import api from '../Utils/Api'
-import { hash, compare } from '../../../shared/Utils/Bcrypt'
+import api from '../utils/Api'
+import { hash, compare } from '../utils/Bcrypt'
 
 class UserService {
   async create({ username, password }) {

@@ -1,4 +1,4 @@
-import api from '../Utils/Api'
+import api from '../utils/Api'
 import UserService from '../services/UserService'
 import ProductsRepository from '../repositories/ProductsRepository'
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../../shared/Utils/InternetConnection'
+import { isOnline } from '../../Helpers/InternetConnection'
 import { Product } from '../../models/product'
 import { Payment } from '../../models/payment'
 import { PaymentType } from '../../models/enums/paymentType'
