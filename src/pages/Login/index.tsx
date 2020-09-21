@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import api from '../../../shared/services/api'
+import api from '../../../electron/src/services/Api'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { login } from '../../../shared/services/auth'
+import { login } from '../../../electron/src/services/Auth'
 import { message, Form, Input, Button } from 'antd'
 import { Container } from './styles'
 

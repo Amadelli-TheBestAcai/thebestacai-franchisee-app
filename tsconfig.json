@@ -5,16 +5,11 @@
     "noImplicitAny": false,
     "target": "es5",
     "module": "commonjs",
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016",
-      "es2017"
-    ],
+    "lib": ["dom", "es2015", "es2016", "es2017"],
     "allowJs": true,
     "jsx": "react",
     "sourceMap": true,
     "outDir": "./dist",
-    "esModuleInterop": true,
-  },
+    "esModuleInterop": true
+  }
 }

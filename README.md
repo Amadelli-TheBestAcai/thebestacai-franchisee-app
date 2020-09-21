@@ -10,18 +10,20 @@ npm install
 yarn install
 ```
 
-## Instalação
+## Instalação do banco de dados
 
 Criar banco de dados
 
 ```bash
-yarn typeorm migration:run
+yarn database
 ```
 
-## Usage
+## Inicialização
+
 ```bash
 npm run dev:react
 ```
+
 ```bash
 npm run dev:electron
 ```
@@ -32,19 +34,8 @@ ou
 npm run dev
 ```
 
-## Packaging
-Gerar executável
+## Criação do executável
 
 ```bash
 npm run package
 ```
-
-
-
-## Contributing
-
-Pull requests are always welcome 😃.
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)

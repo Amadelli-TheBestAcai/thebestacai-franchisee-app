@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import api from '../../../shared/services/api'
 
 import { Product as ProductModel } from '../../../shared/models/entities/product'
 
@@ -17,12 +16,12 @@ const ProductsContainer: React.FC<IProps> = ({ store, handleItem }) => {
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoading(true)
-      const {
-        data: { data },
-      } = await api.get(`products_store/${store}`)
-      setProducts(data)
-      setLoading(false)
+      // setLoading(true)
+      // const {
+      //   data: { data },
+      // } = await api.get(`products_store/${store}`)
+      // setProducts(data)
+      // setLoading(false)
     }
     fetchProducts()
   }, [])
