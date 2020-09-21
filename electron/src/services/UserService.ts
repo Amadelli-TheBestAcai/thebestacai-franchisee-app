@@ -3,15 +3,15 @@ import api from '../../../shared/services/Api'
 import { hash, compare } from '../../../shared/Utils/Bcrypt'
 
 class UserService {
-  async create({ username, password, access_token }) {
+  async create({ username, password }) {
     const oldUser = await UserRepository.findByUsername(username)
     if (oldUser) {
       await UserRepository.deleteById(oldUser.id)
     }
     const hashedPassword = await hash(password)
     const user = oldUser
-      ? { id: oldUser.id, username, access_token, password: hashedPassword }
-      : { username, access_token, password: hashedPassword }
+      ? { id: oldUser.id, username, password: hashedPassword }
+      : { username, password: hashedPassword }
     return await UserRepository.create(user)
   }
 
@@ -37,11 +37,25 @@ class UserService {
     return access_token
   }
 
+  async createOrUpdateSession(access_token: string): Promise<void> {
+    const oldSession = await UserRepository.getSessionUser()
+    if (oldSession) {
+      await UserRepository.deleteSessionUser(oldSession.id)
+      await UserRepository.updateSessionUser({
+        id: oldSession.id,
+        access_token,
+      })
+    } else {
+      await UserRepository.updateSessionUser({ access_token })
+    }
+  }
+
   async login(user, isConnected): Promise<boolean> {
     if (isConnected) {
       const access_token = await this.onlineLogin(user)
       if (access_token) {
-        await this.create({ ...user, access_token })
+        await this.create(user)
+        await this.createOrUpdateSession(access_token)
         return true
       }
       return false
