@@ -1,9 +1,12 @@
 import { ipcMain } from 'electron'
-import api from '../../../shared/models/services/Api'
+import UserService from '../services/UserService'
 
-ipcMain.on('user:login', async (event, user) => {
-  const {
-    data: { access_token },
-  } = await api.post('auth/login', user)
-  event.reply('user:login', access_token)
+ipcMain.on('user:login', async (event, { isConnected, ...user }) => {
+  try {
+    const response = await UserService.login(user, isConnected)
+    event.reply('user:login', response)
+  } catch (err) {
+    console.error(err)
+    event.reply('user:login', false)
+  }
 })

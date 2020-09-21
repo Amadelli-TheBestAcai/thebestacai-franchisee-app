@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 
-import { User } from '../entities/user'
-import { UserRoles } from '../enums/userRole'
+import { User } from '../models/entities/user'
+import { UserRoles } from '../models/enums/userRole'
 
 export const TOKEN_KEY = 'access-token'
 export const TOKEN_SECRET_KEY =

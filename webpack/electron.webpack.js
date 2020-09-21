@@ -4,13 +4,14 @@ const rootPath = path.resolve(__dirname, '..')
 
 module.exports = {
   resolve: {
-    extensions: ['.tsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js'],
   },
   devtool: 'source-map',
   entry: path.resolve(rootPath, 'electron', 'main.ts'),
   target: 'electron-main',
   externals: {
-    knex: 'commonjs knex'
+    knex: 'commonjs knex',
+    bcrypt: 'commonjs bcrypt',
   },
   module: {
     rules: [
@@ -20,23 +21,18 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-                '@babel/preset-env',
-                '@babel/preset-react'
-            ],
-            plugins: [
-                '@babel/transform-runtime'
-            ]
-          }
-        }
-      }
-    ]
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/transform-runtime'],
+          },
+        },
+      },
+    ],
   },
   node: {
-    __dirname: false
+    __dirname: false,
   },
   output: {
     path: path.resolve(rootPath, 'dist'),
-    filename: '[name].js'
-  }
+    filename: '[name].js',
+  },
 }

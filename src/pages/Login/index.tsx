@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form, Input, Button } from 'antd'
 import { Container } from './styles'
 import { ipcRenderer } from 'electron'
-
+import { isOnline } from '../../../shared/Utils/InternetConnection'
 type IProps = RouteComponentProps
 
 const Login: React.FC<IProps> = ({ history }) => {
@@ -18,9 +18,9 @@ const Login: React.FC<IProps> = ({ history }) => {
 
   const onFinish = async () => {
     setLoading(true)
-    ipcRenderer.send('user:login', user)
-    ipcRenderer.on('user:login', (event, accessToken) => {
-      if (accessToken) {
+    ipcRenderer.send('user:login', { isConnected: isOnline(), ...user })
+    ipcRenderer.on('user:login', (event, isValid) => {
+      if (isValid) {
         history.push('/home')
         return message.success(`Bem vindo ${user.username}`)
       }
