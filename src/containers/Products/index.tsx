@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../Helpers/InternetConnection'
+import { isOnline } from '../../helpers/InternetConnection'
 import { Product as ProductModel } from '../../models/product'
 
 import Product from '../../components/Product'

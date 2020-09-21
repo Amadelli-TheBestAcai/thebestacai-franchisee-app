@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form, Input, Button } from 'antd'
 import { Container } from './styles'
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../Helpers/InternetConnection'
+import { isOnline } from '../../helpers/InternetConnection'
 type IProps = RouteComponentProps
 
 const Login: React.FC<IProps> = ({ history }) => {
