@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
-import { getTokenInfo } from '../../../shared/services/Auth'
+import { getTokenInfo } from '../../../electron/src/controllers/Auth'
 import { isOnline } from '../../../shared/Utils/InternetConnection'
 import { Product } from '../../../shared/models/entities/product'
 import { User } from '../../../shared/models/entities/user'
