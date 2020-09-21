@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 
 import { PaymentType } from '../../models/enums/paymentType'
 import { Payment as PaymentModel } from '../../models/payment'
@@ -18,53 +18,49 @@ import {
 } from './styles'
 
 interface IProps {
-  payment: number
-  modalStatus: boolean
-  setModalState: Dispatch<SetStateAction<boolean>>
   payments: PaymentModel[]
-  setPayments: Dispatch<SetStateAction<PaymentModel[]>>
-  setPayment: Dispatch<SetStateAction<number>>
-  paymentType: number
-  totalSale: number
-  handleClick
+  handleOpenPayment: (type: number, defaultValue?: number) => void
+  handleClosePayment
+  currentPayment
+  setCurrentPayment
+  modalState: boolean
+  setModalState
+  totalSale
 }
 
 const PaymentsContainer: React.FC<IProps> = ({
-  payment,
   payments,
-  setPayment,
-  modalStatus,
-  paymentType,
+  currentPayment,
+  setCurrentPayment,
   setModalState,
-  handleClick,
+  handleOpenPayment,
+  handleClosePayment,
+  modalState,
   totalSale,
-  setPayments,
 }) => {
   const onModalCancel = (): void => {
-    setModalState(false)
-    setPayment(0)
-  }
-
-  const addPayment = (): void => {
-    const newPayment: PaymentModel = { type: paymentType, amount: payment }
-    setPayments((oldPayments) => [newPayment, ...oldPayments])
-    setPayment(0)
     setModalState(false)
   }
 
   return (
     <Container>
       <PaymentsHeader>
-        <Button onClick={() => handleClick(PaymentType.MONEY)}>
+        <Button onClick={() => handleOpenPayment(PaymentType.MONEY, 0)}>
           [A] Dinheiro
         </Button>
-        <Button onClick={() => handleClick(PaymentType.CREDIT_CARD, totalSale)}>
+        <Button
+          onClick={() => handleOpenPayment(PaymentType.CREDIT_CARD, totalSale)}
+        >
           [S] Crédito
         </Button>
-        <Button onClick={() => handleClick(PaymentType.DEBIT_CARD, totalSale)}>
+        <Button
+          onClick={() => handleOpenPayment(PaymentType.DEBIT_CARD, totalSale)}
+        >
           [D] Débito
         </Button>
-        <Button onClick={() => handleClick(PaymentType.TICKET, totalSale)}>
+        <Button
+          onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
+        >
           [T] Ticket
         </Button>
       </PaymentsHeader>
@@ -86,18 +82,18 @@ const PaymentsContainer: React.FC<IProps> = ({
       </PaymentsList>
       <Modal
         width={250}
-        visible={modalStatus}
+        visible={modalState}
         onCancel={onModalCancel}
-        onOk={addPayment}
+        onOk={() => handleClosePayment()}
         closable={true}
       >
         Valor:
         <Input
-          onPressEnter={addPayment}
+          onPressEnter={handleClosePayment}
           type="number"
           autoFocus={true}
-          onChange={({ target: { value } }) => setPayment(+value)}
-          value={payment || ''}
+          onChange={({ target: { value } }) => setCurrentPayment(+value)}
+          value={currentPayment}
         />
       </Modal>
     </Container>

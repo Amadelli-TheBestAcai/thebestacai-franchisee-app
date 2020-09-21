@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
-
+import { v4 as uuidv4 } from 'uuid'
 import { ipcRenderer } from 'electron'
+import { Sale } from '../../models/sale'
+import { SalesTypes } from '../../models/enums/salesTypes'
+
 import { isOnline } from '../../helpers/InternetConnection'
 import { Product } from '../../models/product'
-import { Payment } from '../../models/payment'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
-
+import { Button, message } from 'antd'
 import {
   Container,
   TopSide,
@@ -27,23 +29,47 @@ import {
 } from './styles'
 
 const Home: React.FC = () => {
-  const [items, setItems] = useState<Product[]>([])
-  const [payments, setPayments] = useState<Payment[]>([])
-  const [payment, setPayment] = useState(0)
+  const [sales, setSales] = useState<Sale[]>([
+    {
+      id: uuidv4(),
+      type: SalesTypes[SalesTypes.STORE],
+      total_sold: 0,
+      change_amount: 0,
+      discount: 0,
+      items: [],
+      payments: [],
+    },
+  ])
+  const [currentSale, setCurrentSale] = useState<string>(sales[0].id)
+  const [currentPayment, setCurrentPayment] = useState(0)
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
-  const [totalSale, setTotalSale] = useState(0)
 
   const handleItem = (item: Product): void => {
-    console.log(payments)
+    const sale = sales.find((sale) => sale.id === currentSale)
+    sale.total_sold = sale.total_sold + +item.price_unit
+    sale.items = [...sale.items, { product_id: item.product_id, quantity: 1 }]
+    const salesWithoutCurrent = sales.filter((sale) => sale.id !== currentSale)
+    const newSales = [sale, ...salesWithoutCurrent]
+    setSales(newSales)
   }
 
-  const handlePayment = (type: number, defaultValue?: number): void => {
-    setPaymentModal(true)
+  const handleClosePayment = (): void => {
+    const sale = sales.find((sale) => sale.id === currentSale)
+    sale.payments = [
+      ...sale.payments,
+      { type: paymentType, amount: currentPayment },
+    ]
+    const salesWithoutCurrent = sales.filter((sale) => sale.id !== currentSale)
+    const newSales = [sale, ...salesWithoutCurrent]
+    setSales(newSales)
+    setPaymentModal(!paymentModal)
+  }
+
+  const handleOpenPayment = (type: number, defaultValue: number): void => {
+    setCurrentPayment(defaultValue)
     setPaymentType(type)
-    if (defaultValue) {
-      setPayment(defaultValue)
-    }
+    setPaymentModal(!paymentModal)
   }
 
   const keyMap = {
@@ -53,19 +79,63 @@ const Home: React.FC = () => {
     TICKET: 't',
   }
 
+  const getTotalSoldOnSale = (): number =>
+    sales.find((sale) => sale.id === currentSale).total_sold
+
+  const getCurrentSale = (): Sale =>
+    sales.find((sale) => sale.id === currentSale)
+
+  const removeCurrentSale = (): void => {
+    const newSales = sales.filter((sale) => sale.id !== currentSale)
+    setSales(newSales)
+  }
+
+  const createNewSale = (): void => {
+    const newSale = {
+      id: uuidv4(),
+      type: SalesTypes[SalesTypes.STORE],
+      total_sold: 0,
+      change_amount: 0,
+      discount: 0,
+      items: [],
+      payments: [],
+    }
+    if (!sales.length) {
+      return setSales([newSale])
+    }
+    return setSales([newSale, ...sales])
+  }
+
+  const registerSale = (): void => {
+    ipcRenderer.send('sale:create', {
+      isConnected: isOnline(),
+      sale: getCurrentSale(),
+    })
+    ipcRenderer.on('sale:create', (event, isSuccessful) => {
+      if (isSuccessful) {
+        removeCurrentSale()
+        if (!sales.length) {
+          createNewSale()
+        }
+        return message.success('Venda cadastrada com sucesso')
+      }
+      message.error('Erro ao cadastrar venda')
+    })
+  }
+
   const handlers = {
-    MONEY: () => handlePayment(PaymentType.MONEY),
-    C_CREDIT: () => handlePayment(PaymentType.CREDIT_CARD, totalSale),
-    C_DEBIT: () => handlePayment(PaymentType.DEBIT_CARD, totalSale),
-    TICKET: () => handlePayment(PaymentType.TICKET, totalSale),
+    MONEY: () => handleOpenPayment(PaymentType.MONEY, 0),
+    C_CREDIT: () =>
+      handleOpenPayment(PaymentType.CREDIT_CARD, getTotalSoldOnSale()),
+    C_DEBIT: () =>
+      handleOpenPayment(PaymentType.DEBIT_CARD, getTotalSoldOnSale()),
+    TICKET: () => handleOpenPayment(PaymentType.TICKET, getTotalSoldOnSale()),
   }
 
   return (
     <HotKeys keyMap={keyMap} handlers={handlers}>
       <Container>
-        <TopSide>
-          <button onClick={() => console.log(isOnline())}>Check</button>
-        </TopSide>
+        <TopSide></TopSide>
         <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>
@@ -74,25 +144,28 @@ const Home: React.FC = () => {
             </ProductsContainer>
           </LeftSide>
           <RightSide>
-            <Content>
-              <ItemsContainer></ItemsContainer>
-              <PaymentsContainer>
-                <PaymentsTypesContainer>
-                  <Payments
-                    payments={payments}
-                    setPayments={setPayments}
-                    paymentType={paymentType}
-                    payment={payment}
-                    totalSale={totalSale}
-                    setPayment={setPayment}
-                    handleClick={handlePayment}
-                    setModalState={setPaymentModal}
-                    modalStatus={paymentModal}
-                  />
-                </PaymentsTypesContainer>
-                <FinishContainer></FinishContainer>
-              </PaymentsContainer>
-            </Content>
+            {sales.map((sale) => (
+              <Content key={sale.id}>
+                <ItemsContainer></ItemsContainer>
+                <PaymentsContainer>
+                  <PaymentsTypesContainer>
+                    <Payments
+                      payments={sale.payments}
+                      handleOpenPayment={handleOpenPayment}
+                      handleClosePayment={handleClosePayment}
+                      currentPayment={currentPayment}
+                      setCurrentPayment={setCurrentPayment}
+                      modalState={paymentModal}
+                      setModalState={setPaymentModal}
+                      totalSale={sale.total_sold}
+                    />
+                  </PaymentsTypesContainer>
+                  <FinishContainer>
+                    <Button onClick={() => registerSale()}>Registrar</Button>
+                  </FinishContainer>
+                </PaymentsContainer>
+              </Content>
+            ))}
           </RightSide>
         </MainContainer>
         <Footer></Footer>
