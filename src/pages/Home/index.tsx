@@ -107,10 +107,7 @@ const Home: React.FC = () => {
   }
 
   const registerSale = (): void => {
-    ipcRenderer.send('sale:create', {
-      isConnected: isOnline(),
-      sale: getCurrentSale(),
-    })
+    ipcRenderer.send('sale:create', getCurrentSale())
     ipcRenderer.on('sale:create', (event, isSuccessful) => {
       if (isSuccessful) {
         removeCurrentSale()
