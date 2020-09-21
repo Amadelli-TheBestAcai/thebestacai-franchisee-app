@@ -20,7 +20,7 @@ const Product: React.FC<IProps> = ({ handleItem, product }) => {
         <Description>{name}</Description>
       </Column>
       <Column span={6}>
-        <Description>{price_unit?.replace('.', ',')}</Description>
+        <Description>{(+price_unit).toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={4}>
         <Button shape="circle" onClick={() => handleItem(product)}>

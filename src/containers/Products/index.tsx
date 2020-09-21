@@ -23,7 +23,6 @@ const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
   }, [])
 
   ipcRenderer.on('products:get', (event, products) => {
-    console.log(products)
     setProducts(products)
     setLoading(false)
   })

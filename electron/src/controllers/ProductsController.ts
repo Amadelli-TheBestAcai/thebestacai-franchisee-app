@@ -3,7 +3,6 @@ import ProductsService from '../services/ProductsService'
 
 ipcMain.on('products:get', async (event, isConnected) => {
   try {
-    console.log(isConnected)
     const response = await ProductsService.getProducts(isConnected)
     event.reply('products:get', response)
   } catch (err) {
