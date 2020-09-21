@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import api from '../../../electron/src/services/Api'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { login } from '../../../electron/src/services/Auth'
 import { message, Form, Input, Button } from 'antd'
 import { Container } from './styles'
+import { ipcRenderer } from 'electron'
 
 type IProps = RouteComponentProps
 
@@ -19,17 +18,17 @@ const Login: React.FC<IProps> = ({ history }) => {
 
   const onFinish = async () => {
     setLoading(true)
-    const {
-      data: { access_token },
-    } = await api.post('auth/login', user)
-    if (access_token) {
-      login(access_token)
-      history.push('/home')
-      return message.success(`Bem vindo ${user.username}`)
-    }
-    message.error('Credenciais inválidas')
-    setLoading(false)
+    ipcRenderer.send('user:login', user)
+    ipcRenderer.on('user:login', (event, accessToken) => {
+      if (accessToken) {
+        history.push('/home')
+        return message.success(`Bem vindo ${user.username}`)
+      }
+      message.error('Credenciais inválidas')
+      setLoading(false)
+    })
   }
+
   return (
     <Container>
       <Form onFinish={onFinish} layout="vertical">

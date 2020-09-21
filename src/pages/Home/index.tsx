@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
-import { getTokenInfo } from '../../../electron/src/services/Auth'
-
+import { getTokenInfo } from '../../../shared/models/services/Auth'
+import { isOnline } from '../../../electron/src/services/InternetConnection'
 import { Product } from '../../../shared/models/entities/product'
 import { User } from '../../../shared/models/entities/user'
 import { Payment } from '../../../shared/models/entities/payment'
@@ -74,7 +74,9 @@ const Home: React.FC = () => {
   return (
     <HotKeys keyMap={keyMap} handlers={handlers}>
       <Container>
-        <TopSide></TopSide>
+        <TopSide>
+          <button onClick={() => console.log(isOnline())}>Check</button>
+        </TopSide>
         <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>
