@@ -3,10 +3,9 @@ import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
 import { isOnline } from '../../../shared/Utils/InternetConnection'
-import { Product } from '../../../shared/models/entities/product'
-import { User } from '../../../shared/models/entities/user'
-import { Payment } from '../../../shared/models/entities/payment'
-import { PaymentType } from '../../../shared/models/enums/paymentType'
+import { Product } from '../../models/product'
+import { Payment } from '../../models/payment'
+import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
@@ -28,21 +27,12 @@ import {
 } from './styles'
 
 const Home: React.FC = () => {
-  const [user, setUser] = useState<User>()
   const [items, setItems] = useState<Product[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
   const [payment, setPayment] = useState(0)
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
   const [totalSale, setTotalSale] = useState(0)
-
-  // useEffect(() => {
-  //   const getUserInfo = async () => {
-  //     const userInfo = await getTokenInfo()
-  //     setUser(userInfo)
-  //   }
-  //   getUserInfo()
-  // }, [])
 
   const handleItem = (item: Product): void => {
     console.log(payments)

@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
-import { PaymentType } from '../../../shared/models/enums/paymentType'
-import { Payment as PaymentModel } from '../../../shared/models/entities/payment'
+import { PaymentType } from '../../models/enums/paymentType'
+import { Payment as PaymentModel } from '../../models/payment'
 
 import Payment from '../../components/Payment'
 

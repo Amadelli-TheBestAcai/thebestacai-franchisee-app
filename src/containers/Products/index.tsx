@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
 import { isOnline } from '../../../shared/Utils/InternetConnection'
-import { Product as ProductModel } from '../../../shared/models/entities/product'
+import { Product as ProductModel } from '../../models/product'
 
 import Product from '../../components/Product'
 

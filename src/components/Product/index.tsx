@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Product as ProductModel } from '../../../shared/models/entities/product'
+import { Product as ProductModel } from '../../models/product'
 
 import { Container, Column, Description, Button } from './styles'
 

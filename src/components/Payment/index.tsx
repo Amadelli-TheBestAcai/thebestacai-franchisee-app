@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Payment as PaymentModel } from '../../../shared/models/entities/payment'
-import { PaymentType } from '../../../shared/models/enums/paymentType'
+import { Payment as PaymentModel } from '../../models/payment'
+import { PaymentType } from '../../models/enums/paymentType'
 
 import { Container, Column, Description, Button } from './styles'
 

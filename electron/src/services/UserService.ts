@@ -3,10 +3,6 @@ import jwt_decode from 'jwt-decode'
 import api from '../Utils/Api'
 import { hash, compare } from '../../../shared/Utils/Bcrypt'
 
-export const TOKEN_KEY = 'access-token'
-export const TOKEN_SECRET_KEY =
-  'A2aF103fP7899.RfKMfs78STuXTTeSMABXJp77lJCIttNqlMal1Vea.AUSW.'
-
 class UserService {
   async create({ username, password }) {
     const oldUser = await UserRepository.findByUsername(username)
