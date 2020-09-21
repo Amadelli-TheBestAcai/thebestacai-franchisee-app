@@ -1,4 +1,5 @@
 import UserRepository from '../repositories/UserRepository'
+import jwt_decode from 'jwt-decode'
 import api from '../Utils/Api'
 import { hash, compare } from '../../../shared/Utils/Bcrypt'
 
@@ -75,17 +76,16 @@ class UserService {
     return null
   }
 
-  getTokenInfo = async () => {
+  async getTokenInfo() {
     const accessToken = await this.getCurrentSession()
     if (accessToken === null) {
       return null
     }
     try {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const result = await promisify(jwt.verify)(accessToken, TOKEN_SECRET_KEY)
-      return result
+      const decodedToken = jwt_decode(accessToken)
+      return decodedToken
     } catch (err) {
+      console.error(err)
       return null
     }
   }

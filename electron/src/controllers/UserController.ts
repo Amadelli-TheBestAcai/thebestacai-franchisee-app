@@ -10,7 +10,3 @@ ipcMain.on('user:login', async (event, { isConnected, ...user }) => {
     event.reply('user:login', false)
   }
 })
-
-export const getCurrentSession = async (): Promise<string | null> => {
-  return await UserService.getCurrentSession()
-}

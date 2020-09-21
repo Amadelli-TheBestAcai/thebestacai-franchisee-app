@@ -5,5 +5,6 @@ const knex = require('knex')(knexfile)
 export const inicializeControllers = (): void => {
   require('./controllers/SalesController')
   require('./controllers/UserController')
+  require('./controllers/ProductsController')
 }
 export default knex

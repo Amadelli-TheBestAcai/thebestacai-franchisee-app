@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 
 import { ipcRenderer } from 'electron'
-import { getTokenInfo } from '../../../electron/src/controllers/Auth'
 import { isOnline } from '../../../shared/Utils/InternetConnection'
 import { Product } from '../../../shared/models/entities/product'
 import { User } from '../../../shared/models/entities/user'
@@ -37,13 +36,13 @@ const Home: React.FC = () => {
   const [paymentModal, setPaymentModal] = useState(false)
   const [totalSale, setTotalSale] = useState(0)
 
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const userInfo = await getTokenInfo()
-      setUser(userInfo)
-    }
-    getUserInfo()
-  }, [])
+  // useEffect(() => {
+  //   const getUserInfo = async () => {
+  //     const userInfo = await getTokenInfo()
+  //     setUser(userInfo)
+  //   }
+  //   getUserInfo()
+  // }, [])
 
   const handleItem = (item: Product): void => {
     console.log(payments)
@@ -81,7 +80,7 @@ const Home: React.FC = () => {
           <LeftSide>
             <BalanceContainer></BalanceContainer>
             <ProductsContainer>
-              {user && <Products store={user.store} handleItem={handleItem} />}
+              <Products handleItem={handleItem} />
             </ProductsContainer>
           </LeftSide>
           <RightSide>
