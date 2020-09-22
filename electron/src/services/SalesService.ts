@@ -18,7 +18,7 @@ class SalesService {
     await SalesRepository.deleteById(sale)
   }
 
-  async integrate(cash_id: string): Promise<void> {
+  async integrate(cash_code: string): Promise<void> {
     const sales = await SalesRepository.getAll()
     await Promise.all(
       sales.map(async (sale) => {
@@ -30,8 +30,12 @@ class SalesService {
           items,
           payments,
         }
-        const { status } = await api.post(`/sales/${cash_id}`, saleToIntegrate)
+        const { status } = await api.post(`/sales/${cash_code}`, [saleToIntegrate])
         if (status === 200) {
+          await this.delete(id)
+        } else {
+          //TODO: criar endpoit para LOG
+          //await api.post(`/logs`, saleToIntegrate)
           await this.delete(id)
         }
       })
