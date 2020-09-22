@@ -48,7 +48,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const integrateSale = async () => {
       while (true) {
-        await sleep(10000)
+        await sleep(30000)
         ipcRenderer.send('sale:integrate')
       }
     }
@@ -95,9 +95,16 @@ const Home: React.FC = () => {
   const getCurrentSale = (): Sale =>
     sales.find((sale) => sale.id === currentSale)
 
-  const removeCurrentSale = (): void => {
-    const newSales = sales.filter((sale) => sale.id !== currentSale)
-    setSales(newSales)
+  const removeCurrentSale = (saleToRemove: string): void => {
+    const newSales = sales.filter((sale) => sale.id !== saleToRemove)
+    if (!newSales.length) {
+      createNewSale()
+      return setSales((oldSales) =>
+        oldSales.filter((sale) => sale.id !== saleToRemove)
+      )
+    }
+    setCurrentSale(newSales[0].id)
+    return setSales(newSales)
   }
 
   const createNewSale = (): void => {
@@ -110,25 +117,17 @@ const Home: React.FC = () => {
       items: [],
       payments: [],
     }
-    if (!sales.length) {
-      return setSales([newSale])
-    }
-    return setSales([newSale, ...sales])
+    console.log([newSale, ...sales])
+
+    setSales([newSale, ...sales])
+    return setCurrentSale(newSale.id)
   }
 
   const registerSale = (): void => {
     const { total_sold, ...sale } = getCurrentSale()
+    removeCurrentSale(sale.id)
     ipcRenderer.send('sale:create', sale)
-    ipcRenderer.on('sale:create', (event, isSuccessful) => {
-      if (isSuccessful) {
-        removeCurrentSale()
-        if (!sales.length) {
-          createNewSale()
-        }
-        return message.success('Venda cadastrada com sucesso')
-      }
-      message.error('Erro ao cadastrar venda')
-    })
+    message.success('Venda cadastrada com sucesso')
   }
 
   const handlers = {
@@ -143,7 +142,9 @@ const Home: React.FC = () => {
   return (
     <HotKeys keyMap={keyMap} handlers={handlers}>
       <Container>
-        <TopSide></TopSide>
+        <TopSide>
+          <button onClick={() => console.log(sales)}>check</button>
+        </TopSide>
         <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>

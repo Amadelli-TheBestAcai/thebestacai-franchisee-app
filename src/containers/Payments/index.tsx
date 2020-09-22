@@ -76,7 +76,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         </Column>
       </PaymentListHeader>
       <PaymentsList>
-        {payments.map((payment, index) => (
+        {payments?.map((payment, index) => (
           <Payment key={index} {...payment} />
         ))}
       </PaymentsList>

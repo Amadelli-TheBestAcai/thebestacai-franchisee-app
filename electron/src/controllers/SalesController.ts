@@ -13,7 +13,7 @@ ipcMain.on('sale:create', async (event, sale) => {
 
 ipcMain.on('sale:integrate', async (event) => {
   try {
-    await SalesService.integrate('1-01')
+    // await SalesService.integrate('1-01')
   } catch (err) {
     console.error(err)
   }
