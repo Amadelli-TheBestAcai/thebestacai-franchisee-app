@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { HotKeys } from 'react-hotkeys'
 import { v4 as uuidv4 } from 'uuid'
 import { ipcRenderer } from 'electron'
 import { Sale } from '../../models/sale'
 import { SalesTypes } from '../../models/enums/salesTypes'
 
-import { isOnline } from '../../helpers/InternetConnection'
 import { Product } from '../../models/product'
 import { PaymentType } from '../../models/enums/paymentType'
 
@@ -45,6 +44,10 @@ const Home: React.FC = () => {
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
 
+  useEffect(() => {
+    console.log('Inicializando serviço de integração de vendas')
+    ipcRenderer.send('sale:integrate')
+  }, [])
   const handleItem = (item: Product): void => {
     const sale = sales.find((sale) => sale.id === currentSale)
     sale.total_sold = sale.total_sold + +item.price_unit
