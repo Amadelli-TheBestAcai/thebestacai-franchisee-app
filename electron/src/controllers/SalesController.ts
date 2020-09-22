@@ -1,6 +1,5 @@
 import { ipcMain } from 'electron'
 import SalesService from '../services/SalesService'
-import { sleep } from '../utils/Sleep'
 
 ipcMain.on('sale:create', async (event, sale) => {
   try {
@@ -12,12 +11,10 @@ ipcMain.on('sale:create', async (event, sale) => {
   }
 })
 
-ipcMain.on('sale:integrate', async (event) => {
-  while (true) {
-    try {
-      await sleep(5000)
-    } catch (err) {
-      console.error(err)
-    }
+ipcMain.on('sale:integrate', async (event, { cash_code, store_id }) => {
+  try {
+    SalesService.integrate(`${store_id}-${cash_code}`)
+  } catch (err) {
+    console.error(err)
   }
 })

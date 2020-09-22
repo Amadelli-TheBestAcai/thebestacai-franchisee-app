@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { HotKeys } from 'react-hotkeys'
 import { v4 as uuidv4 } from 'uuid'
+import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
 import { Sale } from '../../models/sale'
 import { SalesTypes } from '../../models/enums/salesTypes'
@@ -45,9 +46,15 @@ const Home: React.FC = () => {
   const [paymentModal, setPaymentModal] = useState(false)
 
   useEffect(() => {
-    console.log('Inicializando serviço de integração de vendas')
-    ipcRenderer.send('sale:integrate')
+    const integrateSale = async () => {
+      while (true) {
+        await sleep(5000)
+        ipcRenderer.send('sale:integrate')
+      }
+    }
+    integrateSale()
   }, [])
+
   const handleItem = (item: Product): void => {
     const sale = sales.find((sale) => sale.id === currentSale)
     sale.total_sold = sale.total_sold + +item.price_unit
@@ -110,7 +117,8 @@ const Home: React.FC = () => {
   }
 
   const registerSale = (): void => {
-    ipcRenderer.send('sale:create', getCurrentSale())
+    const { total_sold, ...sale } = getCurrentSale()
+    ipcRenderer.send('sale:create', sale)
     ipcRenderer.on('sale:create', (event, isSuccessful) => {
       if (isSuccessful) {
         removeCurrentSale()
