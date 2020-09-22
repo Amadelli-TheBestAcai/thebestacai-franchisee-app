@@ -48,7 +48,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const integrateSale = async () => {
       while (true) {
-        await sleep(5000)
+        await sleep(10000)
         ipcRenderer.send('sale:integrate')
       }
     }
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
     const sale = sales.find((sale) => sale.id === currentSale)
     sale.payments = [
       ...sale.payments,
-      { type: paymentType, amount: currentPayment },
+      { type: PaymentType[paymentType], amount: currentPayment },
     ]
     const salesWithoutCurrent = sales.filter((sale) => sale.id !== currentSale)
     const newSales = [sale, ...salesWithoutCurrent]

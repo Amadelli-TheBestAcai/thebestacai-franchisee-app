@@ -30,13 +30,13 @@ class SalesService {
           items,
           payments,
         }
-        const { status } = await api.post(`/sales/${cash_code}`, [saleToIntegrate])
-        if (status === 200) {
+        try {
+          await api.post(`/sales/${cash_code}`, [saleToIntegrate])
           await this.delete(id)
-        } else {
-          //TODO: criar endpoit para LOG
-          //await api.post(`/logs`, saleToIntegrate)
-          await this.delete(id)
+          console.log('Venda integrada com sucesso')
+        } catch (err) {
+          // TODO: Criar integração de log de vendas com erro
+          console.error(err)
         }
       })
     )

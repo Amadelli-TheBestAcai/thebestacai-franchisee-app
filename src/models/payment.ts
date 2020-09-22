@@ -1,4 +1,4 @@
 export interface Payment {
-  type: number
+  type: string
   amount: number
 }

@@ -11,9 +11,9 @@ ipcMain.on('sale:create', async (event, sale) => {
   }
 })
 
-ipcMain.on('sale:integrate', async (event, { cash_code, store_id }) => {
+ipcMain.on('sale:integrate', async (event) => {
   try {
-    await SalesService.integrate(`${store_id}-${cash_code}`)
+    await SalesService.integrate('1-01')
   } catch (err) {
     console.error(err)
   }

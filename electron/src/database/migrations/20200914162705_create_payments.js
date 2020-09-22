@@ -3,7 +3,7 @@ exports.up = async (knex) =>
     table.increments('id')
     table.string('sale_id')
     table.decimal('amount', 8, 2)
-    table.integer('type')
+    table.string('type')
   })
 
 exports.down = async (knex) => knex.schema.dropTable('payments')
