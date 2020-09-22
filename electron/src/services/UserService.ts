@@ -2,6 +2,7 @@ import UserRepository from '../repositories/UserRepository'
 import jwt_decode from 'jwt-decode'
 import api from '../utils/Api'
 import { hash, compare } from '../utils/Bcrypt'
+import {LoginUserDTO} from '../models/dtos/user/LoginUserDTO'
 
 class UserService {
   async create({ username, password }) {
@@ -51,7 +52,7 @@ class UserService {
     }
   }
 
-  async login(user, isConnected): Promise<boolean> {
+  async login(user: LoginUserDTO, isConnected): Promise<boolean> {
     if (isConnected) {
       const access_token = await this.onlineLogin(user)
       if (access_token) {
