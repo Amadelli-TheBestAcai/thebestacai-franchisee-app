@@ -2,7 +2,8 @@ import UserRepository from '../repositories/UserRepository'
 import jwt_decode from 'jwt-decode'
 import api from '../utils/Api'
 import { hash, compare } from '../utils/Bcrypt'
-import {LoginUserDTO} from '../models/dtos/user/LoginUserDTO'
+import { LoginUserDTO } from '../models/dtos/user/LoginUserDTO'
+import { TokenUserDTO } from '../models/dtos/user/TokenUserDTO'
 
 class UserService {
   async create({ username, password }) {
@@ -73,7 +74,7 @@ class UserService {
     return null
   }
 
-  async getTokenInfo() {
+  async getTokenInfo(): Promise<TokenUserDTO> {
     const accessToken = await this.getCurrentSession()
     if (accessToken === null) {
       return null
