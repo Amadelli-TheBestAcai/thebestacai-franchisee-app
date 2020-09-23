@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Header from '../../components/Header'
 import SideBar from '../../components/SideBar'
 
@@ -22,7 +21,7 @@ const Layout: React.FC = ({ children }) => {
         <SideBarContainer>
           <SideBar />
         </SideBarContainer>
-        <Content></Content>
+        <Content>{children}</Content>
       </MainContainer>
       <Footer></Footer>
     </Container>

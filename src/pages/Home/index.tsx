@@ -142,9 +142,9 @@ const Home: React.FC = () => {
   }
 
   return (
-    <HotKeys keyMap={keyMap} handlers={handlers}>
-      <Container>
-        {/* <MainContainer>
+    <Container>
+      {/* <HotKeys keyMap={keyMap} handlers={handlers}>
+         <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>
             <ProductsContainer>
@@ -176,9 +176,9 @@ const Home: React.FC = () => {
             ))}
           </RightSide>
         </MainContainer>
-        <Footer></Footer> */}
-      </Container>
-    </HotKeys>
+        <Footer></Footer>
+      </HotKeys> */}
+    </Container>
   )
 }
 

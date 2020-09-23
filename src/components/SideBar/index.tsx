@@ -1,4 +1,6 @@
 import React from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
+
 import {
   Container,
   Commands,
@@ -9,11 +11,15 @@ import {
   Money,
 } from './styles'
 
-const SideBar: React.FC = () => {
+type IProps = RouteComponentProps
+
+const SideBar: React.FC<IProps> = ({ history }) => {
+  const redirect = (route: string): void => history.push(route)
+
   return (
     <Container>
       <Commands />
-      <Cash />
+      <Cash onClick={() => redirect('/cash')} />
       <Delivery />
       <ArrowIcon />
       <Graph />
@@ -22,4 +28,4 @@ const SideBar: React.FC = () => {
   )
 }
 
-export default SideBar
+export default withRouter(SideBar)

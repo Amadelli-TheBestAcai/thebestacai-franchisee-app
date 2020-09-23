@@ -24,14 +24,8 @@ export const SideBarContainer = styled.div`
 `
 
 export const Content = styled.div`
-  display: flex;
   height: 100%;
   width: 95%;
-  overflow: scroll;
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  }
 `
 
 export const Footer = styled.div`

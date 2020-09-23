@@ -23,11 +23,6 @@ const RouteWithLayout = (props: RouteWithLayoutProps) => {
   )
 }
 
-interface PrivateRouteProps extends RouteProps {
-  component: any
-  roles?: number[]
-}
-
 const Routes = () => (
   <Switch>
     <RouteWithLayout exact path="/home" component={Home} />
