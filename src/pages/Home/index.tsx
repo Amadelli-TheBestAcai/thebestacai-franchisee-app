@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { HotKeys } from 'react-hotkeys'
 import { v4 as uuidv4 } from 'uuid'
 import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
@@ -15,14 +14,11 @@ import Payments from '../../containers/Payments'
 import { Button, message } from 'antd'
 import {
   Container,
-  TopSide,
   Content,
   RightSide,
   LeftSide,
-  Footer,
   BalanceContainer,
   ProductsContainer,
-  MainContainer,
   ItemsContainer,
   PaymentsContainer,
   PaymentsTypesContainer,
@@ -142,42 +138,37 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Container>
-      {/* <HotKeys keyMap={keyMap} handlers={handlers}>
-         <MainContainer>
-          <LeftSide>
-            <BalanceContainer></BalanceContainer>
-            <ProductsContainer>
-              <Products handleItem={handleItem} />
-            </ProductsContainer>
-          </LeftSide>
-          <RightSide>
-            {sales.map((sale) => (
-              <Content key={sale.id}>
-                <ItemsContainer></ItemsContainer>
-                <PaymentsContainer>
-                  <PaymentsTypesContainer>
-                    <Payments
-                      payments={sale.payments}
-                      handleOpenPayment={handleOpenPayment}
-                      handleClosePayment={handleClosePayment}
-                      currentPayment={currentPayment}
-                      setCurrentPayment={setCurrentPayment}
-                      modalState={paymentModal}
-                      setModalState={setPaymentModal}
-                      totalSale={sale.total_sold}
-                    />
-                  </PaymentsTypesContainer>
-                  <FinishContainer>
-                    <Button onClick={() => registerSale()}>Registrar</Button>
-                  </FinishContainer>
-                </PaymentsContainer>
-              </Content>
-            ))}
-          </RightSide>
-        </MainContainer>
-        <Footer></Footer>
-      </HotKeys> */}
+    <Container keyMap={keyMap} handlers={handlers}>
+      <LeftSide>
+        <BalanceContainer></BalanceContainer>
+        <ProductsContainer>
+          <Products handleItem={handleItem} />
+        </ProductsContainer>
+      </LeftSide>
+      <RightSide>
+        {sales.map((sale) => (
+          <Content key={sale.id}>
+            <ItemsContainer></ItemsContainer>
+            <PaymentsContainer>
+              <PaymentsTypesContainer>
+                <Payments
+                  payments={sale.payments}
+                  handleOpenPayment={handleOpenPayment}
+                  handleClosePayment={handleClosePayment}
+                  currentPayment={currentPayment}
+                  setCurrentPayment={setCurrentPayment}
+                  modalState={paymentModal}
+                  setModalState={setPaymentModal}
+                  totalSale={sale.total_sold}
+                />
+              </PaymentsTypesContainer>
+              <FinishContainer>
+                <Button onClick={() => registerSale()}>Registrar</Button>
+              </FinishContainer>
+            </PaymentsContainer>
+          </Content>
+        ))}
+      </RightSide>
     </Container>
   )
 }

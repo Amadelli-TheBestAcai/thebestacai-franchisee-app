@@ -1,45 +1,26 @@
 import styled from 'styled-components'
+import { HotKeys } from 'react-hotkeys'
 
-export const Container = styled.div`
+export const Container = styled(HotKeys)`
+  display: flex;
   width: 100%;
   height: 100%;
-  background: blue;
-  overflow: scroll;
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  }
 `
-
-export const TopSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 13vh;
-  background: black;
-`
-
-export const MainContainer = styled.div`
-  display: flex;
-  height: 80vh;
-`
-
 export const LeftSide = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  width: 30vw;
+  height: 100%;
+  width: 25%;
 `
 
 export const BalanceContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 40vh;
+  height: 30%;
 `
 
 export const ProductsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 60vh;
+  height: 70%;
   overflow-y: scroll;
   ::-webkit-scrollbar {
     width: 0px;
@@ -48,16 +29,14 @@ export const ProductsContainer = styled.div`
 `
 
 export const RightSide = styled.div`
-  display: flex;
-  width: 70vw;
-  flex-grow: 1;
+  height: 100%;
+  width: 75%;
 `
 
 export const Content = styled.div`
   display: flex;
-  height: 80vh;
-  width: 100%;
   flex-direction: column;
+  height: 100%;
 `
 
 export const ItemsContainer = styled.div`
@@ -83,12 +62,8 @@ export const FinishContainer = styled.div`
   height: 100%;
 `
 
-export const Footer = styled.div`
-  display: flex;
-  height: 8vh;
-`
 export const MenuContainer = styled.div`
   display: flex;
-  height: 85vh;
+  height: 85%;
   width: 5vw;
 `
