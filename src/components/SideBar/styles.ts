@@ -17,15 +17,27 @@ export const Container = styled.div`
   background: black;
 `
 
-const IconCSS = css`
-  color: orange;
+export const IconContainer = styled.div`
+  background: black;
   width: 5vw;
-  height: 25px;
+  height: 40px;
   cursor: pointer;
-  margin: 9px 0 9px 0;
+  margin: 12px 0 12px 0;
+  display: flex;
+  align-items: center;
 
   :hover {
     background: var(--primary-orange);
+    color: black;
+    transition: 0.5s;
+  }
+`
+
+const IconCSS = css`
+  color: var(--primary-orange);
+  width: 5vw;
+  height: 25px;
+  :hover {
     color: black;
   }
 `

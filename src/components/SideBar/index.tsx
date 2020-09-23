@@ -10,6 +10,7 @@ import {
   Graph,
   Money,
   Home,
+  IconContainer,
 } from './styles'
 
 type IProps = RouteComponentProps
@@ -19,13 +20,27 @@ const SideBar: React.FC<IProps> = ({ history }) => {
 
   return (
     <Container>
-      <Home onClick={() => redirect('/home')} />
-      <Control onClick={() => redirect('/control')} />
-      <Cash onClick={() => redirect('/cashier')} />
-      <Delivery onClick={() => redirect('/delivery')} />
-      <ArrowIcon />
-      <Graph />
-      <Money />
+      <IconContainer>
+        <Home onClick={() => redirect('/home')} />
+      </IconContainer>
+      <IconContainer>
+        <Control onClick={() => redirect('/control')} />
+      </IconContainer>
+      <IconContainer>
+        <Cash onClick={() => redirect('/cashier')} />
+      </IconContainer>
+      <IconContainer>
+        <Delivery onClick={() => redirect('/delivery')} />
+      </IconContainer>
+      <IconContainer>
+        <ArrowIcon />
+      </IconContainer>
+      <IconContainer>
+        <Graph />
+      </IconContainer>
+      <IconContainer>
+        <Money />
+      </IconContainer>
     </Container>
   )
 }
