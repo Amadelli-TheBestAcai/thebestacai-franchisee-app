@@ -8,7 +8,7 @@ export const Logo = styled.img`
   position: absolute;
   width: 50vw;
   height: 10vh;
-  margin: 10px 0 10px 95px;
+  margin: 10px 0 10px 50px;
 
   background: white;
 `

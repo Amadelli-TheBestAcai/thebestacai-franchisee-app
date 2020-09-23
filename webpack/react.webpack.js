@@ -6,7 +6,7 @@ const rootPath = path.resolve(__dirname, '..')
 module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-    mainFields: ['main', 'module', 'browser']
+    mainFields: ['main', 'module', 'browser'],
   },
   entry: path.resolve(rootPath, 'src', 'App.tsx'),
   target: 'electron-renderer',
@@ -19,24 +19,22 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-                '@babel/preset-env',
-                '@babel/preset-react'
-            ],
-            plugins: [
-                '@babel/transform-runtime'
-            ]
-          }
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: ['@babel/transform-runtime'],
+          },
         },
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ]
-      }
-    ]
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(jpg|png)$/,
+        use: {
+          loader: 'url-loader',
+        },
+      },
+    ],
   },
   devServer: {
     contentBase: path.join(rootPath, 'dist/renderer'),
@@ -44,14 +42,12 @@ module.exports = {
     compress: true,
     hot: true,
     port: 4000,
-    publicPath: '/'
+    publicPath: '/',
   },
   output: {
     path: path.resolve(rootPath, 'dist/renderer'),
     filename: 'js/[name].js',
-    publicPath: './'
+    publicPath: './',
   },
-  plugins: [
-    new HtmlWebpackPlugin()
-  ]
+  plugins: [new HtmlWebpackPlugin()],
 }
