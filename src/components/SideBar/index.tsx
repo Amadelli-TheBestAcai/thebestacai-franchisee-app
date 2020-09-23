@@ -9,7 +9,7 @@ import {
   Money,
 } from './styles'
 
-const MenuBar: React.FC = () => {
+const SideBar: React.FC = () => {
   return (
     <Container>
       <Commands />
@@ -22,4 +22,4 @@ const MenuBar: React.FC = () => {
   )
 }
 
-export default MenuBar
+export default SideBar

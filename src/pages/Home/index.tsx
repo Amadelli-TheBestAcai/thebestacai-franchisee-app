@@ -13,7 +13,7 @@ import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
 
 import Header from '../../components/Header'
-import MenuBar from '../../components/MenuBar'
+import MenuBar from '../../components/SideBar'
 
 import { Button, message } from 'antd'
 import {
