@@ -12,9 +12,6 @@ import { PaymentType } from '../../models/enums/paymentType'
 import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
 
-import Header from '../../components/Header'
-import MenuBar from '../../components/SideBar'
-
 import { Button, message } from 'antd'
 import {
   Container,
@@ -147,13 +144,6 @@ const Home: React.FC = () => {
   return (
     <HotKeys keyMap={keyMap} handlers={handlers}>
       <Container>
-        <TopSide>
-          <Header />
-        </TopSide>
-        <MenuContainer>
-          <MenuBar />
-        </MenuContainer>
-
         {/* <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>

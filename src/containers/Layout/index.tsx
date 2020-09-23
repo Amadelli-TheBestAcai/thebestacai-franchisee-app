@@ -15,9 +15,13 @@ import {
 const Layout: React.FC = ({ children }) => {
   return (
     <Container>
-      <HeaderContainer></HeaderContainer>
+      <HeaderContainer>
+        <Header />
+      </HeaderContainer>
       <MainContainer>
-        <SideBarContainer></SideBarContainer>
+        <SideBarContainer>
+          <SideBar />
+        </SideBarContainer>
         <Content></Content>
       </MainContainer>
       <Footer></Footer>

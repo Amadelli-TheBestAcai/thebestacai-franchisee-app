@@ -8,6 +8,7 @@ export const Container = styled.div`
 export const HeaderContainer = styled.div`
   height: 12vh;
   width: 100vw;
+  background: black;
 `
 
 export const MainContainer = styled.div`
@@ -19,12 +20,13 @@ export const MainContainer = styled.div`
 export const SideBarContainer = styled.div`
   height: 85vh;
   width: 5vw;
+  background: black;
 `
 
 export const Content = styled.div`
   display: flex;
-  height: 85vh;
-  width: 95vw;
+  height: 100%;
+  width: 95%;
   overflow: scroll;
   ::-webkit-scrollbar {
     width: 0px;
@@ -36,4 +38,5 @@ export const Footer = styled.div`
   display: flex;
   height: 3vh;
   width: 100vw;
+  background: black;
 `

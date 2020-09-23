@@ -9,12 +9,11 @@ import {
 } from '../../styles/Icons'
 
 export const Container = styled.div`
-  width: 100vw;
-  height: 85vh;
-  background: black;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  height: 100%;
+  background: black;
 `
 
 const IconCSS = css`
