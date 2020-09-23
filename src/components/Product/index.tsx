@@ -1,4 +1,5 @@
 import React from 'react'
+import { PlusOutlined } from '@ant-design/icons'
 
 import { Product as ProductModel } from '../../models/product'
 
@@ -13,9 +14,6 @@ const Product: React.FC<IProps> = ({ handleItem, product }) => {
   const { name, price_unit, category } = product
   return (
     <Container>
-      <Column span={6}>
-        <Description>{category?.name}</Description>
-      </Column>
       <Column span={8}>
         <Description>{name}</Description>
       </Column>
@@ -23,8 +21,8 @@ const Product: React.FC<IProps> = ({ handleItem, product }) => {
         <Description>{(+price_unit).toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={4}>
-        <Button shape="circle" onClick={() => handleItem(product)}>
-          +
+        <Button>
+          <PlusOutlined />
         </Button>
       </Column>
     </Container>

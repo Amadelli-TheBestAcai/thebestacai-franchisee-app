@@ -7,6 +7,7 @@ export const Container = styled.div`
   flex-direction: column;
   flex-grow: 1;
   justify-content: flex-start;
+  background: #f4f4f4;
 `
 
 export const LoadingContainer = styled.div`
