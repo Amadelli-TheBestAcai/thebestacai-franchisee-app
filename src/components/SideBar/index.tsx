@@ -3,12 +3,13 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 
 import {
   Container,
-  Commands,
+  Control,
   Cash,
   Delivery,
   ArrowIcon,
   Graph,
   Money,
+  Home,
 } from './styles'
 
 type IProps = RouteComponentProps
@@ -18,9 +19,10 @@ const SideBar: React.FC<IProps> = ({ history }) => {
 
   return (
     <Container>
-      <Commands />
+      <Home onClick={() => redirect('/home')} />
+      <Control onClick={() => redirect('/control')} />
       <Cash onClick={() => redirect('/cashier')} />
-      <Delivery />
+      <Delivery onClick={() => redirect('/delivery')} />
       <ArrowIcon />
       <Graph />
       <Money />

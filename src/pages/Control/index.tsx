@@ -4,12 +4,12 @@ import RouterDescription from '../../components/RouterDescription'
 
 import { Container } from './styles'
 
-const Cashier: React.FC = () => {
+const Control: React.FC = () => {
   return (
     <Container>
-      <RouterDescription description="Caixas" />
+      <RouterDescription description="Comandas" />
     </Container>
   )
 }
 
-export default Cashier
+export default Control

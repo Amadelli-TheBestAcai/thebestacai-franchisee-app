@@ -6,6 +6,7 @@ import {
   ArrowLeftRight,
   BarChart,
   Cashapp,
+  HomeAlt,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -28,7 +29,7 @@ const IconCSS = css`
     color: black;
   }
 `
-export const Commands = styled(ListOl)`
+export const Control = styled(ListOl)`
   ${IconCSS}
 `
 export const Cash = styled(PointOfSale)`
@@ -44,5 +45,9 @@ export const Graph = styled(BarChart)`
   ${IconCSS}
 `
 export const Money = styled(Cashapp)`
+  ${IconCSS}
+`
+
+export const Home = styled(HomeAlt)`
   ${IconCSS}
 `
