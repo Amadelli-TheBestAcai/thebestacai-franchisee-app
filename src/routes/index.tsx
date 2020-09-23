@@ -3,6 +3,7 @@ import { Switch, Route, RouteProps } from 'react-router-dom'
 import Layout from '../containers/Layout'
 
 import Home from '../pages/Home'
+import Cashier from '../pages/Cashier'
 import Login from '../pages/Login'
 
 interface RouteWithLayoutProps extends RouteProps {
@@ -26,6 +27,7 @@ const RouteWithLayout = (props: RouteWithLayoutProps) => {
 const Routes = () => (
   <Switch>
     <RouteWithLayout exact path="/home" component={Home} />
+    <RouteWithLayout exact path="/cashier" component={Cashier} />
     <Route path="*" component={Login} />
   </Switch>
 )
