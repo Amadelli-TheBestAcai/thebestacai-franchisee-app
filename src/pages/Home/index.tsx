@@ -3,14 +3,17 @@ import { HotKeys } from 'react-hotkeys'
 import { v4 as uuidv4 } from 'uuid'
 import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
+
 import { Sale } from '../../models/sale'
 import { SalesTypes } from '../../models/enums/salesTypes'
-
 import { Product } from '../../models/product'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
+
+import Header from '../../components/Header'
+
 import { Button, message } from 'antd'
 import {
   Container,
@@ -143,9 +146,9 @@ const Home: React.FC = () => {
     <HotKeys keyMap={keyMap} handlers={handlers}>
       <Container>
         <TopSide>
-          <button onClick={() => console.log(sales)}>check</button>
+          <Header />
         </TopSide>
-        <MainContainer>
+        {/* <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>
             <ProductsContainer>
@@ -177,7 +180,7 @@ const Home: React.FC = () => {
             ))}
           </RightSide>
         </MainContainer>
-        <Footer></Footer>
+        <Footer></Footer> */}
       </Container>
     </HotKeys>
   )
