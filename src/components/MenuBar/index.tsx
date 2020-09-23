@@ -1,9 +1,25 @@
 import React from 'react'
-
-// import { Container } from './styles';
+import {
+  Container,
+  Commands,
+  Cash,
+  Delivery,
+  ArrowIcon,
+  Graph,
+  Money,
+} from './styles'
 
 const MenuBar: React.FC = () => {
-  return <div />
+  return (
+    <Container>
+      <Commands />
+      <Cash />
+      <Delivery />
+      <ArrowIcon />
+      <Graph />
+      <Money />
+    </Container>
+  )
 }
 
 export default MenuBar

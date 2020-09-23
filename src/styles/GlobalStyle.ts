@@ -10,10 +10,11 @@ export const GlobalStyle = createGlobalStyle`
   body {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 16px;
-    background: #fafafa;
+    background: #F4F4F4;
   }
 
   :root {
-    --hover: #f2b74945
+    --primary-orange: #FF9D0A;
+
   }
 `

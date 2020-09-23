@@ -13,6 +13,7 @@ import Products from '../../containers/Products'
 import Payments from '../../containers/Payments'
 
 import Header from '../../components/Header'
+import MenuBar from '../../components/MenuBar'
 
 import { Button, message } from 'antd'
 import {
@@ -29,6 +30,7 @@ import {
   PaymentsContainer,
   PaymentsTypesContainer,
   FinishContainer,
+  MenuContainer,
 } from './styles'
 
 const Home: React.FC = () => {
@@ -148,6 +150,10 @@ const Home: React.FC = () => {
         <TopSide>
           <Header />
         </TopSide>
+        <MenuContainer>
+          <MenuBar />
+        </MenuContainer>
+
         {/* <MainContainer>
           <LeftSide>
             <BalanceContainer></BalanceContainer>

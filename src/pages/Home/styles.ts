@@ -81,3 +81,8 @@ export const Footer = styled.div`
   display: flex;
   height: 8vh;
 `
+export const MenuContainer = styled.div`
+  display: flex;
+  height: 85vh;
+  width: 5vw;
+`
