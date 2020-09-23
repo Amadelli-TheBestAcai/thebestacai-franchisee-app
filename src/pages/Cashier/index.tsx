@@ -1,9 +1,15 @@
 import React from 'react'
 
-// import { Container } from './styles';
+import RouterDescription from '../../components/RouterDescription'
+
+import { Container } from './styles'
 
 const Cashier: React.FC = () => {
-  return <div />
+  return (
+    <Container>
+      <RouterDescription description="Caixa" />
+    </Container>
+  )
 }
 
 export default Cashier

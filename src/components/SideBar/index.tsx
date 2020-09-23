@@ -19,7 +19,7 @@ const SideBar: React.FC<IProps> = ({ history }) => {
   return (
     <Container>
       <Commands />
-      <Cash onClick={() => redirect('/cash')} />
+      <Cash onClick={() => redirect('/cashier')} />
       <Delivery />
       <ArrowIcon />
       <Graph />
