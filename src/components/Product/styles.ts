@@ -4,8 +4,10 @@ import { Row, Col, Button as ButtonAnt, Modal as ModalAnt } from 'antd'
 
 export const Container = styled(Row)`
   width: 100%;
-  margin-bottom: 10px;
+  padding: 2% 0;
   justify-content: space-evenly;
+  border-bottom: 1px solid black;
+  background: white;
 `
 
 export const Column = styled(Col)`
