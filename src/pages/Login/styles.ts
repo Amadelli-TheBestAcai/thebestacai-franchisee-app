@@ -75,15 +75,15 @@ export const Password = styled(InputAnt.Password)`
 export const Button = styled(ButtonAnt)`
   background: var(--primary-orange);
   border: 1px solid var(--primary-orange);
-  color: white;
+  color: black;
   font-weight: 700;
   border-radius: 8px;
 
   :hover {
-    background: #f19131;
-    color: white;
-    border: 1px solid var(--primary-orange);
+    background: var(--hover-bottomLogin);
+    color: var(--primary-orange);
     transition: 0.5s;
+    border: 1px solid var(--hover-bottomLogin);
   }
 `
 
@@ -93,7 +93,13 @@ export const ButtonSecondary = styled(ButtonAnt)`
   color: var(--primary-orange);
   font-weight: 700;
   border-radius: 8px;
-  margin-top
+
+  :hover {
+    background: var(--hover-bottomLogin);
+    color: var(--primary-orange);
+    transition: 0.5s;
+    border: 1px solid var(--hover-bottomLogin);
+  }
 `
 
 export const FormItem = styled(FormAnt.Item)`

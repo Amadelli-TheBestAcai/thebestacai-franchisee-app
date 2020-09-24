@@ -19,6 +19,7 @@ export const GlobalStyle = createGlobalStyle`
     --button-add: #007C05;
     /* --hoverButton-add:  */
     --button-remove: #FF0000;
+    --hover-bottomLogin: #000000;
 
 
   }
