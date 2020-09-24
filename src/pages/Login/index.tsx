@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form, Input, Button } from 'antd'
-import { Container } from './styles'
 import { ipcRenderer } from 'electron'
 import { isOnline } from '../../helpers/InternetConnection'
+import { Container, FormContainer, Logo, Description } from './styles'
+import ImageLogo from '../../assets/img/logo-login.png'
 
 type IProps = RouteComponentProps
 
@@ -32,40 +33,57 @@ const Login: React.FC<IProps> = ({ history }) => {
 
   return (
     <Container>
-      <Form onFinish={onFinish} layout="vertical">
-        <Form.Item
-          label="Usuário"
-          name="username"
-          rules={[{ required: true, message: 'Digite o usuário!' }]}
-        >
-          <Input
+      <FormContainer>
+        <Logo src={ImageLogo} />
+        <Description>
+          <h1>Gestor de Vendas</h1>
+          <h3>Insira seu usuário e senha para se conectar</h3>
+        </Description>
+        <Form onFinish={onFinish} layout="vertical">
+          <Form.Item
+            label="Usuário"
             name="username"
-            placeholder="Digite seu usuário"
-            onChange={(event) => handleState(event)}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Senha"
-          name="password"
-          rules={[{ required: true, message: 'Digite a senha!' }]}
-        >
-          <Input.Password
-            name="password"
-            placeholder="Digite sua senha"
-            onChange={(event) => handleState(event)}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-            style={{ width: '100%', height: '40px' }}
+            rules={[{ required: true, message: 'Digite o usuário!' }]}
           >
-            Entrar
-          </Button>
-        </Form.Item>
-      </Form>
+            <Input
+              name="username"
+              placeholder="Digite seu usuário"
+              onChange={(event) => handleState(event)}
+            />
+          </Form.Item>
+          <Form.Item
+            label="Senha"
+            name="password"
+            rules={[{ required: true, message: 'Digite a senha!' }]}
+          >
+            <Input.Password
+              name="password"
+              placeholder="Digite sua senha"
+              onChange={(event) => handleState(event)}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              style={{ width: '100%', height: '40px' }}
+            >
+              ENTRAR
+            </Button>
+          </Form.Item>
+          {/* <Form.Item>
+            <Button
+              type="default"
+              htmlType="submit"
+              loading={loading}
+              style={{ width: '100%', height: '40px' }}
+            >
+              ESTOU COM PROBLEMAS!
+            </Button>
+          </Form.Item> */}
+        </Form>
+      </FormContainer>
     </Container>
   )
 }
