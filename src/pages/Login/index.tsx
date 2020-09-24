@@ -1,9 +1,19 @@
 import React, { useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { message, Form, Input, Button } from 'antd'
+import { message, Form } from 'antd'
 import { ipcRenderer } from 'electron'
 import { isOnline } from '../../helpers/InternetConnection'
-import { Container, FormContainer, Logo, Description } from './styles'
+import {
+  Container,
+  FormContainer,
+  Logo,
+  Description,
+  Button,
+  Input,
+  Password,
+  FormItem,
+  ButtonSecondary,
+} from './styles'
 import ImageLogo from '../../assets/img/logo-login.png'
 
 type IProps = RouteComponentProps
@@ -40,8 +50,9 @@ const Login: React.FC<IProps> = ({ history }) => {
           <h3>Insira seu usuário e senha para se conectar</h3>
         </Description>
         <Form onFinish={onFinish} layout="vertical">
-          <Form.Item
+          <FormItem
             label="Usuário"
+            style={{ fontSize: '14px', fontWeight: '700' }}
             name="username"
             rules={[{ required: true, message: 'Digite o usuário!' }]}
           >
@@ -50,38 +61,37 @@ const Login: React.FC<IProps> = ({ history }) => {
               placeholder="Digite seu usuário"
               onChange={(event) => handleState(event)}
             />
-          </Form.Item>
-          <Form.Item
+          </FormItem>
+          <FormItem
             label="Senha"
+            style={{ fontSize: '14px', fontWeight: '700' }}
             name="password"
             rules={[{ required: true, message: 'Digite a senha!' }]}
           >
-            <Input.Password
+            <Password
               name="password"
               placeholder="Digite sua senha"
               onChange={(event) => handleState(event)}
             />
-          </Form.Item>
-          <Form.Item>
+          </FormItem>
+          <FormItem>
             <Button
               type="primary"
               htmlType="submit"
               loading={loading}
-              style={{ width: '100%', height: '40px' }}
+              style={{ width: '100%', height: '37px' }}
             >
               ENTRAR
             </Button>
-          </Form.Item>
-          {/* <Form.Item>
-            <Button
+          </FormItem>
+          <FormItem>
+            <ButtonSecondary
               type="default"
-              htmlType="submit"
-              loading={loading}
-              style={{ width: '100%', height: '40px' }}
+              style={{ width: '100%', height: '37px' }}
             >
               ESTOU COM PROBLEMAS!
-            </Button>
-          </Form.Item> */}
+            </ButtonSecondary>
+          </FormItem>
         </Form>
       </FormContainer>
     </Container>
