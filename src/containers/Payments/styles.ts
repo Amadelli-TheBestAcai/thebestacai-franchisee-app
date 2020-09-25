@@ -20,9 +20,9 @@ export const PaymentsList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 13vh;
+  max-height: 11vh;
   flex-grow: 1;
-  overflow-y: scroll;
+  overflow: scroll;
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
