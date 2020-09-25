@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, screen } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
 import installExtension, {
@@ -10,9 +10,10 @@ import { inicializeControllers } from './src'
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow() {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize
   mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 700,
+    width,
+    height,
     backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: true,
