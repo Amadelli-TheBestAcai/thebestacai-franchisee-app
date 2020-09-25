@@ -42,6 +42,16 @@ class ItemsService {
   async deleteBySale(sale_id: string): Promise<void> {
     await ItemsRepository.deleteBySale(sale_id)
   }
+
+  async decressQuantity(id: number): Promise<void> {
+    const item = await ItemsRepository.findById(id)
+    const newQuantity = +item.quantity - 1
+    if (newQuantity === 0) {
+      await ItemsRepository.deleteById(id)
+    } else {
+      await ItemsRepository.update(id, { quantity: newQuantity })
+    }
+  }
 }
 
 export default new ItemsService()

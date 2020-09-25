@@ -1,12 +1,13 @@
 import knex from '../database'
 import { Item } from '../models/Item'
 import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
+import { UpdateItemDTO } from '../models/dtos/items/UpdateItemDTO'
 class ItemsRepository {
   async create(item: CreateItemDTO): Promise<void> {
     return await knex('items').insert(item)
   }
 
-  async update(id: number, payload: CreateItemDTO): Promise<void> {
+  async update(id: number, payload: UpdateItemDTO): Promise<void> {
     await knex('items').where({ id }).update(payload)
   }
 
@@ -24,6 +25,15 @@ class ItemsRepository {
 
   async deleteBySale(sale_id: string): Promise<void> {
     await knex('items').where({ sale_id }).del()
+  }
+
+  async findById(id: number): Promise<Item> {
+    const items = await knex('items').where({ id })
+    return items[0]
+  }
+
+  async deleteById(id: number): Promise<void> {
+    await knex('items').where({ id }).del()
   }
 }
 
