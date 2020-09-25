@@ -1,5 +1,6 @@
 import knex from '../database'
 import { Sale } from '../models/Sale'
+import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 class SalesRepository {
   async create(sales: Sale): Promise<void> {
     return await knex('sales').insert(sales)
@@ -9,8 +10,17 @@ class SalesRepository {
     await knex('sales').where({ id }).del()
   }
 
-  async getAll(): Promise<Sale[]> {
-    return await knex('sales')
+  async getCurrentSale(): Promise<CreateSaleDTO> {
+    const sales = await knex('sales').where({ is_current: true })
+    return sales[0]
+  }
+
+  async getToIntegrate(): Promise<Sale[]> {
+    return await knex('sales').where({ to_integrate: true })
+  }
+
+  async update(id: string, payload: CreateSaleDTO): Promise<void> {
+    await knex('sales').where({ id }).update(payload)
   }
 }
 

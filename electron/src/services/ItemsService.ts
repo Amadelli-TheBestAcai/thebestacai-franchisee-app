@@ -1,10 +1,23 @@
 import ItemsRepository from '../repositories/ItemsRepository'
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
+import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
 class ItemsService {
-  async create(items, sale_id) {
-    const itemsWithSaleId = items.map((item) => ({ ...item, sale_id }))
-    return await ItemsRepository.create(itemsWithSaleId)
+  async createOrUpdate(item: CreateItemDTO, sale_id: string): Promise<void> {
+    const oldItem = await ItemsRepository.getByProductAndSale(
+      item.product_id,
+      sale_id
+    )
+    if (oldItem) {
+      const payload: CreateItemDTO = {
+        ...oldItem,
+        quantity: +oldItem.quantity + 1,
+      }
+      await ItemsRepository.update(oldItem.id, payload)
+    } else {
+      const payload: CreateItemDTO = { ...item, quantity: 1, sale_id }
+      await ItemsRepository.create(payload)
+    }
   }
 
   async getBySale(sale_id: string): Promise<Item[]> {

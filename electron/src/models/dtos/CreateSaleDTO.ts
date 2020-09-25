@@ -6,6 +6,6 @@ export interface CreateSaleDTO {
   change_amount: number
   type: string
   discount: number
-  items: Payment
-  payments: Item
+  to_integrate: boolean
+  is_current: boolean
 }

@@ -7,5 +7,6 @@ export const inicializeControllers = (): void => {
   require('./controllers/UserController')
   require('./controllers/ProductsController')
   require('./controllers/CashierController')
+  require('./controllers/ItemController')
 }
 export default knex

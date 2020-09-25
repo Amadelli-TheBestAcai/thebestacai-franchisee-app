@@ -1,14 +1,9 @@
 import { ipcMain } from 'electron'
 import SalesService from '../services/SalesService'
 
-ipcMain.on('sale:create', async (event, sale) => {
-  try {
-    await SalesService.create(sale)
-    event.reply('sale:create', true)
-  } catch (err) {
-    console.error(err)
-    event.reply('user:login', false)
-  }
+ipcMain.on('sale:getCurrent', async (event) => {
+  const sale = await SalesService.getCurrentSale()
+  event.returnValue = sale
 })
 
 ipcMain.on('sale:integrate', async (event) => {
@@ -17,4 +12,10 @@ ipcMain.on('sale:integrate', async (event) => {
   } catch (err) {
     console.error(err)
   }
+})
+
+ipcMain.on('sale:finish', async (event, sale) => {
+  await SalesService.finishSale(sale)
+  const newSale = await SalesService.getCurrentSale()
+  event.reply('sale:finish:response', newSale)
 })

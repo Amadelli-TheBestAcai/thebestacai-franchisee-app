@@ -27,57 +27,48 @@ import {
 } from './styles'
 
 const Home: React.FC = () => {
-  const [sales, setSales] = useState<Sale[]>([
-    {
-      id: uuidv4(),
-      type: SalesTypes[SalesTypes.STORE],
-      total_sold: 0,
-      change_amount: 0,
-      discount: 0,
-      items: [],
-      payments: [],
-    },
-  ])
-  const [currentSale, setCurrentSale] = useState<string>(sales[0].id)
+  const [sale, setSale] = useState<Sale>()
   const [currentPayment, setCurrentPayment] = useState(0)
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
 
+  // useEffect(() => {
+  //   const integrateSale = async () => {
+  //     while (true) {
+  //       await sleep(30000)
+  //       ipcRenderer.send('sale:integrate')
+  //     }
+  //   }
+  //   integrateSale()
+  // }, [])
+
   useEffect(() => {
-    const integrateSale = async () => {
-      while (true) {
-        await sleep(30000)
-        ipcRenderer.send('sale:integrate')
-      }
-    }
-    integrateSale()
+    setSale(ipcRenderer.sendSync('sale:getCurrent'))
   }, [])
 
-  const handleItem = (item: Product): void => {
-    const sale = sales.find((sale) => sale.id === currentSale)
-    sale.total_sold = sale.total_sold + +item.price_unit
-    sale.items = [...sale.items, { product_id: item.product_id, quantity: 1 }]
-    const salesWithoutCurrent = sales.filter((sale) => sale.id !== currentSale)
-    const newSales = [sale, ...salesWithoutCurrent]
-    setSales(newSales)
+  const addItem = ({ product_id }: Product): void => {
+    console.log(product_id)
+    ipcRenderer.send('item:add', { sale: sale.id, product_id })
   }
 
   const handleClosePayment = (): void => {
-    const sale = sales.find((sale) => sale.id === currentSale)
-    sale.payments = [
-      ...sale.payments,
-      { type: PaymentType[paymentType], amount: currentPayment },
-    ]
-    const salesWithoutCurrent = sales.filter((sale) => sale.id !== currentSale)
-    const newSales = [sale, ...salesWithoutCurrent]
-    setSales(newSales)
-    setPaymentModal(!paymentModal)
+    console.log('asdf')
   }
 
   const handleOpenPayment = (type: number, defaultValue: number): void => {
-    setCurrentPayment(defaultValue)
-    setPaymentType(type)
-    setPaymentModal(!paymentModal)
+    console.log('asdf')
+  }
+
+  const getTotalSoldOnSale = (): number => {
+    return 1
+  }
+
+  const registerSale = (): void => {
+    ipcRenderer.send('sale:finish', sale)
+    ipcRenderer.once('sale:finish:response', (event, newSale) => {
+      message.success('Venda salva com sucesso')
+      setSale(newSale)
+    })
   }
 
   const keyMap = {
@@ -85,47 +76,6 @@ const Home: React.FC = () => {
     C_CREDIT: 's',
     C_DEBIT: 'd',
     TICKET: 't',
-  }
-
-  const getTotalSoldOnSale = (): number =>
-    sales.find((sale) => sale.id === currentSale).total_sold
-
-  const getCurrentSale = (): Sale =>
-    sales.find((sale) => sale.id === currentSale)
-
-  const removeCurrentSale = (saleToRemove: string): void => {
-    const newSales = sales.filter((sale) => sale.id !== saleToRemove)
-    if (!newSales.length) {
-      createNewSale()
-      return setSales((oldSales) =>
-        oldSales.filter((sale) => sale.id !== saleToRemove)
-      )
-    }
-    setCurrentSale(newSales[0].id)
-    return setSales(newSales)
-  }
-
-  const createNewSale = (): void => {
-    const newSale = {
-      id: uuidv4(),
-      type: SalesTypes[SalesTypes.STORE],
-      total_sold: 0,
-      change_amount: 0,
-      discount: 0,
-      items: [],
-      payments: [],
-    }
-    console.log([newSale, ...sales])
-
-    setSales([newSale, ...sales])
-    return setCurrentSale(newSale.id)
-  }
-
-  const registerSale = (): void => {
-    const { total_sold, ...sale } = getCurrentSale()
-    removeCurrentSale(sale.id)
-    ipcRenderer.send('sale:create', sale)
-    message.success('Venda cadastrada com sucesso')
   }
 
   const handlers = {
@@ -141,32 +91,30 @@ const Home: React.FC = () => {
       <LeftSide>
         <BalanceContainer></BalanceContainer>
         <ProductsContainer>
-          <Products handleItem={handleItem} />
+          <Products handleItem={addItem} />
         </ProductsContainer>
       </LeftSide>
       <RightSide>
-        {sales.map((sale) => (
-          <Content key={sale.id}>
-            <ItemsContainer></ItemsContainer>
-            <PaymentsContainer>
-              <PaymentsTypesContainer>
-                <Payments
-                  payments={sale.payments}
-                  handleOpenPayment={handleOpenPayment}
-                  handleClosePayment={handleClosePayment}
-                  currentPayment={currentPayment}
-                  setCurrentPayment={setCurrentPayment}
-                  modalState={paymentModal}
-                  setModalState={setPaymentModal}
-                  totalSale={sale.total_sold}
-                />
-              </PaymentsTypesContainer>
-              <FinishContainer>
-                <Button onClick={() => registerSale()}>Registrar</Button>
-              </FinishContainer>
-            </PaymentsContainer>
-          </Content>
-        ))}
+        <Content>
+          <ItemsContainer></ItemsContainer>
+          <PaymentsContainer>
+            <PaymentsTypesContainer>
+              {/* <Payments
+                payments={sale.payments}
+                handleOpenPayment={handleOpenPayment}
+                handleClosePayment={handleClosePayment}
+                currentPayment={currentPayment}
+                setCurrentPayment={setCurrentPayment}
+                modalState={paymentModal}
+                setModalState={setPaymentModal}
+                totalSale={sale.total_sold}
+              /> */}
+            </PaymentsTypesContainer>
+            <FinishContainer>
+              <Button onClick={() => registerSale()}>Registrar</Button>
+            </FinishContainer>
+          </PaymentsContainer>
+        </Content>
       </RightSide>
     </Container>
   )

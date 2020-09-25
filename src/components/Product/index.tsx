@@ -21,7 +21,7 @@ const Product: React.FC<IProps> = ({ handleItem, product }) => {
         <Description>{(+price_unit).toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={4}>
-        <Button>
+        <Button onClick={() => handleItem(product)}>
           <PlusOutlined />
         </Button>
       </Column>

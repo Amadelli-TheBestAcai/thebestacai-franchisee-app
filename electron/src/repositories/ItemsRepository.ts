@@ -2,8 +2,20 @@ import knex from '../database'
 import { Item } from '../models/Item'
 import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
 class ItemsRepository {
-  async create(items: CreateItemDTO[]): Promise<void> {
-    return await knex('items').insert(items)
+  async create(item: CreateItemDTO): Promise<void> {
+    return await knex('items').insert(item)
+  }
+
+  async update(id: number, payload: CreateItemDTO): Promise<void> {
+    await knex('items').where({ id }).update(payload)
+  }
+
+  async getByProductAndSale(
+    product_id: number,
+    sale_id: string
+  ): Promise<Item> {
+    const items = await knex('items').where({ product_id, sale_id })
+    return items[0]
   }
 
   async getBySale(sale_id: string): Promise<Item[]> {
