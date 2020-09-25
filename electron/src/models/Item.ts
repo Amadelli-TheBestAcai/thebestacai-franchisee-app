@@ -3,4 +3,5 @@ export interface Item {
   sale_id: string
   product_id: number
   quantity: number
+  total: number
 }

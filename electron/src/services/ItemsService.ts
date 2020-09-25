@@ -11,6 +11,7 @@ class ItemsService {
     if (oldItem) {
       const payload: CreateItemDTO = {
         ...oldItem,
+        total: +oldItem.total + +item.total,
         quantity: +oldItem.quantity + 1,
       }
       await ItemsRepository.update(oldItem.id, payload)
@@ -22,6 +23,12 @@ class ItemsService {
 
   async getBySale(sale_id: string): Promise<Item[]> {
     return await ItemsRepository.getBySale(sale_id)
+  }
+
+  async getTotalBySale(sale_id: string): Promise<number> {
+    const items = await ItemsRepository.getBySale(sale_id)
+    const total = items.reduce((total, item) => total + +item.total, 0)
+    return total
   }
 
   async getItemsToIntegrate(sale_id: string): Promise<IntegrateItemDTO[]> {

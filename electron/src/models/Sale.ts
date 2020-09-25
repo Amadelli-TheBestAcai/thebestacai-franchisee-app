@@ -3,4 +3,6 @@ export interface Sale {
   change_amount: number
   type: string
   discount: number
+  to_integrate: boolean
+  is_current: boolean
 }

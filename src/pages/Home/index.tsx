@@ -6,6 +6,7 @@ import { ipcRenderer } from 'electron'
 import { Sale } from '../../models/sale'
 import { SalesTypes } from '../../models/enums/salesTypes'
 import { Product } from '../../models/product'
+import { Item } from '../../models/saleItem'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
@@ -28,27 +29,42 @@ import {
 
 const Home: React.FC = () => {
   const [sale, setSale] = useState<Sale>()
+  const [items, setItems] = useState<Item[]>([])
+  const [totalSold, setTotalSold] = useState(0)
   const [currentPayment, setCurrentPayment] = useState(0)
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
 
-  // useEffect(() => {
-  //   const integrateSale = async () => {
-  //     while (true) {
-  //       await sleep(30000)
-  //       ipcRenderer.send('sale:integrate')
-  //     }
-  //   }
-  //   integrateSale()
-  // }, [])
-
   useEffect(() => {
-    setSale(ipcRenderer.sendSync('sale:getCurrent'))
+    const integrateSale = async () => {
+      while (true) {
+        await sleep(30000)
+        // ipcRenderer.send('sale:integrate')
+      }
+    }
+    integrateSale()
   }, [])
 
-  const addItem = ({ product_id }: Product): void => {
+  useEffect(() => {
+    ipcRenderer.send('sale:getCurrent')
+    ipcRenderer.once('sale:getCurrent:response', (event, sale) => {
+      setSale(sale)
+      setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
+      setItems(ipcRenderer.sendSync('item:get', sale.id))
+    })
+  }, [])
+
+  const addItem = ({ product_id, price_unit }: Product): void => {
     console.log(product_id)
-    ipcRenderer.send('item:add', { sale: sale.id, product_id })
+    ipcRenderer.send('item:add', {
+      sale: sale.id,
+      product_id,
+      total: price_unit,
+    })
+    ipcRenderer.once('item:add:response', (event, { total, items }) => {
+      setTotalSold(total)
+      setItems(items)
+    })
   }
 
   const handleClosePayment = (): void => {
@@ -67,6 +83,8 @@ const Home: React.FC = () => {
     ipcRenderer.send('sale:finish', sale)
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
       message.success('Venda salva com sucesso')
+      setItems([])
+      setTotalSold(0)
       setSale(newSale)
     })
   }

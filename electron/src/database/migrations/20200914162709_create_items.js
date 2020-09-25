@@ -4,6 +4,7 @@ exports.up = async (knex) =>
     table.string('sale_id')
     table.integer('product_id')
     table.decimal('quantity', 8, 2)
+    table.decimal('total', 8, 2)
   })
 
 exports.down = async (knex) => knex.schema.dropTable('items')
