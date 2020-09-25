@@ -13,22 +13,14 @@ interface IProps {
 
 const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
   const [products, setProducts] = useState<ProductModel[]>([])
-  const [loading, setLoading] = useState(false)
+
   useEffect(() => {
-    const fechProducts = () => {
-      setLoading(true)
-      ipcRenderer.send('products:get', isOnline())
-    }
-    fechProducts()
+    setProducts(ipcRenderer.sendSync('products:get', isOnline()))
   }, [])
 
-  ipcRenderer.on('products:get', (event, products) => {
-    setProducts(products)
-    setLoading(false)
-  })
   return (
     <Container>
-      {loading ? (
+      {!products.length ? (
         <LoadingContainer>
           <Spin />
         </LoadingContainer>
