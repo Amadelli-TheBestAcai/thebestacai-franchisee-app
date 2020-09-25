@@ -42,6 +42,7 @@ export const Content = styled.div`
 export const ItemsContainer = styled.div`
   display: flex;
   height: 70%;
+  background: pink;
 `
 
 export const PaymentsContainer = styled.div`
@@ -52,14 +53,15 @@ export const PaymentsContainer = styled.div`
 export const PaymentsTypesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 55%;
+  width: 60%;
   height: 100%;
 `
 
 export const FinishContainer = styled.div`
   display: flex;
-  width: 45%;
+  width: 40%;
   height: 100%;
+  background: magenta;
 `
 
 export const MenuContainer = styled.div`

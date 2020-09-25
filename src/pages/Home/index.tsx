@@ -129,11 +129,10 @@ const Home: React.FC = () => {
   }
 
   const handlers = {
-    MONEY: () => handleOpenPayment(PaymentType.MONEY, 0),
+    MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 0),
     C_CREDIT: () =>
-      handleOpenPayment(PaymentType.CREDIT_CARD, getTotalSoldOnSale()),
-    C_DEBIT: () =>
-      handleOpenPayment(PaymentType.DEBIT_CARD, getTotalSoldOnSale()),
+      handleOpenPayment(PaymentType.CREDITO, getTotalSoldOnSale()),
+    C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO, getTotalSoldOnSale()),
     TICKET: () => handleOpenPayment(PaymentType.TICKET, getTotalSoldOnSale()),
   }
 

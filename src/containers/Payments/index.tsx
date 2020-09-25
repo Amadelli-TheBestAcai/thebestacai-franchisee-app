@@ -7,14 +7,16 @@ import Payment from '../../components/Payment'
 
 import {
   Container,
-  PaymentsHeader,
   PaymentsList,
   Button,
-  PaymentListHeader,
   Column,
   Description,
   Modal,
   Input,
+  Header,
+  Content,
+  Footer,
+  ListContainer,
 } from './styles'
 
 interface IProps {
@@ -44,42 +46,40 @@ const PaymentsContainer: React.FC<IProps> = ({
 
   return (
     <Container>
-      <PaymentsHeader>
-        <Button onClick={() => handleOpenPayment(PaymentType.MONEY, 0)}>
-          [A] Dinheiro
+      <Header>
+        <Button onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}>
+          [A] DINHEIRO
         </Button>
         <Button
-          onClick={() => handleOpenPayment(PaymentType.CREDIT_CARD, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
         >
-          [S] Crédito
+          [S] CRÉDITO
         </Button>
         <Button
-          onClick={() => handleOpenPayment(PaymentType.DEBIT_CARD, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
         >
-          [D] Débito
+          [D] DÉBITO
         </Button>
         <Button
           onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
         >
-          [T] Ticket
+          [T] TICKET
         </Button>
-      </PaymentsHeader>
-      <PaymentListHeader>
-        <Column span={10}>
-          <Description>Pagamento</Description>
-        </Column>
-        <Column span={10}>
-          <Description>Valor Pago</Description>
-        </Column>
-        <Column span={4}>
-          <Description>Excluir</Description>
-        </Column>
-      </PaymentListHeader>
-      <PaymentsList>
-        {payments?.map((payment, index) => (
-          <Payment key={index} {...payment} />
-        ))}
-      </PaymentsList>
+      </Header>
+      <Content>
+        <ListContainer>
+          <PaymentsList>
+            {payments?.map((payment, index) => (
+              <Payment key={index} {...payment} />
+            ))}
+          </PaymentsList>
+        </ListContainer>
+      </Content>
+      <Footer></Footer>
+      {/* 
+       
+    
+      */}
       <Modal
         width={250}
         visible={modalState}

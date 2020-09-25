@@ -6,6 +6,7 @@ export const Container = styled(Row)`
   width: 100%;
   height: min-content;
   margin: 5px 0px;
+  background: white;
 `
 
 export const Column = styled(Col)`
@@ -16,4 +17,6 @@ export const Column = styled(Col)`
 
 export const Description = styled.label``
 
-export const Button = styled(ButtonAnt)``
+export const Button = styled(ButtonAnt)`
+  min-width: 24px;
+`

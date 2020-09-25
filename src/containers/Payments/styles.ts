@@ -13,21 +13,14 @@ export const Container = styled.div`
   flex-grow: 1;
   align-items: flex-start;
   justify-content: center;
-`
-
-export const PaymentsHeader = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  height: 30%;
+  margin: 0 10px 0 10px;
 `
 
 export const PaymentsList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 15vh;
+  max-height: 13vh;
   flex-grow: 1;
   overflow-y: scroll;
   ::-webkit-scrollbar {
@@ -36,12 +29,14 @@ export const PaymentsList = styled.div`
   }
 `
 
-export const PaymentListHeader = styled(RowAnt)`
-  display: flex;
-  background: black;
-  width: 100%;
-  height: fit-content;
+export const ListContainer = styled.div`
+  width: 96%;
+  height: 80%;
+  background: #f4f4f4;
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
 `
+
 export const Column = styled(ColAnt)`
   display: flex;
   justify-content: center;
@@ -52,15 +47,49 @@ export const Description = styled.label`
 `
 
 export const Button = styled(ButtonAnt)`
-  background: orange;
-  font-weight: bold;
+  background: var(--hover-bottomLogin);
+  font-weight: 500;
   color: white;
-  border-radius: 5px;
   margin: 0 5px;
+  border: none;
+  width: 9vw;
+
+  :hover {
+    background: var(--primary-orange);
+    color: var(--hover-bottomLogin);
+    border: none;
+    transition: 0.5s;
+    font-weight: 700;
+  }
 `
 
 export const Modal = styled(ModalAnt)``
 
 export const Input = styled(InputAnt)`
   direction: rtl;
+`
+
+// ---- //
+
+export const Header = styled(RowAnt)`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 25%;
+`
+export const Content = styled(RowAnt)`
+  background: white;
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const Footer = styled(RowAnt)`
+  display: flex;
+  background: green;
+  width: 100%;
+  height: 25%;
 `

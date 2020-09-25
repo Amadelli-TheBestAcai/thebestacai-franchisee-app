@@ -11,7 +11,7 @@ const Payment: React.FC<PaymentModel> = ({ amount, type }) => {
         <Description>{type}</Description>
       </Column>
       <Column span={10}>
-        <Description>{amount?.toFixed(2)}</Description>
+        <Description>R$ {amount?.toFixed(2)}</Description>
       </Column>
       <Column span={4}>
         <Button shape="circle" type="primary" danger={true}>
