@@ -9,12 +9,12 @@ class CashierService {
     const { open, closed } = data
     let cashes = open.map((cash) => ({
       cashier: cash.split('-')[1],
-      avaliable: true,
+      avaliable: false,
     }))
     cashes = [
       ...closed.map((cash) => ({
         cashier: cash.split('-')[1],
-        avaliable: false,
+        avaliable: true,
       })),
       ...cashes,
     ]

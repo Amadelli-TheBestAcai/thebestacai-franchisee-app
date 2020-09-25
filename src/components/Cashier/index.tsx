@@ -10,14 +10,23 @@ import {
   Status,
 } from './styles'
 
-const Cashier: React.FC<CashierModel> = ({ cashier, avaliable }) => {
+type IProps = {
+  cash: CashierModel
+  handleClick: any
+}
+
+const Cashier: React.FC<IProps> = ({ cash, handleClick }) => {
+  const { cashier, avaliable } = cash
   return (
     <Container>
       <Description>Caixa {cashier}</Description>
-      <IconContainer style={{ background: avaliable ? '#989898' : '#FFB13D' }}>
+      <IconContainer
+        onClick={() => handleClick(cash)}
+        style={{ background: avaliable ? '#FFB13D' : '#989898' }}
+      >
         <CashIcon />
       </IconContainer>
-      <Status style={{ color: avaliable ? '#FF2E2E' : '#3CD223' }}>
+      <Status style={{ color: avaliable ? '#3CD223' : '#FF2E2E' }}>
         {avaliable ? 'HABILITADO' : 'DESABILITADO'}
       </Status>
     </Container>
