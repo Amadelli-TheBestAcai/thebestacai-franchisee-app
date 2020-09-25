@@ -10,6 +10,7 @@ import { Item } from '../../models/saleItem'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
+import Items from '../../containers/Items'
 import Payments from '../../containers/Payments'
 
 import { Button, message } from 'antd'
@@ -69,6 +70,10 @@ const Home: React.FC = () => {
     })
   }
 
+  const removeItem = (item): void => {
+    console.log(item)
+  }
+
   const handleClosePayment = (): void => {
     console.log('asdf')
   }
@@ -116,7 +121,9 @@ const Home: React.FC = () => {
       </LeftSide>
       <RightSide>
         <Content>
-          <ItemsContainer></ItemsContainer>
+          <ItemsContainer>
+            <Items items={items} handleItem={removeItem} />
+          </ItemsContainer>
           <PaymentsContainer>
             <PaymentsTypesContainer>
               {/* <Payments
