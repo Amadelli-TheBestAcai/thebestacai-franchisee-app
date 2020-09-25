@@ -1,5 +1,5 @@
 export interface Item {
-  id: number
+  id: string
   sale_id: string
   name: string
   price_unit: number

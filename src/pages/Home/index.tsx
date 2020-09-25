@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
 
@@ -56,7 +55,6 @@ const Home: React.FC = () => {
   }, [])
 
   const addItem = ({ product_id, price_unit, name }: Product): void => {
-    console.log(product_id)
     ipcRenderer.send('item:add', {
       sale: sale.id,
       name,
@@ -70,8 +68,16 @@ const Home: React.FC = () => {
     })
   }
 
-  const removeItem = (item): void => {
-    console.log(item)
+  const removeItem = ({ id }: Item): void => {
+    console.log(id)
+    ipcRenderer.send('item:decress', {
+      sale: sale.id,
+      id,
+    })
+    ipcRenderer.once('item:decress:response', (event, { total, items }) => {
+      setTotalSold(total)
+      setItems(items)
+    })
   }
 
   const handleClosePayment = (): void => {

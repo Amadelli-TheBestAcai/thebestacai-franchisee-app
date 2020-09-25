@@ -2,6 +2,7 @@ import ItemsRepository from '../repositories/ItemsRepository'
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
 import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
+import { v4 as uuidv4 } from 'uuid'
 class ItemsService {
   async createOrUpdate(item: CreateItemDTO, sale_id: string): Promise<void> {
     const oldItem = await ItemsRepository.getByProductAndSale(
@@ -16,7 +17,12 @@ class ItemsService {
       }
       await ItemsRepository.update(oldItem.id, payload)
     } else {
-      const payload: CreateItemDTO = { ...item, quantity: 1, sale_id }
+      const payload: CreateItemDTO = {
+        id: uuidv4(),
+        ...item,
+        quantity: 1,
+        sale_id,
+      }
       await ItemsRepository.create(payload)
     }
   }
@@ -43,13 +49,14 @@ class ItemsService {
     await ItemsRepository.deleteBySale(sale_id)
   }
 
-  async decressQuantity(id: number): Promise<void> {
+  async decressQuantity(id: string): Promise<void> {
     const item = await ItemsRepository.findById(id)
-    const newQuantity = +item.quantity - 1
-    if (newQuantity === 0) {
+    const quantity = +item.quantity - 1
+    const total = +item.total - +item.price_unit
+    if (quantity === 0) {
       await ItemsRepository.deleteById(id)
     } else {
-      await ItemsRepository.update(id, { quantity: newQuantity })
+      await ItemsRepository.update(id, { quantity, total })
     }
   }
 }

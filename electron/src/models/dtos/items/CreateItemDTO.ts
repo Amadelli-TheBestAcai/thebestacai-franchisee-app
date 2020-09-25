@@ -1,4 +1,5 @@
 export interface CreateItemDTO {
+  id: string
   sale_id: string
   name: string
   price_unit: number

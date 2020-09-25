@@ -7,7 +7,7 @@ class ItemsRepository {
     return await knex('items').insert(item)
   }
 
-  async update(id: number, payload: UpdateItemDTO): Promise<void> {
+  async update(id: string, payload: UpdateItemDTO): Promise<void> {
     await knex('items').where({ id }).update(payload)
   }
 
@@ -27,12 +27,12 @@ class ItemsRepository {
     await knex('items').where({ sale_id }).del()
   }
 
-  async findById(id: number): Promise<Item> {
+  async findById(id: string): Promise<Item> {
     const items = await knex('items').where({ id })
     return items[0]
   }
 
-  async deleteById(id: number): Promise<void> {
+  async deleteById(id: string): Promise<void> {
     await knex('items').where({ id }).del()
   }
 }
