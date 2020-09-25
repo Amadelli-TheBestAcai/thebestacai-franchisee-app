@@ -54,10 +54,12 @@ const Home: React.FC = () => {
     })
   }, [])
 
-  const addItem = ({ product_id, price_unit }: Product): void => {
+  const addItem = ({ product_id, price_unit, name }: Product): void => {
     console.log(product_id)
     ipcRenderer.send('item:add', {
       sale: sale.id,
+      name,
+      price_unit,
       product_id,
       total: price_unit,
     })
