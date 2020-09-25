@@ -1,5 +1,9 @@
 import api from '../utils/Api'
 import UserService from './UserService'
+import CashierRepository from '../repositories/CashierRepository'
+import { Cashier } from '../models/Cashier'
+import { OpenCashierDTO } from '../models/dtos/Cashier/OpenCashierDTO'
+import { CloseCashierDTO } from '../models/dtos/Cashier/CloseCashierDTO'
 class CashierService {
   async getOnlineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
     const { store } = await UserService.getTokenInfo()
@@ -40,6 +44,33 @@ class CashierService {
       return await this.getOnlineCashes()
     }
     return await this.getOfflineCashes()
+  }
+
+  async openCashier(
+    { code, amount_on_open }: OpenCashierDTO,
+    isConnected: boolean
+  ): Promise<void> {
+    if (isConnected) {
+      const { store } = await UserService.getTokenInfo()
+      await api.put(`/store_cashes/${store}-${code}/open`, { amount_on_open })
+    }
+    await CashierRepository.delete()
+    await CashierRepository.create(code)
+  }
+
+  async closeCashier(
+    { code, amount_on_close }: CloseCashierDTO,
+    isConnected: boolean
+  ): Promise<void> {
+    if (isConnected) {
+      const { store } = await UserService.getTokenInfo()
+      await api.put(`/store_cashes/${store}-${code}/open`, { amount_on_close })
+    }
+    await CashierRepository.delete()
+  }
+
+  async getCurrentCashier(): Promise<Cashier | null> {
+    return await CashierRepository.get()
   }
 }
 

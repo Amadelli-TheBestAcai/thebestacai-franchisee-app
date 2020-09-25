@@ -10,3 +10,19 @@ ipcMain.on('cashier:get', async (event, isConnected) => {
     event.returnValue = []
   }
 })
+
+ipcMain.on('cashier:open', async (event, { isConnected, ...cashier }) => {
+  try {
+    await CashierService.openCashier(cashier, isConnected)
+    event.reply('cashier:open:response', {
+      success: true,
+      message: 'Caixa aberto com sucesso',
+    })
+  } catch (err) {
+    console.error(err)
+    event.reply('cashier:open:response', {
+      success: false,
+      message: 'Falha ao abrir o caixa',
+    })
+  }
+})

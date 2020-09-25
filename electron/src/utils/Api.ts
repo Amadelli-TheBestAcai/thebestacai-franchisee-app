@@ -1,7 +1,7 @@
 import axios from 'axios'
 import UserService from '../services/UserService'
 
-const API_URL = 'http://hml-thebestacai-api.herokuapp.com'
+const API_URL = 'http://localhost:5050'
 const api = axios.create({
   baseURL: API_URL,
   responseType: 'json',

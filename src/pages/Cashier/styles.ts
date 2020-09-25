@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 
-import { Spin as SpinAnt, Button as ButtonAnt } from 'antd'
+import {
+  Spin as SpinAnt,
+  Button as ButtonAnt,
+  Input as InputAnt,
+  Col as ColAnt,
+  Row as RowAnt,
+} from 'antd'
 
 export const Container = styled.div`
   display: flex;
@@ -42,8 +48,8 @@ export const SecondaryContent = styled.div`
   align-items: center;
 `
 
-export const AmountContent = styled.div`
-  width: 70%;
+export const AmountContainer = styled.div`
+  width: 50%;
   height: 60%;
 `
 
@@ -84,4 +90,24 @@ export const FinishButton = styled(ButtonAnt)`
 
 export const BackButton = styled(ButtonAnt)`
   margin: 0 15px;
+`
+
+export const AmountRow = styled(RowAnt)`
+  margin: 15px 0px;
+`
+
+export const AmountCol = styled(ColAnt)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const AmountLabel = styled.label`
+  margin-right: 10px;
+`
+
+export const AmountInput = styled(InputAnt)`
+  max-width: 60%;
+  border-radius: 10px;
+  text-align: center;
 `
