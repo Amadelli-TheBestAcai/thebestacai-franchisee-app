@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Item as ItemModel } from '../../models/saleItem'
 
-import { Container, Column, Button, Description } from './styles'
+import { Container, Column, Button, Description, RemoveIcon } from './styles'
 
 type IProps = {
   item: ItemModel
@@ -26,7 +26,9 @@ const Item: React.FC<IProps> = ({ item, handleItem }) => {
         <Description>R$ {total.toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={2}>
-        <Button onClick={() => handleItem(item)}>-</Button>
+        <Button onClick={() => handleItem(item)}>
+          <RemoveIcon/>
+        </Button>
       </Column>
     </Container>
   )

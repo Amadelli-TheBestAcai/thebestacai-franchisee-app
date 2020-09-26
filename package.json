@@ -91,7 +91,8 @@
     "styled-components": "^5.1.1",
     "styled-icons": "^10.21.0",
     "url-loader": "^4.1.0",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "yarn": "^1.22.5"
   },
   "build": {
     "appId": "your.id",

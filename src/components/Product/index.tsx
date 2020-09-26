@@ -3,7 +3,7 @@ import { PlusOutlined } from '@ant-design/icons'
 
 import { Product as ProductModel } from '../../models/product'
 
-import { Container, Column, Description, Button } from './styles'
+import { Container, Column, Description, AddIcon} from './styles'
 
 interface IProps {
   product: ProductModel
@@ -21,9 +21,7 @@ const Product: React.FC<IProps> = ({ handleItem, product }) => {
         <Description>{(+price_unit).toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={4}>
-        <Button onClick={() => handleItem(product)}>
-          <PlusOutlined />
-        </Button>
+          <AddIcon onClick={() => handleItem(product)}/>
       </Column>
     </Container>
   )

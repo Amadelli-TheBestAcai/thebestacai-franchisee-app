@@ -42,7 +42,6 @@ export const Content = styled.div`
 export const ItemsContainer = styled.div`
   display: flex;
   height: 70%;
-  background: pink;
 `
 
 export const PaymentsContainer = styled.div`

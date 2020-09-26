@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
-import { Row, Col, Button as ButtonAnt, Modal as ModalAnt } from 'antd'
+import { Row, Col} from 'antd'
+
+import {AddCircle} from '../../styles/Icons'
 
 export const Container = styled(Row)`
   width: 100%;
@@ -20,19 +22,13 @@ export const Description = styled.label`
   font-weight: bold;
 `
 
-export const Button = styled.button`
-  background: var(--button-add);
-  border: 0;
-  width: 20px;
-  height: 20px;
-  color: white;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 60px;
-  align-items: center;
+export const AddIcon = styled(AddCircle)`
+  width: 24px;
+  height: 24px;
+  color: var(--button-add);
   cursor: pointer;
-
-  :hover {
-    background: #1e8921;
-  }
 `
+
+
+
+
