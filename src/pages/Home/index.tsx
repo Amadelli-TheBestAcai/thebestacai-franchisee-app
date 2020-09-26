@@ -25,6 +25,7 @@ import {
   PaymentsTypesContainer,
   FinishContainer,
   MenuContainer,
+  ActionsContainer,
 } from './styles'
 
 const Home: React.FC = () => {
@@ -127,6 +128,7 @@ const Home: React.FC = () => {
       </LeftSide>
       <RightSide>
         <Content>
+          <ActionsContainer />
           <ItemsContainer>
             <Items items={items} handleItem={removeItem} />
           </ItemsContainer>

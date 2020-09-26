@@ -39,9 +39,15 @@ export const Content = styled.div`
   height: 100%;
 `
 
+export const ActionsContainer = styled.div`
+  display: flex;
+  height: 10%;
+  background: yellow;
+`
+
 export const ItemsContainer = styled.div`
   display: flex;
-  height: 70%;
+  height: 60%;
 `
 
 export const PaymentsContainer = styled.div`
