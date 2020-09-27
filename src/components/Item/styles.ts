@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 import { Row, Col } from 'antd'
-import {RemoveCircle} from '../../styles/Icons'
+import { RemoveCircle } from '../../styles/Icons'
 
 export const Container = styled(Row)`
   display: flex;
@@ -31,11 +31,14 @@ export const RemoveIcon = styled(RemoveCircle)`
   height: 24px;
   color: var(--button-remove);
   cursor: pointer;
+
+  :hover {
+    color: #ea1d2c;
+    transition: 0.5s;
+  }
 `
 export const Button = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-
 `

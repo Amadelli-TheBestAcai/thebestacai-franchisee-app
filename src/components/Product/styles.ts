@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
-import { Row, Col} from 'antd'
+import { Row, Col } from 'antd'
 
-import {AddCircle} from '../../styles/Icons'
+import { AddCircle } from '../../styles/Icons'
 
 export const Container = styled(Row)`
   width: 100%;
@@ -27,8 +27,9 @@ export const AddIcon = styled(AddCircle)`
   height: 24px;
   color: var(--button-add);
   cursor: pointer;
+
+  :hover {
+    color: #1ed760;
+    transition: 0.5s;
+  }
 `
-
-
-
-

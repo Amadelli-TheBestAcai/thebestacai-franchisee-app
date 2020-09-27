@@ -10,6 +10,7 @@ import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
 import Items from '../../containers/Items'
+import Actions from '../../containers/Actions'
 import Payments from '../../containers/Payments'
 
 import { Button, message } from 'antd'
@@ -128,7 +129,9 @@ const Home: React.FC = () => {
       </LeftSide>
       <RightSide>
         <Content>
-          <ActionsContainer />
+          <ActionsContainer>
+            <Actions />
+          </ActionsContainer>
           <ItemsContainer>
             <Items items={items} handleItem={removeItem} />
           </ItemsContainer>
