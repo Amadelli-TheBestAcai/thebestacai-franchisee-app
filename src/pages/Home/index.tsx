@@ -12,6 +12,7 @@ import Products from '../../containers/Products'
 import Items from '../../containers/Items'
 import Actions from '../../containers/Actions'
 import Payments from '../../containers/Payments'
+import Balance from '../../containers/Balance'
 
 import { Button, message } from 'antd'
 import {
@@ -122,7 +123,9 @@ const Home: React.FC = () => {
   return (
     <Container keyMap={keyMap} handlers={handlers}>
       <LeftSide>
-        <BalanceContainer></BalanceContainer>
+        <BalanceContainer>
+          <Balance />
+        </BalanceContainer>
         <ProductsContainer>
           <Products handleItem={addItem} />
         </ProductsContainer>

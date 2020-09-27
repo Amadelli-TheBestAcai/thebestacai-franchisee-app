@@ -8,7 +8,7 @@ export const Container = styled(HotKeys)`
 `
 export const LeftSide = styled.div`
   height: 100%;
-  width: 25%;
+  width: 30%;
 `
 
 export const BalanceContainer = styled.div`
@@ -30,7 +30,8 @@ export const ProductsContainer = styled.div`
 
 export const RightSide = styled.div`
   height: 100%;
-  width: 75%;
+  width: 70%;
+  border-left: 1px solid #00000017;
 `
 
 export const Content = styled.div`

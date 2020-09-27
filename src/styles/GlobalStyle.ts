@@ -24,5 +24,6 @@ export const GlobalStyle = createGlobalStyle`
     --mainBackground:  #f4f4f4;
 
 
+
   }
 `
