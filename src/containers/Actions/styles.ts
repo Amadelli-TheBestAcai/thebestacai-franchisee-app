@@ -22,6 +22,10 @@ const ButtonCSS = css`
   cursor: pointer;
   border-radius: 4px;
   font-weight: 700;
+
+  @media only screen and (max-width: 1300px) {
+    font-size: 12px;
+  }
 `
 
 export const DiscountButton = styled.button`
@@ -58,6 +62,11 @@ const IconCSS = css`
   width: 26px;
   height: 26px;
   margin-left: 10px;
+
+  @media only screen and (max-width: 1300px) {
+    width: 20px;
+    height: 20px;
+  }
 `
 export const OfferIcon = styled(Offer)`
   ${IconCSS};
