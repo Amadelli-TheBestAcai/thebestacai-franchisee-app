@@ -1,8 +1,8 @@
 import knex from '../database'
 import { Payment } from '../models/Payment'
-import { CreatePaymentDTO } from '../models/dtos/payments/CreatePaymentDTO'
+
 class PaymentsRepository {
-  async create(payments: CreatePaymentDTO[]) {
+  async create(payments: Payment) {
     return await knex('payments').insert(payments)
   }
 

@@ -1,5 +1,5 @@
 export interface Payment {
-  id: number
+  id: string
   sale_id: string
   type: string
   amount: number
