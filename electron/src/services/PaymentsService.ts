@@ -14,6 +14,10 @@ class PaymentsService {
     return await PaymentsRepository.getBySale(sale_id)
   }
 
+  async deleteById(id: string): Promise<void> {
+    await PaymentsRepository.deleteById(id)
+  }
+
   async deleteBySale(sale_id: string): Promise<void> {
     await PaymentsRepository.deleteBySale(sale_id)
   }

@@ -1,11 +1,13 @@
 import styled from 'styled-components'
 
-import { Row, Col, Button as ButtonAnt } from 'antd'
+import { Row, Col } from 'antd'
+
+import { RemoveCircle } from '../../styles/Icons'
 
 export const Container = styled(Row)`
   width: 100%;
-  height: min-content;
-  margin: 5px 0px;
+  height: 100%;
+  border: 2px solid #f4f4f4;
   background: white;
 `
 
@@ -17,6 +19,20 @@ export const Column = styled(Col)`
 
 export const Description = styled.label``
 
-export const Button = styled(ButtonAnt)`
-  min-width: 24px;
+export const Button = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const RemoveIcon = styled(RemoveCircle)`
+  width: 24px;
+  height: 24px;
+  color: var(--button-remove);
+  cursor: pointer;
+
+  :hover {
+    color: #ea1d2c;
+    transition: 0.5s;
+  }
 `

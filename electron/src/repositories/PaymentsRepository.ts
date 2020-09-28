@@ -10,6 +10,10 @@ class PaymentsRepository {
     return await knex('payments').where({ sale_id })
   }
 
+  async deleteById(id: string): Promise<void> {
+    await knex('payments').where({ id }).del()
+  }
+
   async deleteBySale(sale_id: string): Promise<void> {
     await knex('payments').where({ sale_id }).del()
   }

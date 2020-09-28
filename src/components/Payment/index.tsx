@@ -1,21 +1,28 @@
 import React from 'react'
 
 import { Payment as PaymentModel } from '../../models/payment'
+import { PaymentType } from '../../models/enums/paymentType'
 
-import { Container, Column, Description, Button } from './styles'
+import { Container, Column, Description, Button, RemoveIcon } from './styles'
 
-const Payment: React.FC<PaymentModel> = ({ amount, type }) => {
+type IProps = {
+  payment: PaymentModel
+  removePayment
+}
+
+const Payment: React.FC<IProps> = ({ payment, removePayment }) => {
+  const { amount, type } = payment
   return (
     <Container>
       <Column span={10}>
-        <Description>{type}</Description>
+        <Description>{PaymentType[type]}</Description>
       </Column>
       <Column span={10}>
         <Description>R$ {amount?.toFixed(2)}</Description>
       </Column>
       <Column span={4}>
-        <Button shape="circle" type="primary" danger={true}>
-          -
+        <Button onClick={() => removePayment(payment)}>
+          <RemoveIcon />
         </Button>
       </Column>
     </Container>

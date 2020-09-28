@@ -47,6 +47,7 @@ export const ActionsContainer = styled.div`
 
 export const ItemsContainer = styled.div`
   display: flex;
+  background: #f4f4f4;
   height: 60%;
 `
 

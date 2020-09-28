@@ -22,7 +22,8 @@ import {
 interface IProps {
   payments: PaymentModel[]
   handleOpenPayment: (type: number, defaultValue?: number) => void
-  handleClosePayment
+  addPayment
+  removePayment
   currentPayment
   setCurrentPayment
   modalState: boolean
@@ -36,12 +37,20 @@ const PaymentsContainer: React.FC<IProps> = ({
   setCurrentPayment,
   setModalState,
   handleOpenPayment,
-  handleClosePayment,
+  addPayment,
   modalState,
   totalSale,
+  removePayment,
 }) => {
   const onModalCancel = (): void => {
     setModalState(false)
+  }
+
+  const handleCurrentPayment = (value: string): void => {
+    if (value.length === 3) {
+      value = value.substring(0, 1) + '.' + value.substring(1, 3)
+    }
+    setCurrentPayment(value)
   }
 
   return (
@@ -70,7 +79,11 @@ const PaymentsContainer: React.FC<IProps> = ({
         <ListContainer>
           <PaymentsList>
             {payments?.map((payment, index) => (
-              <Payment key={index} {...payment} />
+              <Payment
+                key={index}
+                payment={payment}
+                removePayment={removePayment}
+              />
             ))}
           </PaymentsList>
         </ListContainer>
@@ -80,16 +93,15 @@ const PaymentsContainer: React.FC<IProps> = ({
         width={250}
         visible={modalState}
         onCancel={onModalCancel}
-        onOk={() => handleClosePayment()}
+        onOk={() => addPayment()}
         destroyOnClose={true}
         closable={true}
       >
         Valor:
         <Input
-          onPressEnter={handleClosePayment}
-          type="number"
+          onPressEnter={addPayment}
           autoFocus={true}
-          onChange={({ target: { value } }) => setCurrentPayment(+value)}
+          onChange={({ target: { value } }) => handleCurrentPayment(value)}
           value={currentPayment}
         />
       </Modal>

@@ -19,3 +19,13 @@ ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
     console.error(err)
   }
 })
+
+ipcMain.on('payment:remove', async (event, { id, sale }) => {
+  try {
+    await PaymentsService.deleteById(id)
+    const payments = await PaymentsService.getBySale(sale)
+    event.reply('payment:remove:response', payments)
+  } catch (err) {
+    console.error(err)
+  }
+})

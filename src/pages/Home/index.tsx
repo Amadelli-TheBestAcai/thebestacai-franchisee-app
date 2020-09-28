@@ -85,8 +85,17 @@ const Home: React.FC = () => {
     })
   }
 
-  const handleClosePayment = (): void => {
-    console.log(currentPayment, paymentType)
+  const removePayment = ({ id }: Item): void => {
+    ipcRenderer.send('payment:remove', {
+      sale: sale.id,
+      id,
+    })
+    ipcRenderer.once('payment:remove:response', (event, payments) => {
+      setPayments(payments)
+    })
+  }
+
+  const addPayment = (): void => {
     ipcRenderer.send('payment:add', {
       sale: sale.id,
       type: paymentType,
@@ -95,6 +104,7 @@ const Home: React.FC = () => {
     ipcRenderer.once('payment:add:response', (event, payments) => {
       setPayments(payments)
     })
+    setCurrentPayment(null)
     setPaymentModal(false)
   }
 
@@ -112,6 +122,7 @@ const Home: React.FC = () => {
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
       message.success('Venda salva com sucesso')
       setItems([])
+      setPayments([])
       setTotalSold(0)
       setSale(newSale)
     })
@@ -148,9 +159,10 @@ const Home: React.FC = () => {
               <Payments
                 payments={payments}
                 handleOpenPayment={handleOpenPayment}
-                handleClosePayment={handleClosePayment}
+                addPayment={addPayment}
                 currentPayment={currentPayment}
                 setCurrentPayment={setCurrentPayment}
+                removePayment={removePayment}
                 modalState={paymentModal}
                 setModalState={setPaymentModal}
                 totalSale={0}
