@@ -1,12 +1,20 @@
 import { ipcMain } from 'electron'
-import ItemsService from '../services/ItemsService'
+import PaymentsService from '../services/PaymentsService'
+
+ipcMain.on('payment:get', async (event, sale) => {
+  try {
+    const payments = await PaymentsService.getBySale(sale)
+    event.returnValue = payments
+  } catch (err) {
+    console.error(err)
+  }
+})
 
 ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
   try {
-    await ItemsService.createOrUpdate(payload, sale)
-    const items = await ItemsService.getBySale(sale)
-    const total = await ItemsService.getTotalBySale(sale)
-    event.reply('item:add:response', { total, items })
+    await PaymentsService.create(payload, sale)
+    const payments = await PaymentsService.getBySale(sale)
+    event.reply('payment:add:response', payments)
   } catch (err) {
     console.error(err)
   }

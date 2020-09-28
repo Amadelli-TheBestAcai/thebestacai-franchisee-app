@@ -3,9 +3,9 @@ import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
 
 import { Sale } from '../../models/sale'
-import { SalesTypes } from '../../models/enums/salesTypes'
 import { Product } from '../../models/product'
 import { Item } from '../../models/saleItem'
+import { Payment } from '../../models/payment'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import Products from '../../containers/Products'
@@ -33,6 +33,7 @@ import {
 const Home: React.FC = () => {
   const [sale, setSale] = useState<Sale>()
   const [items, setItems] = useState<Item[]>([])
+  const [payments, setPayments] = useState<Payment[]>([])
   const [totalSold, setTotalSold] = useState(0)
   const [currentPayment, setCurrentPayment] = useState()
   const [paymentType, setPaymentType] = useState(0)
@@ -54,6 +55,7 @@ const Home: React.FC = () => {
       setSale(sale)
       setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
       setItems(ipcRenderer.sendSync('item:get', sale.id))
+      setPayments(ipcRenderer.sendSync('payment:get', sale.id))
     })
   }, [])
 
@@ -84,11 +86,19 @@ const Home: React.FC = () => {
   }
 
   const handleClosePayment = (): void => {
+    console.log(currentPayment, paymentType)
+    ipcRenderer.send('payment:add', {
+      sale: sale.id,
+      type: paymentType,
+      amount: currentPayment,
+    })
+    ipcRenderer.once('payment:add:response', (event, payments) => {
+      setPayments(payments)
+    })
     setPaymentModal(false)
   }
 
   const handleOpenPayment = (type: number, defaultValue: number): void => {
-    console.log('asdf')
     setPaymentType(type)
     setPaymentModal(true)
   }
@@ -136,7 +146,7 @@ const Home: React.FC = () => {
           <PaymentsContainer>
             <PaymentsTypesContainer>
               <Payments
-                payments={[]}
+                payments={payments}
                 handleOpenPayment={handleOpenPayment}
                 handleClosePayment={handleClosePayment}
                 currentPayment={currentPayment}
