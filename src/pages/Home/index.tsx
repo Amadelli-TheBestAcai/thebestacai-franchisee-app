@@ -34,7 +34,7 @@ const Home: React.FC = () => {
   const [sale, setSale] = useState<Sale>()
   const [items, setItems] = useState<Item[]>([])
   const [totalSold, setTotalSold] = useState(0)
-  const [currentPayment, setCurrentPayment] = useState(0)
+  const [currentPayment, setCurrentPayment] = useState()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
 
@@ -84,11 +84,13 @@ const Home: React.FC = () => {
   }
 
   const handleClosePayment = (): void => {
-    console.log('asdf')
+    setPaymentModal(false)
   }
 
   const handleOpenPayment = (type: number, defaultValue: number): void => {
     console.log('asdf')
+    setPaymentType(type)
+    setPaymentModal(true)
   }
 
   const getTotalSoldOnSale = (): number => {
@@ -105,13 +107,6 @@ const Home: React.FC = () => {
     })
   }
 
-  const keyMap = {
-    MONEY: 'a',
-    C_CREDIT: 's',
-    C_DEBIT: 'd',
-    TICKET: 't',
-  }
-
   const handlers = {
     MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 0),
     C_CREDIT: () =>
@@ -121,7 +116,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Container keyMap={keyMap} handlers={handlers}>
+    <Container handlers={handlers}>
       <LeftSide>
         <BalanceContainer>
           <Balance />
@@ -140,16 +135,16 @@ const Home: React.FC = () => {
           </ItemsContainer>
           <PaymentsContainer>
             <PaymentsTypesContainer>
-              {/* <Payments
-                payments={sale.payments}
+              <Payments
+                payments={[]}
                 handleOpenPayment={handleOpenPayment}
                 handleClosePayment={handleClosePayment}
                 currentPayment={currentPayment}
                 setCurrentPayment={setCurrentPayment}
                 modalState={paymentModal}
                 setModalState={setPaymentModal}
-                totalSale={sale.total_sold}
-              /> */}
+                totalSale={0}
+              />
             </PaymentsTypesContainer>
             <FinishContainer>
               <Button onClick={() => registerSale()}>Registrar</Button>

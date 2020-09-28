@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import {
   Button as ButtonAnt,
   Row as RowAnt,
@@ -47,14 +48,19 @@ export const Description = styled.label`
 `
 
 export const Button = styled(ButtonAnt)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   background: var(--hover-bottomLogin);
   font-weight: 500;
   color: white;
   margin: 0 5px;
   border: none;
-  width: 9vw;
+  width: 7vw;
 
-  :hover {
+  :hover,
+  :focus {
     background: var(--primary-orange);
     color: var(--hover-bottomLogin);
     border: none;
@@ -73,7 +79,7 @@ export const Input = styled(InputAnt)`
 
 export const Header = styled(RowAnt)`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
   width: 100%;
   height: 25%;

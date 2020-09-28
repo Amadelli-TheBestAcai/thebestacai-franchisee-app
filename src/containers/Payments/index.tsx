@@ -76,15 +76,12 @@ const PaymentsContainer: React.FC<IProps> = ({
         </ListContainer>
       </Content>
       <Footer></Footer>
-      {/* 
-       
-    
-      */}
       <Modal
         width={250}
         visible={modalState}
         onCancel={onModalCancel}
         onOk={() => handleClosePayment()}
+        destroyOnClose={true}
         closable={true}
       >
         Valor:
