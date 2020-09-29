@@ -14,6 +14,8 @@ import Actions from '../../containers/Actions'
 import Payments from '../../containers/Payments'
 import Balance from '../../containers/Balance'
 
+import Spinner from '../../components/Spinner'
+
 import { Button, message } from 'antd'
 import {
   Container,
@@ -31,6 +33,7 @@ import {
 } from './styles'
 
 const Home: React.FC = () => {
+  const [loading, setLoading] = useState(true)
   const [sale, setSale] = useState<Sale>()
   const [items, setItems] = useState<Item[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
@@ -56,6 +59,7 @@ const Home: React.FC = () => {
       setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
       setItems(ipcRenderer.sendSync('item:get', sale.id))
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
+      setLoading(false)
     })
   }, [])
 
@@ -138,42 +142,48 @@ const Home: React.FC = () => {
 
   return (
     <Container handlers={handlers}>
-      <LeftSide>
-        <BalanceContainer>
-          <Balance />
-        </BalanceContainer>
-        <ProductsContainer>
-          <Products handleItem={addItem} />
-        </ProductsContainer>
-      </LeftSide>
-      <RightSide>
-        <Content>
-          <ActionsContainer>
-            <Actions />
-          </ActionsContainer>
-          <ItemsContainer>
-            <Items items={items} handleItem={removeItem} />
-          </ItemsContainer>
-          <PaymentsContainer>
-            <PaymentsTypesContainer>
-              <Payments
-                payments={payments}
-                handleOpenPayment={handleOpenPayment}
-                addPayment={addPayment}
-                currentPayment={currentPayment}
-                setCurrentPayment={setCurrentPayment}
-                removePayment={removePayment}
-                modalState={paymentModal}
-                setModalState={setPaymentModal}
-                totalSale={0}
-              />
-            </PaymentsTypesContainer>
-            <FinishContainer>
-              <Button onClick={() => registerSale()}>Registrar</Button>
-            </FinishContainer>
-          </PaymentsContainer>
-        </Content>
-      </RightSide>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <LeftSide>
+            <BalanceContainer>
+              <Balance />
+            </BalanceContainer>
+            <ProductsContainer>
+              <Products handleItem={addItem} />
+            </ProductsContainer>
+          </LeftSide>
+          <RightSide>
+            <Content>
+              <ActionsContainer>
+                <Actions />
+              </ActionsContainer>
+              <ItemsContainer>
+                <Items items={items} handleItem={removeItem} />
+              </ItemsContainer>
+              <PaymentsContainer>
+                <PaymentsTypesContainer>
+                  <Payments
+                    payments={payments}
+                    handleOpenPayment={handleOpenPayment}
+                    addPayment={addPayment}
+                    currentPayment={currentPayment}
+                    setCurrentPayment={setCurrentPayment}
+                    removePayment={removePayment}
+                    modalState={paymentModal}
+                    setModalState={setPaymentModal}
+                    totalSale={0}
+                  />
+                </PaymentsTypesContainer>
+                <FinishContainer>
+                  <Button onClick={() => registerSale()}>Registrar</Button>
+                </FinishContainer>
+              </PaymentsContainer>
+            </Content>
+          </RightSide>
+        </>
+      )}
     </Container>
   )
 }
