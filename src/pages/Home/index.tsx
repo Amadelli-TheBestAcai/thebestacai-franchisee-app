@@ -117,7 +117,14 @@ const Home: React.FC = () => {
   }
 
   const addToQueue = (name: string): void => {
-    console.log(`Sending ${name} to queue`)
+    ipcRenderer.send('sale:command:create', { id: sale.id, name })
+    ipcRenderer.once('sale:command:create:response', (event, sale) => {
+      setSale(sale)
+      setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
+      setItems(ipcRenderer.sendSync('item:get', sale.id))
+      setPayments(ipcRenderer.sendSync('payment:get', sale.id))
+      setLoading(false)
+    })
   }
 
   const getTotalSoldOnSale = (): number => {

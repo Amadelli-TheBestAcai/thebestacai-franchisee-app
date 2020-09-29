@@ -2,8 +2,8 @@ import knex from '../database'
 import { Sale } from '../models/Sale'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 class SalesRepository {
-  async create(sales: Sale): Promise<void> {
-    return await knex('sales').insert(sales)
+  async create(sales: CreateSaleDTO): Promise<void> {
+    await knex('sales').insert(sales)
   }
 
   async deleteById(id: string): Promise<void> {
@@ -25,6 +25,10 @@ class SalesRepository {
 
   async getCommands(): Promise<Sale[]> {
     return await knex('sales').where({ to_integrate: false })
+  }
+
+  async createCommand(id: string, name: string): Promise<void> {
+    await knex('sales').where({ id }).update({ is_current: false, name })
   }
 }
 

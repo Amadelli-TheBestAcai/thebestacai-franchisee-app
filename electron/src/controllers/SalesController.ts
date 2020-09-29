@@ -20,10 +20,10 @@ ipcMain.on('sale:command:get', async (event) => {
   }
 })
 
-ipcMain.on('sale:command:create', async (event) => {
+ipcMain.on('sale:command:create', async (event, { id, name }) => {
   try {
-    const sales = await SalesService.getSalesCommands()
-    event.reply('sale:command:create:response', sales)
+    const sale = await SalesService.createCommand(id, name)
+    event.reply('sale:command:create:response', sale)
   } catch (err) {
     console.error(err)
   }

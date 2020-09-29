@@ -85,6 +85,11 @@ class SalesService {
     }
     return sales
   }
+
+  async createCommand(id: string, name: string): Promise<CreateSaleDTO> {
+    await SalesRepository.createCommand(id, name)
+    return await this.create()
+  }
 }
 
 export default new SalesService()
