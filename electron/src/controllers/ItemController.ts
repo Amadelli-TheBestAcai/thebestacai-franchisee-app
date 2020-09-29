@@ -14,7 +14,7 @@ ipcMain.on('item:add', async (event, { sale, ...payload }) => {
 
 ipcMain.on('item:decress', async (event, { id, sale }) => {
   try {
-    await ItemsService.decressQuantity(id)
+    await ItemsService.decressQuantity(id, sale)
     const items = await ItemsService.getBySale(sale)
     const total = await ItemsService.getTotalBySale(sale)
     event.reply('item:decress:response', { total, items })

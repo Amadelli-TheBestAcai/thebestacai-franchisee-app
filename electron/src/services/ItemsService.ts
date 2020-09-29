@@ -1,7 +1,12 @@
 import ItemsRepository from '../repositories/ItemsRepository'
+import SalesRepository from '../repositories/SalesRepository'
+
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
 import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
+
+import { getTotalAndQuantity } from '../utils/ItemsHandler'
+
 import { v4 as uuidv4 } from 'uuid'
 class ItemsService {
   async createOrUpdate(item: CreateItemDTO, sale_id: string): Promise<void> {
@@ -16,6 +21,9 @@ class ItemsService {
         quantity: +oldItem.quantity + 1,
       }
       await ItemsRepository.update(oldItem.id, payload)
+      const newItems = await ItemsRepository.getBySale(sale_id)
+      const newTotalAndQuantity = getTotalAndQuantity(newItems)
+      await SalesRepository.update(sale_id, { ...newTotalAndQuantity })
     } else {
       const payload: CreateItemDTO = {
         id: uuidv4(),
@@ -24,6 +32,9 @@ class ItemsService {
         sale_id,
       }
       await ItemsRepository.create(payload)
+      const newItems = await ItemsRepository.getBySale(sale_id)
+      const newTotalAndQuantity = getTotalAndQuantity(newItems)
+      await SalesRepository.update(sale_id, { ...newTotalAndQuantity })
     }
   }
 
@@ -49,7 +60,7 @@ class ItemsService {
     await ItemsRepository.deleteBySale(sale_id)
   }
 
-  async decressQuantity(id: string): Promise<void> {
+  async decressQuantity(id: string, sale_id: string): Promise<void> {
     const item = await ItemsRepository.findById(id)
     const quantity = +item.quantity - 1
     const total = +item.total - +item.price_unit
@@ -58,6 +69,9 @@ class ItemsService {
     } else {
       await ItemsRepository.update(id, { quantity, total })
     }
+    const newItems = await ItemsRepository.getBySale(sale_id)
+    const newTotalAndQuantity = getTotalAndQuantity(newItems)
+    await SalesRepository.update(sale_id, { ...newTotalAndQuantity })
   }
 }
 

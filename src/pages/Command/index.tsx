@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 
 import RouterDescription from '../../components/RouterDescription'
+import Command from '../../components/Command'
 import Spinner from '../../components/Spinner'
 
 import { Sale } from '../../models/sale'
@@ -20,10 +21,32 @@ const Control: React.FC = () => {
     })
   }, [])
 
+  const handeChange = (id: string): void => {
+    console.log(`Changing to sale ${id}`)
+  }
+
+  const handeRemove = (id: string): void => {
+    console.log(`Removing sale ${id}`)
+  }
+
   return (
     <Container>
       <RouterDescription description="Comandas" />
-      {loadingComands ? <Spinner /> : <CommandsContainer></CommandsContainer>}
+      {loadingComands ? (
+        <Spinner />
+      ) : (
+        <CommandsContainer>
+          {sales.map((sale, index) => (
+            <Command
+              key={sale.id}
+              index={+index + 1}
+              sale={sale}
+              handleChange={handeChange}
+              handleRemove={handeRemove}
+            />
+          ))}
+        </CommandsContainer>
+      )}
     </Container>
   )
 }

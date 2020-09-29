@@ -1,6 +1,7 @@
 import knex from '../database'
 import { Sale } from '../models/Sale'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
+import { UpdateSaleDTO } from '../models/dtos/sales/UpdateSaleDTO'
 class SalesRepository {
   async create(sales: CreateSaleDTO): Promise<void> {
     await knex('sales').insert(sales)
@@ -19,7 +20,7 @@ class SalesRepository {
     return await knex('sales').where({ to_integrate: true })
   }
 
-  async update(id: string, payload: CreateSaleDTO): Promise<void> {
+  async update(id: string, payload: UpdateSaleDTO): Promise<void> {
     await knex('sales').where({ id }).update(payload)
   }
 

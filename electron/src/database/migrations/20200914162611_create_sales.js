@@ -5,6 +5,8 @@ exports.up = async (knex) =>
     table.string('name')
     table.string('type')
     table.decimal('discount', 8, 2)
+    table.decimal('total', 8, 2)
+    table.integer('quantity')
     table.boolean('to_integrate')
     table.boolean('is_current')
     table.string('created_at')
