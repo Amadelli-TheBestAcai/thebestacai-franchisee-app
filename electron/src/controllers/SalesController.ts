@@ -10,13 +10,22 @@ ipcMain.on('sale:getCurrent', async (event) => {
   }
 })
 
-ipcMain.on('sale:getCommands', async (event) => {
+ipcMain.on('sale:command:get', async (event) => {
   try {
     const sales = await SalesService.getSalesCommands()
-    event.reply('sale:getCommands:response', sales)
+    event.reply('sale:command:get:response', sales)
   } catch (err) {
     console.error(err)
-    event.reply('sale:getCommands:response', [])
+    event.reply('sale:command:get:response', [])
+  }
+})
+
+ipcMain.on('sale:command:create', async (event) => {
+  try {
+    const sales = await SalesService.getSalesCommands()
+    event.reply('sale:command:create:response', sales)
+  } catch (err) {
+    console.error(err)
   }
 })
 

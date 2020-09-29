@@ -13,8 +13,8 @@ const Control: React.FC = () => {
   const [sales, setSales] = useState<Sale[]>([])
 
   useEffect(() => {
-    ipcRenderer.send('sale:getCommands')
-    ipcRenderer.once('sale:getCommands:response', (event, sales) => {
+    ipcRenderer.send('sale:command:get')
+    ipcRenderer.once('sale:command:get:response', (event, sales) => {
       setLoadingComands(false)
       setSales(sales)
     })
