@@ -18,7 +18,7 @@ const Payment: React.FC<IProps> = ({ payment, removePayment }) => {
         <Description>{PaymentType[type]}</Description>
       </Column>
       <Column span={10}>
-        <Description>R$ {amount?.toFixed(2)}</Description>
+        <Description>R$ {amount}</Description>
       </Column>
       <Column span={4}>
         <Button onClick={() => removePayment(payment)}>
