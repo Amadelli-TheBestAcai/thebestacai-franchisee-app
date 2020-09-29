@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 
 import {
-  Spin as SpinAnt,
   Button as ButtonAnt,
   Input as InputAnt,
   Col as ColAnt,
@@ -73,16 +72,6 @@ export const AmountAction = styled.div`
   width: 70%;
   height: 20%;
 `
-
-export const SpinerContainer = styled.div`
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
-  justify-content: center;
-  align-items: center;
-`
-
-export const Spin = styled(SpinAnt)``
 
 export const FinishButton = styled(ButtonAnt)`
   margin: 0 15px;

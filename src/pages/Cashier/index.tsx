@@ -5,6 +5,7 @@ import { isOnline } from '../../helpers/InternetConnection'
 
 import RouterDescription from '../../components/RouterDescription'
 import Cash from '../../components/Cashier'
+import Spinner from '../../components/Spinner'
 
 import { Cashier as CashierModel } from '../../models/cashier'
 
@@ -14,8 +15,6 @@ import {
   Container,
   PrimaryContent,
   SecondaryContent,
-  SpinerContainer,
-  Spin,
   CashesContainer,
   Header,
   AmountAction,
@@ -33,6 +32,7 @@ import {
 type IProps = RouteComponentProps
 
 const Cashier: React.FC<IProps> = ({ history }) => {
+  const [loadingCashes, setLoadingCashes] = useState(true)
   const [cashes, setCashes] = useState<CashierModel[]>([])
   const [loading, setLoading] = useState(false)
   const [amount, setAmount] = useState({
@@ -56,7 +56,11 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    setCashes(ipcRenderer.sendSync('cashier:get', isOnline()))
+    ipcRenderer.send('cashier:get', isOnline())
+    ipcRenderer.on('cashier:get:response', (event, cashes) => {
+      setCashes(cashes)
+      setLoadingCashes(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -115,10 +119,8 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   return (
     <Container>
       <RouterDescription description="Caixas" />
-      {!cashes.length ? (
-        <SpinerContainer>
-          <Spin />
-        </SpinerContainer>
+      {loadingCashes ? (
+        <Spinner />
       ) : (
         <>
           <>
