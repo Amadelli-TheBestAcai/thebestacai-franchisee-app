@@ -4,22 +4,26 @@ import { ipcRenderer } from 'electron'
 import RouterDescription from '../../components/RouterDescription'
 import Spinner from '../../components/Spinner'
 
-import { Container } from './styles'
+import { Sale } from '../../models/sale'
+
+import { Container, CommandsContainer } from './styles'
 
 const Control: React.FC = () => {
   const [loadingComands, setLoadingComands] = useState(true)
+  const [sales, setSales] = useState<Sale[]>([])
+
   useEffect(() => {
-    console.log('asdf')
     ipcRenderer.send('sale:getCommands')
-    ipcRenderer.once('sale:getCommands:response', (event, cashes) => {
-      console.log(cashes)
+    ipcRenderer.once('sale:getCommands:response', (event, sales) => {
       setLoadingComands(false)
+      setSales(sales)
     })
   }, [])
+
   return (
     <Container>
       <RouterDescription description="Comandas" />
-      {loadingComands ? <Spinner /> : <div>Already loaded!</div>}
+      {loadingComands ? <Spinner /> : <CommandsContainer></CommandsContainer>}
     </Container>
   )
 }

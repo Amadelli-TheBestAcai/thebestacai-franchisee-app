@@ -69,9 +69,3 @@ export const FinishContainer = styled.div`
   height: 100%;
   background: magenta;
 `
-
-export const MenuContainer = styled.div`
-  display: flex;
-  height: 85%;
-  width: 5vw;
-`

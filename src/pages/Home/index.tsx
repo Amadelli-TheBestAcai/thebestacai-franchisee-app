@@ -28,7 +28,6 @@ import {
   PaymentsContainer,
   PaymentsTypesContainer,
   FinishContainer,
-  MenuContainer,
   ActionsContainer,
 } from './styles'
 
@@ -99,6 +98,11 @@ const Home: React.FC = () => {
     })
   }
 
+  const handleOpenPayment = (type: number, defaultValue: number): void => {
+    setPaymentType(type)
+    setPaymentModal(true)
+  }
+
   const addPayment = (): void => {
     ipcRenderer.send('payment:add', {
       sale: sale.id,
@@ -112,9 +116,8 @@ const Home: React.FC = () => {
     setPaymentModal(false)
   }
 
-  const handleOpenPayment = (type: number, defaultValue: number): void => {
-    setPaymentType(type)
-    setPaymentModal(true)
+  const addToQueue = (name: string): void => {
+    console.log(`Sending ${name} to queue`)
   }
 
   const getTotalSoldOnSale = (): number => {
@@ -157,7 +160,7 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions />
+                <Actions addToQueue={addToQueue} />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />

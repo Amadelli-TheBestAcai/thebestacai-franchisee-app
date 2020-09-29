@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import { Offer, ArrowFromLeft, ArrowFromRight } from '../../styles/Icons'
+import {
+  Offer,
+  ArrowFromLeft,
+  ArrowFromRight,
+  AddToQueue,
+} from '../../styles/Icons'
 
 export const Container = styled.div`
   display: flex;
@@ -58,6 +63,16 @@ export const OutButton = styled.button`
   }
 `
 
+export const CommandButton = styled.button`
+  ${ButtonCSS};
+  background: #29de60;
+
+  :hover {
+    background: #03e247;
+    transition: 0.5s;
+  }
+`
+
 const IconCSS = css`
   width: 26px;
   height: 26px;
@@ -75,5 +90,9 @@ export const EntryIcon = styled(ArrowFromLeft)`
   ${IconCSS};
 `
 export const OutIcon = styled(ArrowFromRight)`
+  ${IconCSS};
+`
+
+export const CommandIcon = styled(AddToQueue)`
   ${IconCSS};
 `

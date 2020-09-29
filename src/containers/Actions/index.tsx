@@ -1,16 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
+
+import CommandForm from '../CommandForm'
 
 import {
   Container,
   DiscountButton,
   EntryButton,
+  CommandButton,
   OutButton,
   OfferIcon,
   EntryIcon,
   OutIcon,
+  CommandIcon,
 } from './styles'
 
-const Actions: React.FC = () => {
+type IProps = {
+  addToQueue: (name: string) => void
+}
+
+const Actions: React.FC<IProps> = ({ addToQueue }) => {
+  const [commandState, setCommandState] = useState(false)
   return (
     <Container>
       <DiscountButton>
@@ -25,6 +34,15 @@ const Actions: React.FC = () => {
         SAÍDA
         <OutIcon />
       </OutButton>
+      <CommandButton onClick={() => setCommandState(true)}>
+        COMANDA
+        <CommandIcon />
+      </CommandButton>
+      <CommandForm
+        onFinish={addToQueue}
+        modalState={commandState}
+        setModalState={setCommandState}
+      />
     </Container>
   )
 }
