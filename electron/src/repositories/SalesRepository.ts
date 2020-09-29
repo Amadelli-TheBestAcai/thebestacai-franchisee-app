@@ -22,6 +22,10 @@ class SalesRepository {
   async update(id: string, payload: CreateSaleDTO): Promise<void> {
     await knex('sales').where({ id }).update(payload)
   }
+
+  async getCommands(): Promise<Sale[]> {
+    return await knex('sales').where({ to_integrate: false })
+  }
 }
 
 export default new SalesRepository()

@@ -10,6 +10,16 @@ ipcMain.on('sale:getCurrent', async (event) => {
   }
 })
 
+ipcMain.on('sale:getCommands', async (event) => {
+  try {
+    const sales = await SalesService.getSalesCommands()
+    event.reply('sale:getCommands:response', sales)
+  } catch (err) {
+    console.error(err)
+    event.reply('sale:getCommands:response', [])
+  }
+})
+
 ipcMain.on('sale:integrate', async (event) => {
   try {
     await SalesService.integrate('2-05')

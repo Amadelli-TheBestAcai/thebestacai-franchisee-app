@@ -3,6 +3,7 @@ import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
+import { Sale } from '../models/Sale'
 import { v4 as uuidv4 } from 'uuid'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
@@ -73,6 +74,16 @@ class SalesService {
         }
       })
     )
+  }
+
+  async getSalesCommands(): Promise<Sale[]> {
+    let sales = await SalesRepository.getCommands()
+    const currentSale = sales.find((sale) => sale.is_current === 1)
+    if (currentSale) {
+      sales = sales.filter((sale) => sale.id !== currentSale.id)
+      return sales || []
+    }
+    return sales
   }
 }
 

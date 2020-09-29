@@ -41,7 +41,7 @@ const IconCSS = css`
     color: black;
   }
 `
-export const Control = styled(ListOl)`
+export const Command = styled(ListOl)`
   ${IconCSS}
 `
 export const Cash = styled(PointOfSale)`

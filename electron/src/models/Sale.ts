@@ -4,5 +4,5 @@ export interface Sale {
   type: string
   discount: number
   to_integrate: boolean
-  is_current: boolean
+  is_current: boolean | number
 }

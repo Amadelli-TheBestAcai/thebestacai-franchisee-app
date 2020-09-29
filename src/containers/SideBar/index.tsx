@@ -3,7 +3,7 @@ import { withRouter, RouteComponentProps } from 'react-router-dom'
 
 import {
   Container,
-  Control,
+  Command,
   Cash,
   Delivery,
   ArrowIcon,
@@ -24,7 +24,7 @@ const SideBar: React.FC<IProps> = ({ history }) => {
         <Home onClick={() => redirect('/home')} />
       </IconContainer>
       <IconContainer>
-        <Control onClick={() => redirect('/control')} />
+        <Command onClick={() => redirect('/command')} />
       </IconContainer>
       <IconContainer>
         <Cash onClick={() => redirect('/cashier')} />
