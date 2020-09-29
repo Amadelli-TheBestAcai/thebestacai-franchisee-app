@@ -9,3 +9,6 @@ export { CashRegister } from '@styled-icons/fa-solid/CashRegister'
 export { RemoveCircle, AddCircle } from '@styled-icons/material'
 export { Offer, AddToQueue, User } from '@styled-icons/boxicons-solid'
 export { ArrowFromLeft, ArrowFromRight } from '@styled-icons/boxicons-regular'
+export { CloseOutline } from '@styled-icons/evaicons-outline'
+// TODO: Corrigir icone de troca de comanda
+export { ExchangeAlt } from '@styled-icons/fa-solid'
