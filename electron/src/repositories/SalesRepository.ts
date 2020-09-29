@@ -31,6 +31,10 @@ class SalesRepository {
   async createCommand(id: string, name: string): Promise<void> {
     await knex('sales').where({ id }).update({ is_current: false, name })
   }
+
+  async getById(id: string): Promise<Sale> {
+    return await knex('sales').where({ id })
+  }
 }
 
 export default new SalesRepository()

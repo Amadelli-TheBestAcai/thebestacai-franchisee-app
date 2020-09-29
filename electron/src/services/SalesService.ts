@@ -93,6 +93,12 @@ class SalesService {
     await SalesRepository.createCommand(id, name)
     return await this.create()
   }
+
+  async change(id: string, name: string): Promise<void> {
+    const currentSale = await this.getCurrentSale()
+    await SalesRepository.update(currentSale.id, { is_current: false, name })
+    await SalesRepository.update(id, { is_current: true })
+  }
 }
 
 export default new SalesService()

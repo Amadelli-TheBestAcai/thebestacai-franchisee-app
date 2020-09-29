@@ -22,8 +22,5 @@ export const GlobalStyle = createGlobalStyle`
     --button-remove: #FF0000;
     --hover-bottomLogin: #000000;
     --mainBackground:  #f4f4f4;
-
-
-
   }
 `

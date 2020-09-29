@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Dispatch, SetStateAction } from 'react'
 
 import CommandForm from '../CommandForm'
 
@@ -16,9 +16,11 @@ import {
 
 type IProps = {
   addToQueue: (name: string) => void
+  command: string
+  setCommand: Dispatch<SetStateAction<string>>
 }
 
-const Actions: React.FC<IProps> = ({ addToQueue }) => {
+const Actions: React.FC<IProps> = ({ addToQueue, command, setCommand }) => {
   const [commandState, setCommandState] = useState(false)
   return (
     <Container>
@@ -42,6 +44,9 @@ const Actions: React.FC<IProps> = ({ addToQueue }) => {
         onFinish={addToQueue}
         modalState={commandState}
         setModalState={setCommandState}
+        value={command}
+        setValue={setCommand}
+        placeHolder="Digite o nome do cliente"
       />
     </Container>
   )

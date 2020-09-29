@@ -1,6 +1,7 @@
 export interface UpdateSaleDTO {
   change_amount?: number
   type?: string
+  name?: string
   quantity?: number
   total?: number
   discount?: number

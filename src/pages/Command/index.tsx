@@ -5,12 +5,17 @@ import RouterDescription from '../../components/RouterDescription'
 import Command from '../../components/Command'
 import Spinner from '../../components/Spinner'
 
+import CommandForm from '../../containers/CommandForm'
+
 import { Sale } from '../../models/sale'
 
 import { Container, CommandsContainer } from './styles'
 
 const Control: React.FC = () => {
   const [loadingComands, setLoadingComands] = useState(true)
+  const [modalState, setModalState] = useState(false)
+  const [newSale, setNewSale] = useState<string>()
+  const [command, setCommand] = useState<string>()
   const [sales, setSales] = useState<Sale[]>([])
 
   useEffect(() => {
@@ -21,12 +26,23 @@ const Control: React.FC = () => {
     })
   }, [])
 
-  const handeChange = (id: string): void => {
-    console.log(`Changing to sale ${id}`)
+  const handleChange = (): void => {
+    setCommand('')
+    setLoadingComands(true)
+    ipcRenderer.send('sale:command:change', { sale: newSale, name: command })
+    ipcRenderer.once('sale:command:change:response', (event, sales) => {
+      setLoadingComands(false)
+      setSales(sales)
+    })
   }
 
   const handeRemove = (id: string): void => {
-    console.log(`Removing sale ${id}`)
+    setLoadingComands(true)
+    ipcRenderer.send('sale:command:remove', id)
+    ipcRenderer.once('sale:command:remove:response', (event, sales) => {
+      setLoadingComands(false)
+      setSales(sales)
+    })
   }
 
   return (
@@ -41,12 +57,21 @@ const Control: React.FC = () => {
               key={sale.id}
               index={+index + 1}
               sale={sale}
-              handleChange={handeChange}
+              setNewSale={setNewSale}
               handleRemove={handeRemove}
+              setModalState={setModalState}
             />
           ))}
         </CommandsContainer>
       )}
+      <CommandForm
+        onFinish={handleChange}
+        modalState={modalState}
+        setModalState={setModalState}
+        value={command}
+        setValue={setCommand}
+        placeHolder="Cliente da venda atual"
+      />
     </Container>
   )
 }

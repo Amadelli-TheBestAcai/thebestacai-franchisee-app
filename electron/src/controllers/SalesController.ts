@@ -42,3 +42,23 @@ ipcMain.on('sale:finish', async (event, sale) => {
   const newSale = await SalesService.getCurrentSale()
   event.reply('sale:finish:response', newSale)
 })
+
+ipcMain.on('sale:command:change', async (event, { sale, name }) => {
+  try {
+    await SalesService.change(sale, name)
+    const sales = await SalesService.getSalesCommands()
+    event.reply('sale:command:change:response', sales)
+  } catch (err) {
+    console.error(err)
+  }
+})
+
+ipcMain.on('sale:command:remove', async (event, sale) => {
+  try {
+    await SalesService.delete(sale)
+    const sales = await SalesService.getSalesCommands()
+    event.reply('sale:command:remove:response', sales)
+  } catch (err) {
+    console.error(err)
+  }
+})

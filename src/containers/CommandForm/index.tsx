@@ -7,21 +7,25 @@ import { Container, Input } from './styles'
 type IProps = {
   modalState: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
-  onFinish: (name: string) => void
+  value: string
+  setValue: Dispatch<SetStateAction<string>>
+  onFinish: any
+  placeHolder?: string
 }
 
 const CommandForm: React.FC<IProps> = ({
   onFinish,
   modalState,
   setModalState,
+  value,
+  setValue,
+  placeHolder,
 }) => {
-  const [name, setName] = useState<string>()
   const handleSubmit = () => {
-    if (!name) {
+    if (!value) {
       return message.warning('Informe um nome')
     }
-    onFinish(name)
-    setName('')
+    onFinish()
     setModalState(false)
   }
   return (
@@ -34,11 +38,11 @@ const CommandForm: React.FC<IProps> = ({
       destroyOnClose={true}
     >
       <Input
-        placeholder="Nome"
+        placeholder={placeHolder}
         autoFocus={true}
-        value={name}
+        value={value}
         onPressEnter={handleSubmit}
-        onChange={({ target: { value } }) => setName(value)}
+        onChange={({ target: { value } }) => setValue(value)}
       />
     </Container>
   )
