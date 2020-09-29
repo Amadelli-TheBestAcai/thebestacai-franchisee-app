@@ -1,6 +1,3 @@
-import { Payment } from '../Payment'
-import { Item } from '../Item'
-
 export interface CreateSaleDTO {
   id: string
   change_amount: number
@@ -8,4 +5,5 @@ export interface CreateSaleDTO {
   discount: number
   to_integrate: boolean
   is_current: boolean
+  created_at: string
 }

@@ -5,6 +5,7 @@ import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 import { Sale } from '../models/Sale'
 import { v4 as uuidv4 } from 'uuid'
+import { getNow } from '../utils/DateHandler'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
     const newSale: CreateSaleDTO = {
@@ -14,6 +15,7 @@ class SalesService {
       discount: 0,
       to_integrate: false,
       is_current: true,
+      created_at: getNow(),
     }
     await SalesRepository.create(newSale)
     return newSale
@@ -31,6 +33,7 @@ class SalesService {
         discount: 0,
         to_integrate: false,
         is_current: true,
+        created_at: getNow(),
       }
       await SalesRepository.create(newSale)
       return newSale

@@ -6,4 +6,5 @@ export interface Sale {
   discount: number
   to_integrate: boolean
   is_current: boolean
+  created_at: string
 }

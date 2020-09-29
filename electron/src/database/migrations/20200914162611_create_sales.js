@@ -7,6 +7,7 @@ exports.up = async (knex) =>
     table.decimal('discount', 8, 2)
     table.boolean('to_integrate')
     table.boolean('is_current')
+    table.string('created_at')
   })
 
 exports.down = async (knex) => knex.schema.dropTable('sales')
