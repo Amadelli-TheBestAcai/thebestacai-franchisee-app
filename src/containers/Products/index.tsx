@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
 import { isOnline } from '../../helpers/InternetConnection'
-import { Product as ProductModel } from '../../models/product'
+import { ProductByCategory } from '../../models/product'
 
 import Product from '../../components/Product'
 
-import { Container, LoadingContainer, Spin } from './styles'
+import {
+  Container,
+  LoadingContainer,
+  Spin,
+  TabContainer,
+  TabItem,
+} from './styles'
 
 interface IProps {
   handleItem
 }
 
 const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
-  const [products, setProducts] = useState<ProductModel[]>([])
+  const [products, setProducts] = useState<ProductByCategory[]>([])
 
   useEffect(() => {
     setProducts(ipcRenderer.sendSync('products:get', isOnline()))
@@ -25,13 +31,20 @@ const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
           <Spin />
         </LoadingContainer>
       ) : (
-        products.map((product) => (
-          <Product
-            key={product.product_id}
-            product={product}
-            handleItem={handleItem}
-          />
-        ))
+        <TabContainer defaultActiveKey="1">
+          {products.map((productCategory, index) => (
+            <TabItem tab={productCategory.category} key={index + 1}>
+              {/* //TODO: ADICIONAR HEADER DE PRODUTOS AQUI */}
+              {productCategory.products.map((product) => (
+                <Product
+                  key={product.product_id}
+                  product={product}
+                  handleItem={handleItem}
+                />
+              ))}
+            </TabItem>
+          ))}
+        </TabContainer>
       )}
     </Container>
   )

@@ -1,10 +1,12 @@
 import { ProductCategory } from './productCategory'
 
 export interface Product {
-  name: string
-  price_buy: number
-  created_at: string
   product_id: number
-  price_unit: string
+  name: string
+  price_unit: number
   category: ProductCategory
+}
+export interface ProductByCategory {
+  category: string
+  products: Product[]
 }

@@ -1,7 +1,7 @@
 import api from '../utils/Api'
 import UserService from '../services/UserService'
 import ProductsRepository from '../repositories/ProductsRepository'
-
+import { formaterToCategory } from '../utils/ProductFormater'
 class ProductsService {
   async updateAllProducts(products) {
     const formatedProducts = products.map((product) => ({
@@ -21,7 +21,7 @@ class ProductsService {
       data: { data },
     } = await api.get(`products_store/${store}`)
     this.updateAllProducts(data)
-    return data
+    return formaterToCategory(data)
   }
 
   async getOfflineProducts() {
@@ -32,7 +32,7 @@ class ProductsService {
       price_unit: product.price_unit,
       category: { id: product.category_id, name: product.category_name },
     }))
-    return formatedProducts
+    return formaterToCategory(formatedProducts)
   }
 
   async getProducts(isConnected: boolean) {
