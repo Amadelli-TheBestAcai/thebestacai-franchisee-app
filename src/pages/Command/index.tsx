@@ -16,23 +16,31 @@ const Control: React.FC = () => {
   const [modalState, setModalState] = useState(false)
   const [newSale, setNewSale] = useState<string>()
   const [command, setCommand] = useState<string>()
+  const [currentSale, setCurrentSale] = useState<Sale>()
   const [sales, setSales] = useState<Sale[]>([])
 
   useEffect(() => {
     ipcRenderer.send('sale:command:get')
     ipcRenderer.once('sale:command:get:response', (event, sales) => {
+      const currentSale = sales.find((sale) => sale.is_current === 1)
+      setCurrentSale(currentSale)
+      const salesWithOutCurrent = sales.filter((sale) => sale.is_current !== 1)
+      setSales(salesWithOutCurrent)
       setLoadingComands(false)
-      setSales(sales)
     })
   }, [])
 
-  const handleChange = (): void => {
-    setCommand('')
+  const handleChange = (sale?: string, name?: string): void => {
     setLoadingComands(true)
-    ipcRenderer.send('sale:command:change', { sale: newSale, name: command })
+    const oldSale = { sale: sale || newSale, name: name || command }
+    ipcRenderer.send('sale:command:change', oldSale)
     ipcRenderer.once('sale:command:change:response', (event, sales) => {
+      const currentSale = sales.find((sale) => sale.is_current === 1)
+      setCurrentSale(currentSale)
+      const salesWithOutCurrent = sales.filter((sale) => sale.is_current !== 1)
       setLoadingComands(false)
-      setSales(sales)
+      setCommand('')
+      setSales(salesWithOutCurrent)
     })
   }
 
@@ -57,9 +65,12 @@ const Control: React.FC = () => {
               key={sale.id}
               index={+index + 1}
               sale={sale}
+              handleChange={handleChange}
+              setComandName={setCommand}
               setNewSale={setNewSale}
               handleRemove={handeRemove}
               setModalState={setModalState}
+              currentSaleName={currentSale.name}
             />
           ))}
         </CommandsContainer>

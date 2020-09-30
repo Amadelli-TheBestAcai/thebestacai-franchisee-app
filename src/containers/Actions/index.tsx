@@ -2,6 +2,8 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 
 import CommandForm from '../CommandForm'
 
+import { Sale } from '../../models/sale'
+
 import {
   Container,
   DiscountButton,
@@ -15,13 +17,27 @@ import {
 } from './styles'
 
 type IProps = {
-  addToQueue: (name: string) => void
+  currentSale: Sale
+  addToQueue: (name?: string) => void
   command: string
   setCommand: Dispatch<SetStateAction<string>>
 }
 
-const Actions: React.FC<IProps> = ({ addToQueue, command, setCommand }) => {
+const Actions: React.FC<IProps> = ({
+  addToQueue,
+  command,
+  setCommand,
+  currentSale,
+}) => {
   const [commandState, setCommandState] = useState(false)
+
+  const onCommandClick = () => {
+    if (!currentSale.name) {
+      setCommandState(true)
+    } else {
+      addToQueue(currentSale.name)
+    }
+  }
   return (
     <Container>
       <DiscountButton>
@@ -36,7 +52,7 @@ const Actions: React.FC<IProps> = ({ addToQueue, command, setCommand }) => {
         SAÍDA
         <OutIcon />
       </OutButton>
-      <CommandButton onClick={() => setCommandState(true)}>
+      <CommandButton onClick={() => onCommandClick()}>
         COMANDA
         <CommandIcon />
       </CommandButton>

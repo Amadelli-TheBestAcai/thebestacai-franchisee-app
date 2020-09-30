@@ -80,13 +80,8 @@ class SalesService {
   }
 
   async getSalesCommands(): Promise<Sale[]> {
-    let sales = await SalesRepository.getCommands()
-    const currentSale = sales.find((sale) => sale.is_current === 1)
-    if (currentSale) {
-      sales = sales.filter((sale) => sale.id !== currentSale.id)
-      return sales || []
-    }
-    return sales
+    const sales = await SalesRepository.getCommands()
+    return sales || []
   }
 
   async createCommand(id: string, name: string): Promise<CreateSaleDTO> {

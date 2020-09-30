@@ -6,6 +6,11 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   background: #fff;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 `
 export const CommandsContainer = styled.div`
   display: flex;

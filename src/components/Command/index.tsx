@@ -22,23 +22,34 @@ import {
 type IProps = {
   sale: Sale
   index: number
+  currentSaleName: string
   setNewSale: Dispatch<SetStateAction<string>>
+  setComandName: Dispatch<SetStateAction<string>>
   setModalState: Dispatch<SetStateAction<boolean>>
+  handleChange: (sale?: string, command?: string) => void
   handleRemove: (id: string) => void
 }
 
 const Command: React.FC<IProps> = ({
   sale,
   setModalState,
+  setComandName,
   handleRemove,
   setNewSale,
   index,
+  handleChange,
+  currentSaleName,
 }) => {
   const { name, created_at, quantity, total } = sale
   const formatedData = created_at.replace('T', ' ')
-  const handleChange = () => {
-    setModalState(true)
+  const change = () => {
     setNewSale(sale.id)
+    if (currentSaleName) {
+      setComandName(name)
+      handleChange(sale.id, currentSaleName)
+    } else {
+      setModalState(true)
+    }
   }
   return (
     <Container>
@@ -79,7 +90,7 @@ const Command: React.FC<IProps> = ({
             <CloseIcon onClick={() => handleRemove(sale.id)} />
           </ActionTopSide>
           <ActionMiddlepSide>
-            <ChangeIcon onClick={() => handleChange()} />
+            <ChangeIcon onClick={() => change()} />
           </ActionMiddlepSide>
         </ActionContainer>
       </Column>

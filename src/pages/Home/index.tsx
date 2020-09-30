@@ -117,15 +117,18 @@ const Home: React.FC = () => {
     setPaymentModal(false)
   }
 
-  const addToQueue = (): void => {
-    setCommand('')
-    ipcRenderer.send('sale:command:create', { id: sale.id, name: command })
+  const addToQueue = (name?: string): void => {
+    ipcRenderer.send('sale:command:create', {
+      id: sale.id,
+      name: command || name,
+    })
     ipcRenderer.once('sale:command:create:response', (event, sale) => {
       setSale(sale)
       setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
       setItems(ipcRenderer.sendSync('item:get', sale.id))
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
       setLoading(false)
+      setCommand('')
     })
   }
 
@@ -173,6 +176,7 @@ const Home: React.FC = () => {
                   addToQueue={addToQueue}
                   command={command}
                   setCommand={setCommand}
+                  currentSale={sale}
                 />
               </ActionsContainer>
               <ItemsContainer>
