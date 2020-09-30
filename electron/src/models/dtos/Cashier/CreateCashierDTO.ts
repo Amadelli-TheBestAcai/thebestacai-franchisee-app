@@ -1,5 +1,4 @@
-export interface Cashier {
-  id: number
+export interface CreateCashierDTO {
   code: string
   cash_id?: number
   history_id?: number

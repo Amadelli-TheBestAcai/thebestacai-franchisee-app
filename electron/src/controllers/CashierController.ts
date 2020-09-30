@@ -3,8 +3,9 @@ import CashierService from '../services/CashierService'
 
 ipcMain.on('cashier:get', async (event, isConnected) => {
   try {
-    const response = await CashierService.getCashes(isConnected)
-    event.reply('cashier:get:response', response)
+    const cashes = await CashierService.getCashes(isConnected)
+    const current = await CashierService.getCurrentCashier()
+    event.reply('cashier:get:response', { cashes, current })
   } catch (err) {
     console.error(err)
     event.reply('cashier:get:response', [])

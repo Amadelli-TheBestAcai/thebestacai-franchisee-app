@@ -57,7 +57,12 @@ const Cashier: React.FC<IProps> = ({ history }) => {
 
   useEffect(() => {
     ipcRenderer.send('cashier:get', isOnline())
-    ipcRenderer.on('cashier:get:response', (event, cashes) => {
+    ipcRenderer.on('cashier:get:response', (event, { cashes, current }) => {
+      console.log(current)
+      if (current) {
+        setCash(current.code)
+        setStep(2)
+      }
       setCashes(cashes)
       setLoadingCashes(false)
     })
@@ -99,6 +104,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
     setCash(cashier)
     setStep(2)
   }
+
   const onFinish = () => {
     setLoading(true)
     ipcRenderer.send('cashier:open', {

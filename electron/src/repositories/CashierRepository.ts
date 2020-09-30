@@ -1,9 +1,10 @@
 import knex from '../database'
 import { Cashier } from '../models/Cashier'
+import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
 
 class CashierRepository {
-  async create(code: string): Promise<void> {
-    return await knex('cashier').insert({ id: 1, code })
+  async create(payload: CreateCashierDTO): Promise<void> {
+    return await knex('cashier').insert(payload)
   }
 
   async delete(): Promise<void> {
@@ -11,7 +12,8 @@ class CashierRepository {
   }
 
   async get(): Promise<Cashier> {
-    return await knex('cashier')[0]
+    const cashes = await knex('cashier')
+    return cashes[0]
   }
 }
 

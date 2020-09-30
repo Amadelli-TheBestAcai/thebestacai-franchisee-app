@@ -4,6 +4,7 @@ import CashierRepository from '../repositories/CashierRepository'
 import { Cashier } from '../models/Cashier'
 import { OpenCashierDTO } from '../models/dtos/Cashier/OpenCashierDTO'
 import { CloseCashierDTO } from '../models/dtos/Cashier/CloseCashierDTO'
+import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
 class CashierService {
   async getOnlineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
     const { store } = await UserService.getTokenInfo()
@@ -50,12 +51,21 @@ class CashierService {
     { code, amount_on_open }: OpenCashierDTO,
     isConnected: boolean
   ): Promise<void> {
+    let newCashier: CreateCashierDTO = { code }
     if (isConnected) {
       const { store } = await UserService.getTokenInfo()
-      await api.put(`/store_cashes/${store}-${code}/open`, { amount_on_open })
+      const {
+        data: {
+          data: { cash_id, history_id, store_id },
+        },
+      } = await api.put(`/store_cashes/${store}-${code}/open`, {
+        amount_on_open,
+      })
+      newCashier = { code, cash_id, history_id, store_id }
     }
+    console.log(newCashier)
     await CashierRepository.delete()
-    await CashierRepository.create(code)
+    await CashierRepository.create(newCashier)
   }
 
   async closeCashier(
