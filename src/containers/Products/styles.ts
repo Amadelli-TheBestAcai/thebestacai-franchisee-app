@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { Spin as SpinAnt, Tabs as TabsAnd } from 'antd'
+import {
+  Spin as SpinAnt,
+  Tabs as TabsAnd,
+  Row as RowAnt,
+  Col as ColAnt,
+} from 'antd'
 
 export const Container = styled.div`
   display: flex;
@@ -23,6 +28,7 @@ export const TabContainer = styled(TabsAnd)`
   width: 100%;
   div.ant-tabs-nav {
     background: var(--primary-orange);
+    margin-bottom: 0px;
   }
   div.ant-tabs-nav-wrap {
     display: flex;
@@ -34,3 +40,22 @@ export const TabContainer = styled(TabsAnd)`
 `
 
 export const TabItem = styled(TabsAnd.TabPane)``
+
+export const ProductHeader = styled(RowAnt)`
+  display: flex;
+  justify-content: space-evenly;
+  background: black;
+  padding: 1% 0;
+`
+
+export const ProductHeaderCol = styled(ColAnt)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const ProductHeaderDescription = styled.label`
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+`
