@@ -24,10 +24,8 @@ export const PrimaryContent = styled.div`
 `
 
 export const Header = styled.div`
-  display: flex;
   width: 100%;
-  justify-content: space-around;
-  height: 20vh;
+  height: 12vh;
 `
 
 export const CashesContainer = styled.div`

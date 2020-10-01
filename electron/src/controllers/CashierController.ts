@@ -36,7 +36,7 @@ ipcMain.on('cashier:close', async (event, { isConnected, ...cashier }) => {
     })
   }
   try {
-    await CashierService.closeCashier(cashier)
+    await CashierService.closeCashier(cashier, isConnected)
     event.reply('cashier:close:response', {
       success: true,
       message: 'Caixa aberto com sucesso',
@@ -47,5 +47,14 @@ ipcMain.on('cashier:close', async (event, { isConnected, ...cashier }) => {
       success: false,
       message: 'Falha ao abrir o caixa',
     })
+  }
+})
+
+ipcMain.on('cashier:history:get', async (event) => {
+  try {
+    const response = await CashierService.getCurrentCashHistory()
+    event.reply('cashier:history:get:response', response)
+  } catch (err) {
+    console.error(err)
   }
 })

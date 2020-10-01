@@ -1,6 +1,7 @@
 import knex from '../database'
 import { Cashier } from '../models/Cashier'
 import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
+import { UpdateCashierDTO } from '../models/dtos/Cashier/UpdateCashierDTO'
 
 class CashierRepository {
   async create(payload: CreateCashierDTO): Promise<void> {
@@ -9,6 +10,10 @@ class CashierRepository {
 
   async delete(): Promise<void> {
     return await knex('cashier').del()
+  }
+
+  async findAndUpdate(id: number, payload: UpdateCashierDTO): Promise<void> {
+    return await knex('cashier').where({ id }).update(payload)
   }
 
   async get(): Promise<Cashier> {

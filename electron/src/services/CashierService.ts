@@ -56,7 +56,7 @@ class CashierService {
     { code, amount_on_open }: OpenCashierDTO,
     isConnected: boolean
   ): Promise<void> {
-    let newCashier: CreateCashierDTO = { code }
+    let newCashier: CreateCashierDTO = { code, is_opened: true }
     if (isConnected) {
       const { store } = await UserService.getTokenInfo()
       const {
@@ -66,23 +66,47 @@ class CashierService {
       } = await api.put(`/store_cashes/${store}-${code}/open`, {
         amount_on_open,
       })
-      newCashier = { code, cash_id, history_id, store_id }
+      newCashier = { code, cash_id, history_id, store_id, is_opened: true }
     }
     await CashierRepository.delete()
     await CashierRepository.create(newCashier)
   }
 
-  async closeCashier({
-    code,
-    amount_on_close,
-  }: CloseCashierDTO): Promise<void> {
-    const { store } = await UserService.getTokenInfo()
-    await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
-    await CashierRepository.delete()
+  async closeCashier(
+    { code, amount_on_close }: CloseCashierDTO,
+    isConnected: boolean
+  ): Promise<void> {
+    if (isConnected) {
+      const { store } = await UserService.getTokenInfo()
+      await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
+    }
+    const { id } = await this.getCurrentCashier()
+    await CashierRepository.findAndUpdate(id, { is_opened: false })
   }
 
   async getCurrentCashier(): Promise<Cashier | null> {
     return await CashierRepository.get()
+  }
+
+  async getCurrentCashHistory(): Promise<{
+    cash: string
+    is_opened: boolean
+    history: any
+  } | null> {
+    const cashier = await this.getCurrentCashier()
+    if (cashier) {
+      const { code, store_id, is_opened } = cashier
+      const {
+        data: { history },
+      } = await api.get(`/current_cash_history/${store_id}-${code}`)
+      return {
+        cash: code,
+        is_opened,
+        history,
+      }
+    } else {
+      return null
+    }
   }
 }
 

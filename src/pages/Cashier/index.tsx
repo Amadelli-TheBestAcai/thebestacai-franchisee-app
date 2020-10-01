@@ -7,6 +7,8 @@ import RouterDescription from '../../components/RouterDescription'
 import Cash from '../../components/Cashier'
 import Spinner from '../../components/Spinner'
 
+import CashInfo from '../../containers/CashInfo'
+
 import { Cashier as CashierModel } from '../../models/cashier'
 
 import { message as messageAnt } from 'antd'
@@ -155,12 +157,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
             {step === 1 && (
               <PrimaryContent>
                 <Header>
-                  <p>Status</p>
-                  <p>Abertura</p>
-                  <p>Entradas</p>
-                  <p>Saídas</p>
-                  <p>Fechamento</p>
-                  <p>Balanço</p>
+                  <CashInfo />
                 </Header>
                 <CashesContainer>
                   {cashes.map((cash) => (

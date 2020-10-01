@@ -5,6 +5,7 @@ exports.up = async (knex) =>
     table.integer('cash_id')
     table.integer('history_id')
     table.integer('store_id')
+    table.boolean('is_opened')
   })
 
 exports.down = async (knex) => knex.schema.dropTable('cashier')
