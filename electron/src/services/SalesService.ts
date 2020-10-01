@@ -2,6 +2,7 @@ import SalesRepository from '../repositories/SalesRepository'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import api from '../utils/Api'
+import { getTotalAndQuantity } from '../utils/ItemsHandler'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 import { Sale } from '../models/Sale'
 import { v4 as uuidv4 } from 'uuid'
@@ -81,7 +82,8 @@ class SalesService {
 
   async getSalesCommands(): Promise<Sale[]> {
     const sales = await SalesRepository.getCommands()
-    return sales || []
+    const salesWithOutCurrent = sales.filter((sale) => sale.is_current === 0)
+    return salesWithOutCurrent
   }
 
   async createCommand(id: string, name: string): Promise<CreateSaleDTO> {
@@ -89,10 +91,13 @@ class SalesService {
     return await this.create()
   }
 
-  async change(id: string, name: string): Promise<void> {
-    const currentSale = await this.getCurrentSale()
-    await SalesRepository.update(currentSale.id, { is_current: false, name })
-    await SalesRepository.update(id, { is_current: true })
+  async transferItemsCommand(sale: string): Promise<void> {
+    const { id: sale_id } = await this.getCurrentSale()
+    await ItemsService.updateBySale(sale, { sale_id })
+    await SalesRepository.deleteById(sale)
+    const newItems = await ItemsService.getBySale(sale_id)
+    const quantityAndTotal = getTotalAndQuantity(newItems)
+    await SalesRepository.update(sale_id, { ...quantityAndTotal })
   }
 }
 

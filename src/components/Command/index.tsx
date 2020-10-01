@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React from 'react'
 
 import { Sale } from '../../models/sale'
 
@@ -22,35 +22,19 @@ import {
 type IProps = {
   sale: Sale
   index: number
-  currentSaleName: string
-  setNewSale: Dispatch<SetStateAction<string>>
-  setComandName: Dispatch<SetStateAction<string>>
-  setModalState: Dispatch<SetStateAction<boolean>>
-  handleChange: (sale?: string, command?: string) => void
+  handleTransfer: (sale: string) => void
   handleRemove: (id: string) => void
 }
 
 const Command: React.FC<IProps> = ({
   sale,
-  setModalState,
-  setComandName,
-  handleRemove,
-  setNewSale,
   index,
-  handleChange,
-  currentSaleName,
+  handleTransfer,
+  handleRemove,
 }) => {
-  const { name, created_at, quantity, total } = sale
+  const { id, name, created_at, quantity, total } = sale
   const formatedData = created_at.replace('T', ' ')
-  const change = () => {
-    setNewSale(sale.id)
-    if (currentSaleName) {
-      setComandName(name)
-      handleChange(sale.id, currentSaleName)
-    } else {
-      setModalState(true)
-    }
-  }
+
   return (
     <Container>
       <Column span={2}>
@@ -90,7 +74,7 @@ const Command: React.FC<IProps> = ({
             <CloseIcon onClick={() => handleRemove(sale.id)} />
           </ActionTopSide>
           <ActionMiddlepSide>
-            <ChangeIcon onClick={() => change()} />
+            <ChangeIcon onClick={() => handleTransfer(id)} />
           </ActionMiddlepSide>
         </ActionContainer>
       </Column>

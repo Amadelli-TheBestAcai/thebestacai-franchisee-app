@@ -4,6 +4,7 @@ import SalesRepository from '../repositories/SalesRepository'
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
 import { CreateItemDTO } from '../models/dtos/items/CreateItemDTO'
+import { UpdateItemDTO } from '../models/dtos/items/UpdateItemDTO'
 
 import { getTotalAndQuantity } from '../utils/ItemsHandler'
 
@@ -72,6 +73,10 @@ class ItemsService {
     const newItems = await ItemsRepository.getBySale(sale_id)
     const newTotalAndQuantity = getTotalAndQuantity(newItems)
     await SalesRepository.update(sale_id, { ...newTotalAndQuantity })
+  }
+
+  async updateBySale(sale: string, payload: UpdateItemDTO): Promise<void> {
+    await ItemsRepository.updateBySale(sale, payload)
   }
 }
 

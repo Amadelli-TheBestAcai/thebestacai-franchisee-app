@@ -43,11 +43,11 @@ ipcMain.on('sale:finish', async (event, sale) => {
   event.reply('sale:finish:response', newSale)
 })
 
-ipcMain.on('sale:command:change', async (event, { sale, name }) => {
+ipcMain.on('sale:command:transfer', async (event, sale) => {
   try {
-    await SalesService.change(sale, name)
+    await SalesService.transferItemsCommand(sale)
     const sales = await SalesService.getSalesCommands()
-    event.reply('sale:command:change:response', sales)
+    event.reply('sale:command:transfer:response', sales)
   } catch (err) {
     console.error(err)
   }

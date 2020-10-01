@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { ipcRenderer } from 'electron'
 
 import RouterDescription from '../../components/RouterDescription'
 import Command from '../../components/Command'
 import Spinner from '../../components/Spinner'
-
-import CommandForm from '../../containers/CommandForm'
 
 import { Sale } from '../../models/sale'
 
@@ -13,37 +12,28 @@ import { Container, CommandsContainer } from './styles'
 
 import { message } from 'antd'
 
-const Control: React.FC = () => {
+type IProps = RouteComponentProps
+
+const Control: React.FC<IProps> = ({ history }) => {
   const [loadingComands, setLoadingComands] = useState(true)
-  const [modalState, setModalState] = useState(false)
-  const [newSale, setNewSale] = useState<string>()
-  const [command, setCommand] = useState<string>()
-  const [currentSale, setCurrentSale] = useState<Sale>()
   const [sales, setSales] = useState<Sale[]>([])
 
   useEffect(() => {
     ipcRenderer.send('sale:command:get')
     ipcRenderer.once('sale:command:get:response', (event, sales) => {
-      const currentSale = sales.find((sale) => sale.is_current === 1)
-      setCurrentSale(currentSale)
-      const salesWithOutCurrent = sales.filter((sale) => sale.is_current !== 1)
-      setSales(salesWithOutCurrent)
+      setSales(sales)
       setLoadingComands(false)
     })
   }, [])
 
-  const handleChange = (sale?: string, name?: string): void => {
+  const handleTransfer = (sale: string): void => {
     setLoadingComands(true)
-    const oldSale = { sale: sale || newSale, name: name || command }
-    ipcRenderer.send('sale:command:change', oldSale)
-    ipcRenderer.once('sale:command:change:response', (event, sales) => {
-      const currentSale = sales.find((sale) => sale.is_current === 1)
-      setCurrentSale(currentSale)
-      const salesWithOutCurrent = sales.filter((sale) => sale.is_current !== 1)
+    ipcRenderer.send('sale:command:transfer', sale)
+    ipcRenderer.once('sale:command:transfer:response', (event, sales) => {
       setLoadingComands(false)
-      setCommand('')
-      setSales(salesWithOutCurrent)
-      return message.success('Troca de comanda realizada com sucesso')
+      setSales(sales)
+      message.success('Items recuperados com sucesso')
+      return history.push('/home')
     })
   }
 
@@ -71,12 +61,8 @@ const Control: React.FC = () => {
                   key={sale.id}
                   index={+index + 1}
                   sale={sale}
-                  handleChange={handleChange}
-                  setComandName={setCommand}
-                  setNewSale={setNewSale}
+                  handleTransfer={handleTransfer}
                   handleRemove={handeRemove}
-                  setModalState={setModalState}
-                  currentSaleName={currentSale.name}
                 />
               ))}
             </>
@@ -86,16 +72,8 @@ const Control: React.FC = () => {
           )}
         </CommandsContainer>
       )}
-      <CommandForm
-        onFinish={handleChange}
-        modalState={modalState}
-        setModalState={setModalState}
-        value={command}
-        setValue={setCommand}
-        placeHolder="Cliente da venda atual"
-      />
     </Container>
   )
 }
 
-export default Control
+export default withRouter(Control)
