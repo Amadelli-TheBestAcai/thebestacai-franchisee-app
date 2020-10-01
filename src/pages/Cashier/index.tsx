@@ -11,7 +11,7 @@ import CashInfo from '../../containers/CashInfo'
 
 import { Cashier as CashierModel } from '../../models/cashier'
 
-import { message as messageAnt } from 'antd'
+import { message as messageAnt, Modal } from 'antd'
 
 import {
   Container,
@@ -30,6 +30,8 @@ import {
   AmountLabel,
   AmountInput,
 } from './styles'
+
+const { confirm } = Modal
 
 type IProps = RouteComponentProps
 
@@ -108,42 +110,53 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   }
 
   const onFinish = () => {
-    setLoading(true)
-    if (currentCash) {
-      ipcRenderer.send('cashier:close', {
-        code: currentCash,
-        amount_on_close: total,
-        isConnected: isOnline(),
-      })
-      ipcRenderer.once(
-        'cashier:close:response',
-        (event, { success, message }) => {
-          setLoading(false)
-          if (success) {
-            messageAnt.success(message)
-            return history.push('/home')
-          }
-          messageAnt.warning(message)
+    confirm({
+      title: `${currentCash ? 'Fechamento' : 'Abertura'} de caixa`,
+      content: `Tem certeza que gostaria de ${
+        currentCash ? 'fechar' : 'abrir'
+      } este caixa?`,
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      onOk() {
+        setLoading(true)
+        if (currentCash) {
+          ipcRenderer.send('cashier:close', {
+            code: currentCash,
+            amount_on_close: total || '0',
+            isConnected: isOnline(),
+          })
+          ipcRenderer.once(
+            'cashier:close:response',
+            (event, { success, message }) => {
+              setLoading(false)
+              if (success) {
+                messageAnt.success(message)
+                return history.push('/home')
+              }
+              messageAnt.warning(message)
+            }
+          )
+        } else {
+          ipcRenderer.send('cashier:open', {
+            code: cash,
+            amount_on_open: total || '0',
+            isConnected: isOnline(),
+          })
+          ipcRenderer.once(
+            'cashier:open:response',
+            (event, { success, message }) => {
+              setLoading(false)
+              if (success) {
+                messageAnt.success(message)
+                return history.push('/home')
+              }
+              messageAnt.warning(message)
+            }
+          )
         }
-      )
-    } else {
-      ipcRenderer.send('cashier:open', {
-        code: cash,
-        amount_on_open: total,
-        isConnected: isOnline(),
-      })
-      ipcRenderer.once(
-        'cashier:open:response',
-        (event, { success, message }) => {
-          setLoading(false)
-          if (success) {
-            messageAnt.success(message)
-            return history.push('/home')
-          }
-          messageAnt.warning(message)
-        }
-      )
-    }
+      },
+    })
   }
 
   return (
