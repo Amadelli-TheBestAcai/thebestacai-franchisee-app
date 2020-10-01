@@ -63,7 +63,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   useEffect(() => {
     ipcRenderer.send('cashier:get', isOnline())
     ipcRenderer.on('cashier:get:response', (event, { cashes, current }) => {
-      if (current.is_opened === 1) {
+      if (current?.is_opened === 1) {
         setCurrentCash(current.code)
         setStep(2)
       }
