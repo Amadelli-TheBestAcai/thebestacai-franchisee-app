@@ -11,6 +11,8 @@ import { Sale } from '../../models/sale'
 
 import { Container, CommandsContainer } from './styles'
 
+import { message } from 'antd'
+
 const Control: React.FC = () => {
   const [loadingComands, setLoadingComands] = useState(true)
   const [modalState, setModalState] = useState(false)
@@ -41,6 +43,7 @@ const Control: React.FC = () => {
       setLoadingComands(false)
       setCommand('')
       setSales(salesWithOutCurrent)
+      return message.success('Troca de comanda realizada com sucesso')
     })
   }
 
@@ -49,7 +52,8 @@ const Control: React.FC = () => {
     ipcRenderer.send('sale:command:remove', id)
     ipcRenderer.once('sale:command:remove:response', (event, sales) => {
       setLoadingComands(false)
-      setSales(sales)
+      const salesWithOutCurrent = sales.filter((sale) => sale.is_current !== 1)
+      setSales(salesWithOutCurrent)
     })
   }
 
@@ -60,19 +64,26 @@ const Control: React.FC = () => {
         <Spinner />
       ) : (
         <CommandsContainer>
-          {sales.map((sale, index) => (
-            <Command
-              key={sale.id}
-              index={+index + 1}
-              sale={sale}
-              handleChange={handleChange}
-              setComandName={setCommand}
-              setNewSale={setNewSale}
-              handleRemove={handeRemove}
-              setModalState={setModalState}
-              currentSaleName={currentSale.name}
-            />
-          ))}
+          {sales.length ? (
+            <>
+              {sales.map((sale, index) => (
+                <Command
+                  key={sale.id}
+                  index={+index + 1}
+                  sale={sale}
+                  handleChange={handleChange}
+                  setComandName={setCommand}
+                  setNewSale={setNewSale}
+                  handleRemove={handeRemove}
+                  setModalState={setModalState}
+                  currentSaleName={currentSale.name}
+                />
+              ))}
+            </>
+          ) : (
+            // TODO: MELHORAR EXIBIÇÃO
+            <div>Nenhuma comanda encontrada</div>
+          )}
         </CommandsContainer>
       )}
       <CommandForm
