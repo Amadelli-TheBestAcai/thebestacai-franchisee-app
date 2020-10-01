@@ -61,7 +61,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   useEffect(() => {
     ipcRenderer.send('cashier:get', isOnline())
     ipcRenderer.on('cashier:get:response', (event, { cashes, current }) => {
-      if (current) {
+      if (current.is_opened === 1) {
         setCurrentCash(current.code)
         setStep(2)
       }
@@ -307,7 +307,9 @@ const Cashier: React.FC<IProps> = ({ history }) => {
                   <Result>R$ {total.toFixed(2).replace('.', ',')} </Result>
                 </AmountResult>
                 <AmountAction>
-                  <BackButton onClick={() => setStep(1)}>Voltar</BackButton>
+                  {!currentCash && cash && (
+                    <BackButton onClick={() => setStep(1)}>Voltar</BackButton>
+                  )}
                   <FinishButton onClick={() => onFinish()} loading={loading}>
                     Registrar
                   </FinishButton>
