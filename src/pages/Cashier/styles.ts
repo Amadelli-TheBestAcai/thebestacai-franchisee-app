@@ -39,15 +39,19 @@ export const CashesContainer = styled.div`
 
 export const SecondaryContent = styled.div`
   display: flex;
-  flex-grow: 1;
+  height: 75vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 `
 
 export const AmountContainer = styled.div`
   width: 50%;
-  height: 60%;
 `
 
 export const AmountResult = styled.div`
@@ -63,12 +67,19 @@ export const Result = styled.label`
   font-size: 38px;
 `
 
+export const Title = styled.label`
+  font-weight: bold;
+  font-size: 22px;
+  margin: 20px 0;
+`
+
 export const AmountAction = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   width: 70%;
   height: 20%;
+  margin: 20px 0;
 `
 
 export const FinishButton = styled(ButtonAnt)`
@@ -83,7 +94,7 @@ export const AmountRow = styled(RowAnt)`
   margin: 15px 0px;
 `
 
-export const AmountCol = styled(ColAnt)`
+export const Column = styled(ColAnt)`
   display: flex;
   align-items: center;
   justify-content: center;
