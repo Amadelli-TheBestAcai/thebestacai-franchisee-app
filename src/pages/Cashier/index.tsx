@@ -52,15 +52,15 @@ const Cashier: React.FC<IProps> = ({ history }) => {
     fullAmount: null,
   })
   const [cash, setCash] = useState<string>()
+  const [currentCash, setCurrentCash] = useState<string>()
   const [step, setStep] = useState(1)
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
     ipcRenderer.send('cashier:get', isOnline())
     ipcRenderer.on('cashier:get:response', (event, { cashes, current }) => {
-      console.log(current)
       if (current) {
-        setCash(current.code)
+        setCurrentCash(current.code)
         setStep(2)
       }
       setCashes(cashes)
@@ -97,9 +97,9 @@ const Cashier: React.FC<IProps> = ({ history }) => {
     setAmount((oldValues) => ({ ...oldValues, [name]: value }))
   }
 
-  const selecteCashier = ({ avaliable, cashier }: CashierModel) => {
+  const selectCashier = ({ avaliable, cashier }: CashierModel) => {
     if (!avaliable) {
-      return message.warning('Caixa não disponível')
+      return messageAnt.warning('Caixa não disponível')
     }
     setCash(cashier)
     setStep(2)
@@ -107,19 +107,41 @@ const Cashier: React.FC<IProps> = ({ history }) => {
 
   const onFinish = () => {
     setLoading(true)
-    ipcRenderer.send('cashier:open', {
-      code: cash,
-      amount_on_open: total,
-      isConnected: isOnline(),
-    })
-    ipcRenderer.once('cashier:open:response', (event, { success, message }) => {
-      setLoading(false)
-      if (success) {
-        messageAnt.success(message)
-        return history.push('/home')
-      }
-      messageAnt.warning(message)
-    })
+    if (currentCash) {
+      ipcRenderer.send('cashier:close', {
+        code: currentCash,
+        amount_on_close: total,
+        isConnected: isOnline(),
+      })
+      ipcRenderer.once(
+        'cashier:close:response',
+        (event, { success, message }) => {
+          setLoading(false)
+          if (success) {
+            messageAnt.success(message)
+            return history.push('/home')
+          }
+          messageAnt.warning(message)
+        }
+      )
+    } else {
+      ipcRenderer.send('cashier:open', {
+        code: cash,
+        amount_on_open: total,
+        isConnected: isOnline(),
+      })
+      ipcRenderer.once(
+        'cashier:open:response',
+        (event, { success, message }) => {
+          setLoading(false)
+          if (success) {
+            messageAnt.success(message)
+            return history.push('/home')
+          }
+          messageAnt.warning(message)
+        }
+      )
+    }
   }
 
   return (
@@ -145,7 +167,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
                     <Cash
                       key={cash.cashier}
                       cash={cash}
-                      handleClick={selecteCashier}
+                      handleClick={selectCashier}
                     />
                   ))}
                 </CashesContainer>

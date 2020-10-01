@@ -16,6 +16,7 @@ class CashierService {
       cashier: cash.split('-')[1],
       avaliable: false,
     }))
+
     cashes = [
       ...closed.map((cash) => ({
         cashier: cash.split('-')[1],
@@ -23,16 +24,20 @@ class CashierService {
       })),
       ...cashes,
     ]
+
+    cashes = cashes.sort(
+      (firstCash, secondCash) => +firstCash.cashier - +secondCash.cashier
+    )
     return cashes
   }
 
   async getOfflineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
     const cashes = [
-      { cashier: '05', avaliable: false },
       { cashier: '01', avaliable: false },
       { cashier: '02', avaliable: false },
       { cashier: '03', avaliable: false },
       { cashier: '04', avaliable: false },
+      { cashier: '05', avaliable: false },
       { cashier: 'OFFLINE', avaliable: true },
     ]
     return cashes
@@ -63,19 +68,16 @@ class CashierService {
       })
       newCashier = { code, cash_id, history_id, store_id }
     }
-    console.log(newCashier)
     await CashierRepository.delete()
     await CashierRepository.create(newCashier)
   }
 
-  async closeCashier(
-    { code, amount_on_close }: CloseCashierDTO,
-    isConnected: boolean
-  ): Promise<void> {
-    if (isConnected) {
-      const { store } = await UserService.getTokenInfo()
-      await api.put(`/store_cashes/${store}-${code}/open`, { amount_on_close })
-    }
+  async closeCashier({
+    code,
+    amount_on_close,
+  }: CloseCashierDTO): Promise<void> {
+    const { store } = await UserService.getTokenInfo()
+    await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
     await CashierRepository.delete()
   }
 
