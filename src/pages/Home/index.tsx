@@ -89,6 +89,19 @@ const Home: React.FC = () => {
     })
   }
 
+  const addPayment = (): void => {
+    ipcRenderer.send('payment:add', {
+      sale: sale.id,
+      type: paymentType,
+      amount: currentPayment,
+    })
+    ipcRenderer.once('payment:add:response', (event, payments) => {
+      setPayments(payments)
+    })
+    setCurrentPayment(null)
+    setPaymentModal(false)
+  }
+
   const removePayment = ({ id }: Item): void => {
     ipcRenderer.send('payment:remove', {
       sale: sale.id,
@@ -104,21 +117,16 @@ const Home: React.FC = () => {
     setPaymentModal(true)
   }
 
-  const addPayment = (): void => {
-    ipcRenderer.send('payment:add', {
-      sale: sale.id,
-      type: paymentType,
-      amount: currentPayment,
-    })
-    ipcRenderer.once('payment:add:response', (event, payments) => {
-      setPayments(payments)
-    })
-    setCurrentPayment(null)
-    setPaymentModal(false)
-  }
-
   const addDiscount = (value: number): void => {
     setSale((oldValues) => ({ ...oldValues, discount: value }))
+  }
+
+  const addHandlerOutValue = (value: number, reason: string): void => {
+    console.log({ value, reason })
+  }
+
+  const addHandlerInValue = (value: number, reason: string): void => {
+    console.log({ value, reason })
   }
 
   const addToQueue = (name?: string): void => {
@@ -175,7 +183,12 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions addToQueue={addToQueue} addDiscount={addDiscount} />
+                <Actions
+                  addToQueue={addToQueue}
+                  addDiscount={addDiscount}
+                  addHandlerInValue={addHandlerInValue}
+                  addHandlerOutValue={addHandlerOutValue}
+                />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />
