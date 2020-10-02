@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import CommandForm from '../CommandForm'
+import DiscountForm from '../DiscountForm'
 
 import {
   Container,
@@ -16,14 +17,16 @@ import {
 
 type IProps = {
   addToQueue: (name: string) => void
+  addDiscount: (value: number) => void
 }
 
-const Actions: React.FC<IProps> = ({ addToQueue }) => {
+const Actions: React.FC<IProps> = ({ addToQueue, addDiscount }) => {
   const [commandState, setCommandState] = useState(false)
+  const [discountState, setDiscountState] = useState(false)
 
   return (
     <Container>
-      <DiscountButton>
+      <DiscountButton onClick={() => setDiscountState(true)}>
         DESCONTO
         <OfferIcon />
       </DiscountButton>
@@ -43,6 +46,11 @@ const Actions: React.FC<IProps> = ({ addToQueue }) => {
         onFinish={addToQueue}
         modalState={commandState}
         setModalState={setCommandState}
+      />
+      <DiscountForm
+        onFinish={addDiscount}
+        modalState={discountState}
+        setModalState={setDiscountState}
       />
     </Container>
   )

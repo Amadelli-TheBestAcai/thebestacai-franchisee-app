@@ -117,6 +117,10 @@ const Home: React.FC = () => {
     setPaymentModal(false)
   }
 
+  const addDiscount = (value: number): void => {
+    setSale((oldValues) => ({ ...oldValues, discount: value }))
+  }
+
   const addToQueue = (name?: string): void => {
     ipcRenderer.send('sale:command:create', {
       id: sale.id,
@@ -171,7 +175,7 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions addToQueue={addToQueue} />
+                <Actions addToQueue={addToQueue} addDiscount={addDiscount} />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />
