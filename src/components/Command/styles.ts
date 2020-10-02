@@ -108,3 +108,11 @@ export const ChangeIcon = styled(Repeat)`
     color: black;
   }
 `
+
+export const CommandName = styled.label`
+  max-width: 30%;
+  font-size: 28px;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-overflow: ellipsis;
+`

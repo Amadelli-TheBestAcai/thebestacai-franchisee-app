@@ -102,6 +102,8 @@ export const Column = styled(ColAnt)`
 
 export const AmountLabel = styled.label`
   margin-right: 10px;
+  color: #7e7e7e;
+  font-weight: bold;
 `
 
 export const AmountInput = styled(InputAnt)`

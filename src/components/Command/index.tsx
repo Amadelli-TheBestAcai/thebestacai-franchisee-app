@@ -17,6 +17,7 @@ import {
   ActionMiddlepSide,
   CloseIcon,
   ChangeIcon,
+  CommandName,
 } from './styles'
 
 type IProps = {
@@ -52,7 +53,7 @@ const Command: React.FC<IProps> = ({
                 {formatedData}
               </Description>
             </Column>
-            <Description>{name}</Description>
+            <CommandName>{name}</CommandName>
           </BasicInfoContainer>
         </InfoContainer>
       </Column>
