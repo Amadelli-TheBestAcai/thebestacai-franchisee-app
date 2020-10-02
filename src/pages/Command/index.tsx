@@ -8,7 +8,14 @@ import Spinner from '../../components/Spinner'
 
 import { Sale } from '../../models/sale'
 
-import { Container, CommandsContainer } from './styles'
+import {
+  Container,
+  CommandsContainer,
+  CommandEmpity,
+  ContainerInfo,
+  Icon,
+  Text,
+} from './styles'
 
 import { message } from 'antd'
 
@@ -67,8 +74,12 @@ const Control: React.FC<IProps> = ({ history }) => {
               ))}
             </>
           ) : (
-            // TODO: MELHORAR EXIBIÇÃO
-            <div>Nenhuma comanda encontrada</div>
+            <CommandEmpity>
+              <ContainerInfo>
+                <Icon />
+                <Text>Nenhuma comanda encontrada</Text>
+              </ContainerInfo>
+            </CommandEmpity>
           )}
         </CommandsContainer>
       )}

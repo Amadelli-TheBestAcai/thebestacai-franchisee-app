@@ -38,7 +38,7 @@ const Command: React.FC<IProps> = ({
   return (
     <Container>
       <Column span={2}>
-        <Description>{index}</Description>
+        <Description style={{ fontSize: '32px' }}>{index}</Description>
       </Column>
       <Column span={11} style={{ justifyContent: 'flex-start' }}>
         <InfoContainer>
@@ -58,7 +58,7 @@ const Command: React.FC<IProps> = ({
       </Column>
       <Column span={4}>
         <AmountContainer>
-          <Title>Qtd.:</Title>
+          <Title>Qtd.</Title>
           <Description>{quantity}</Description>
         </AmountContainer>
       </Column>

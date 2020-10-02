@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 
 import { Row, Col } from 'antd'
 
-import { User, CloseOutline, ExchangeAlt } from '../../styles/Icons'
+import { User, CloseOutline, Repeat } from '../../styles/Icons'
 
 export const Container = styled(Row)`
   background: var(--primary-orange);
@@ -48,8 +48,9 @@ export const Title = styled.div`
 
 export const Description = styled.div`
   font-weight: bold;
-  font-size: 28px;
+  font-size: 25px;
   padding: 0 10px;
+  text-transform: uppercase;
 `
 
 const iconCSS = css`
@@ -90,12 +91,20 @@ export const CloseIcon = styled(CloseOutline)`
   color: red;
 
   cursor: pointer;
+
+  :hover {
+    color: #e14a4a;
+  }
 `
 
-export const ChangeIcon = styled(ExchangeAlt)`
+export const ChangeIcon = styled(Repeat)`
   width: 45px;
   height: 45px;
   color: white;
 
   cursor: pointer;
+
+  :hover {
+    color: black;
+  }
 `
