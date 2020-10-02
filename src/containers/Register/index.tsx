@@ -1,9 +1,26 @@
 import React from 'react'
+import {
+  Container,
+  Input,
+  InputContainer,
+  TotalContainer,
+  Total,
+} from './styles'
 
-// import { Container } from './styles';
-
-const RegisterContainer: React.FC = () => {
-  return <div />
+const Register: React.FC = () => {
+  return (
+    <Container>
+      <InputContainer>
+        <Input />
+        <Input />
+      </InputContainer>
+      <TotalContainer>
+        <Total />
+      </TotalContainer>
+      {/* 
+<Button onClick={() => registerSale()}>Registrar</Button>  */}
+    </Container>
+  )
 }
 
-export default RegisterContainer
+export default Register

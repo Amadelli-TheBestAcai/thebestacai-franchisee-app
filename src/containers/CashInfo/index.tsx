@@ -53,9 +53,15 @@ const CashInfo: React.FC = () => {
                 <ValueContainer
                   style={{ background: 'white', flexDirection: 'column' }}
                 >
-                  <Description style={{ fontWeight: 'bold', fontSize: '18px' }}>
+                  {/* <Description
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: '18px',
+                      color: 'black',
+                    }}
+                  >
                     {cash}
-                  </Description>
+                  </Description> */}
                   <Value
                     style={{
                       color: cashHistory.amount_on_close ? 'red' : '#029E08',
@@ -91,7 +97,7 @@ const CashInfo: React.FC = () => {
               </InfoContainer>
               <InfoContainer>
                 <Description>Balanço:</Description>
-                <ValueContainer style={{ background: 'black' }}>
+                <ValueContainer style={{ background: '#2E2E2E' }}>
                   <Value style={{ color: 'white' }}>
                     R$ {valueFormater(cashHistory.result_cash)}
                   </Value>

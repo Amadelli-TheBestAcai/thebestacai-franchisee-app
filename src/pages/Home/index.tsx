@@ -13,6 +13,7 @@ import Items from '../../containers/Items'
 import Actions from '../../containers/Actions'
 import Payments from '../../containers/Payments'
 import Balance from '../../containers/Balance'
+import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
@@ -197,7 +198,7 @@ const Home: React.FC = () => {
                   />
                 </PaymentsTypesContainer>
                 <FinishContainer>
-                  <Button onClick={() => registerSale()}>Registrar</Button>
+                  <Register />
                 </FinishContainer>
               </PaymentsContainer>
             </Content>

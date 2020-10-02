@@ -22,6 +22,8 @@ export const Description = styled.label`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  color: #969696;
+  font-size: 20px;
 `
 
 export const ValueContainer = styled.div`

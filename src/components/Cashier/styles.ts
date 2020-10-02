@@ -7,8 +7,8 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 15vw;
-  height: 15vh;
+  width: 20vw;
+  height: 25vh;
 
   margin: 0 15px;
 `
@@ -16,19 +16,26 @@ export const IconContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 15px;
-  width: 40%;
-  height: 60%;
+  border-radius: 30px;
+  width: 60%;
+  height: 100%;
 
   cursor: pointer;
 `
 
-export const Description = styled.label``
+export const Description = styled.label`
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 700;
+`
 
-export const Status = styled.label``
+export const Status = styled.label`
+  margin-top: 5px;
+  font-weight: 700;
+`
 
 export const CashIcon = styled(CashRegister)`
   fill: black;
-  width: 35px;
-  height: 35px;
+  width: 60px;
+  height: 60px;
 `
