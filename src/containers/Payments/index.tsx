@@ -64,6 +64,9 @@ const PaymentsContainer: React.FC<IProps> = ({
 
   const getChangeAmount = (): string => {
     const totalPaid = getTotalPaid().replace(',', '.')
+    if (!totalPaid || !totalSale) {
+      return '0,00'
+    }
     const totalSold = +totalPaid - +totalSale
     return totalSold.toFixed(2).replace('.', ',')
   }

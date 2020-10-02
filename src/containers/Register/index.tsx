@@ -32,7 +32,7 @@ const Register: React.FC<IProps> = ({
       <Content>
         <AmountContainer style={{ width: '40%' }}>
           <Description>Quantidade</Description>
-          <AmountValue>{quantity}</AmountValue>
+          <AmountValue>{quantity || 0}</AmountValue>
           <Description>Desconto</Description>
           <AmountValue>R$ {monetaryFormat(discount)}</AmountValue>
         </AmountContainer>
