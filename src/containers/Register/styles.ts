@@ -1,35 +1,47 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  background: yellow;
-  display: flex;
-  justify-content: center;
-`
-
-export const InputContainer = styled.div`
-  width: 35%;
-  height: 70%;
-  background: white;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-`
-export const Input = styled.div`
-  width: 9.3vw;
-  height: 6vh;
-  background: #ff7a00 30%;
+  flex-grow: 1;
 `
 
-export const TotalContainer = styled.div`
-  width: 65%;
-  height: 70%;
-  background: pink;
+export const Content = styled.div`
+  display: flex;
+  height: 65%;
 `
 
-export const Total = styled.div`
-  width: 95%;
-  height: 95%;
-  background: purple;
+export const Description = styled.label``
+
+export const AmountContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 1%;
+`
+
+export const AmountValue = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-grow: 1;
+  align-items: center;
+  color: #696969;
+  width: 100%;
+  font-size: 22px;
+  padding-right: 10px;
+  background: #ff7a0061;
+`
+
+export const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 28px;
+  font-weight: 400;
+  height: 35%;
+  margin-top: 1%;
+  background: black;
+  cursor: pointer;
 `

@@ -1,24 +1,29 @@
 import React from 'react'
 import {
   Container,
-  Input,
-  InputContainer,
-  TotalContainer,
-  Total,
+  Content,
+  Footer,
+  AmountContainer,
+  Description,
+  AmountValue,
 } from './styles'
 
 const Register: React.FC = () => {
   return (
     <Container>
-      <InputContainer>
-        <Input />
-        <Input />
-      </InputContainer>
-      <TotalContainer>
-        <Total />
-      </TotalContainer>
-      {/* 
-<Button onClick={() => registerSale()}>Registrar</Button>  */}
+      <Content>
+        <AmountContainer style={{ width: '40%' }}>
+          <Description>Quantidade</Description>
+          <AmountValue>R$ 15,00</AmountValue>
+          <Description>Desconto</Description>
+          <AmountValue>R$ 15,00</AmountValue>
+        </AmountContainer>
+        <AmountContainer style={{ width: '60%' }}>
+          <Description>Total</Description>
+          <AmountValue style={{ fontSize: '40px' }}>R$ 15,00</AmountValue>
+        </AmountContainer>
+      </Content>
+      <Footer>[F1] REGISTRAR</Footer>
     </Container>
   )
 }

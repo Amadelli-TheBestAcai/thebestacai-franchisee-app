@@ -67,5 +67,4 @@ export const FinishContainer = styled.div`
   display: flex;
   width: 40%;
   height: 100%;
-  background: magenta;
 `
