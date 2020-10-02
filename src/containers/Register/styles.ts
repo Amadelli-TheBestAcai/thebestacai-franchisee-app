@@ -41,7 +41,7 @@ export const Footer = styled.div`
   font-size: 28px;
   font-weight: 400;
   height: 35%;
-  margin-top: 1%;
+  margin: 1% 1% 0% 1%;
   background: black;
   cursor: pointer;
 `

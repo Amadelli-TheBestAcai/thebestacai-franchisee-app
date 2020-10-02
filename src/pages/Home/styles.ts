@@ -54,6 +54,7 @@ export const ItemsContainer = styled.div`
 export const PaymentsContainer = styled.div`
   display: flex;
   height: 30%;
+  margin-bottom: 10px;
 `
 
 export const PaymentsTypesContainer = styled.div`
