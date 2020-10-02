@@ -34,7 +34,6 @@ import {
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
-  const [command, setCommand] = useState<string>()
   const [sale, setSale] = useState<Sale>()
   const [items, setItems] = useState<Item[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
@@ -121,7 +120,7 @@ const Home: React.FC = () => {
   const addToQueue = (name?: string): void => {
     ipcRenderer.send('sale:command:create', {
       id: sale.id,
-      name: command || name,
+      name,
     })
     ipcRenderer.once('sale:command:create:response', (event, sale) => {
       setSale(sale)
@@ -129,7 +128,6 @@ const Home: React.FC = () => {
       setItems(ipcRenderer.sendSync('item:get', sale.id))
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
       setLoading(false)
-      setCommand('')
     })
   }
 
@@ -173,12 +171,7 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions
-                  addToQueue={addToQueue}
-                  command={command}
-                  setCommand={setCommand}
-                  currentSale={sale}
-                />
+                <Actions addToQueue={addToQueue} />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />

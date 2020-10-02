@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState, Dispatch, SetStateAction } from 'react'
 
 import { message } from 'antd'
 
@@ -7,26 +7,21 @@ import { Container, Input } from './styles'
 type IProps = {
   modalState: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
-  value: string
-  setValue: Dispatch<SetStateAction<string>>
-  onFinish: any
-  placeHolder?: string
+  onFinish: (name: string) => void
 }
 
 const CommandForm: React.FC<IProps> = ({
   onFinish,
   modalState,
   setModalState,
-  value,
-  setValue,
-  placeHolder,
 }) => {
+  const [name, setName] = useState<string>()
   const handleSubmit = () => {
-    if (!value) {
+    if (!name) {
       return message.warning('Informe um nome')
     }
-    onFinish()
     setModalState(false)
+    onFinish(name)
   }
   return (
     <Container
@@ -38,11 +33,11 @@ const CommandForm: React.FC<IProps> = ({
       destroyOnClose={true}
     >
       <Input
-        placeholder={placeHolder}
+        placeholder="Digite o nome do cliente"
         autoFocus={true}
-        value={value}
+        value={name}
         onPressEnter={handleSubmit}
-        onChange={({ target: { value } }) => setValue(value)}
+        onChange={({ target: { value } }) => setName(value)}
       />
     </Container>
   )

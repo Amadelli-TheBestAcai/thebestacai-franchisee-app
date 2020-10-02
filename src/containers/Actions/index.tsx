@@ -1,8 +1,6 @@
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState } from 'react'
 
 import CommandForm from '../CommandForm'
-
-import { Sale } from '../../models/sale'
 
 import {
   Container,
@@ -17,27 +15,12 @@ import {
 } from './styles'
 
 type IProps = {
-  currentSale: Sale
-  addToQueue: (name?: string) => void
-  command: string
-  setCommand: Dispatch<SetStateAction<string>>
+  addToQueue: (name: string) => void
 }
 
-const Actions: React.FC<IProps> = ({
-  addToQueue,
-  command,
-  setCommand,
-  currentSale,
-}) => {
+const Actions: React.FC<IProps> = ({ addToQueue }) => {
   const [commandState, setCommandState] = useState(false)
 
-  const onCommandClick = () => {
-    if (!currentSale.name) {
-      setCommandState(true)
-    } else {
-      addToQueue(currentSale.name)
-    }
-  }
   return (
     <Container>
       <DiscountButton>
@@ -52,7 +35,7 @@ const Actions: React.FC<IProps> = ({
         SAÍDA
         <OutIcon />
       </OutButton>
-      <CommandButton onClick={() => onCommandClick()}>
+      <CommandButton onClick={() => setCommandState(true)}>
         COMANDA
         <CommandIcon />
       </CommandButton>
@@ -60,9 +43,6 @@ const Actions: React.FC<IProps> = ({
         onFinish={addToQueue}
         modalState={commandState}
         setModalState={setCommandState}
-        value={command}
-        setValue={setCommand}
-        placeHolder="Digite o nome do cliente"
       />
     </Container>
   )

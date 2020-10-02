@@ -45,4 +45,4 @@ export const Icon = styled(Receipt)`
   margin-bottom: 10px;
 `
 
-export const Text = styled.text``
+export const Text = styled.label``

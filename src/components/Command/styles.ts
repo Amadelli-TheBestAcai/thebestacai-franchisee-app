@@ -50,7 +50,6 @@ export const Description = styled.div`
   font-weight: bold;
   font-size: 25px;
   padding: 0 10px;
-  text-transform: uppercase;
 `
 
 const iconCSS = css`
@@ -112,7 +111,6 @@ export const ChangeIcon = styled(Repeat)`
 export const CommandName = styled.label`
   max-width: 30%;
   font-size: 28px;
-  text-transform: uppercase;
   font-weight: 700;
   text-overflow: ellipsis;
 `
