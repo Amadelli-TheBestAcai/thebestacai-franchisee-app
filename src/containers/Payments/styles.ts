@@ -21,7 +21,7 @@ export const PaymentsList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-height: 11vh;
+  max-height: 9vh;
   flex-grow: 1;
   overflow: scroll;
   ::-webkit-scrollbar {
@@ -36,15 +36,6 @@ export const ListContainer = styled.div`
   background: #f4f4f4;
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
-`
-
-export const Column = styled(ColAnt)`
-  display: flex;
-  justify-content: center;
-`
-export const Description = styled.label`
-  font-weight: bold;
-  color: white;
 `
 
 export const Button = styled(ButtonAnt)`
@@ -75,8 +66,6 @@ export const Input = styled(InputAnt)`
   direction: rtl;
 `
 
-// ---- //
-
 export const Header = styled(RowAnt)`
   display: flex;
   justify-content: space-evenly;
@@ -84,10 +73,11 @@ export const Header = styled(RowAnt)`
   width: 100%;
   height: 25%;
 `
+
 export const Content = styled(RowAnt)`
   background: white;
   width: 100%;
-  height: 50%;
+  height: 40%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -95,7 +85,26 @@ export const Content = styled(RowAnt)`
 
 export const Footer = styled(RowAnt)`
   display: flex;
-  background: green;
+  justify-content: space-around;
   width: 100%;
-  height: 25%;
+  height: 35%;
+`
+
+export const AmountContainer = styled(ColAnt)`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+`
+
+export const AmountDescription = styled.div``
+
+export const AmountValue = styled(ColAnt)`
+  display: flex;
+  flex-grow: 1;
+  color: #696969;
+  justify-content: flex-end;
+  align-items: center;
+  background: #ff7a0061;
+  font-size: 22px;
+  padding: 0 10px;
 `

@@ -9,14 +9,15 @@ import {
   Container,
   PaymentsList,
   Button,
-  Column,
-  Description,
   Modal,
   Input,
   Header,
   Content,
   Footer,
   ListContainer,
+  AmountContainer,
+  AmountValue,
+  AmountDescription,
 } from './styles'
 
 interface IProps {
@@ -51,6 +52,20 @@ const PaymentsContainer: React.FC<IProps> = ({
       value = value.substring(0, 1) + '.' + value.substring(1, 3)
     }
     setCurrentPayment(value)
+  }
+
+  const getTotalPaid = (): string => {
+    const totalPaid = payments.reduce(
+      (total, payment) => total + +payment.amount,
+      0
+    )
+    return totalPaid.toFixed(2).replace('.', ',')
+  }
+
+  const getChangeAmount = (): string => {
+    const totalPaid = getTotalPaid().replace(',', '.')
+    const totalSold = +totalPaid - +totalSale
+    return totalSold.toFixed(2).replace('.', ',')
   }
 
   return (
@@ -88,7 +103,16 @@ const PaymentsContainer: React.FC<IProps> = ({
           </PaymentsList>
         </ListContainer>
       </Content>
-      <Footer></Footer>
+      <Footer>
+        <AmountContainer span={11}>
+          <AmountDescription>Valor Pago</AmountDescription>
+          <AmountValue>RS {getTotalPaid()}</AmountValue>
+        </AmountContainer>
+        <AmountContainer span={11}>
+          <AmountDescription>Troco</AmountDescription>
+          <AmountValue>RS {getChangeAmount()}</AmountValue>
+        </AmountContainer>
+      </Footer>
       <Modal
         width={250}
         visible={modalState}
