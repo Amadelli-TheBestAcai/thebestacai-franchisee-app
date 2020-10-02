@@ -19,16 +19,9 @@ import {
 type IProps = {
   addToQueue: (name: string) => void
   addDiscount: (value: number) => void
-  addHandlerInValue: (value: number, reason: string) => void
-  addHandlerOutValue: (value: number, reason: string) => void
 }
 
-const Actions: React.FC<IProps> = ({
-  addToQueue,
-  addDiscount,
-  addHandlerInValue,
-  addHandlerOutValue,
-}) => {
+const Actions: React.FC<IProps> = ({ addToQueue, addDiscount }) => {
   const [commandState, setCommandState] = useState(false)
   const [discountState, setDiscountState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
@@ -63,14 +56,12 @@ const Actions: React.FC<IProps> = ({
         setModalState={setDiscountState}
       />
       <InOutForm
-        type="in"
-        onFinish={addHandlerInValue}
+        type="entrada"
         modalState={handlerInState}
         setModalState={setHandlerInState}
       />
       <InOutForm
-        type="out"
-        onFinish={addHandlerOutValue}
+        type="saida"
         modalState={handlerOutState}
         setModalState={setHandlerOutState}
       />

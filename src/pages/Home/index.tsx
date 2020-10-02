@@ -119,14 +119,6 @@ const Home: React.FC = () => {
     setSale((oldValues) => ({ ...oldValues, discount: value }))
   }
 
-  const addHandlerOutValue = (value: number, reason: string): void => {
-    console.log({ value, reason })
-  }
-
-  const addHandlerInValue = (value: number, reason: string): void => {
-    console.log({ value, reason })
-  }
-
   const addToQueue = (name?: string): void => {
     ipcRenderer.send('sale:command:create', {
       id: sale.id,
@@ -180,12 +172,7 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions
-                  addToQueue={addToQueue}
-                  addDiscount={addDiscount}
-                  addHandlerInValue={addHandlerInValue}
-                  addHandlerOutValue={addHandlerOutValue}
-                />
+                <Actions addToQueue={addToQueue} addDiscount={addDiscount} />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />

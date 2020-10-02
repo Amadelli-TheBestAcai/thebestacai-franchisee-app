@@ -3,6 +3,7 @@ const knexfile = require('../../knexfile')
 const knex = require('knex')(knexfile)
 
 export const inicializeControllers = (): void => {
+  require('./controllers/HandlerController')
   require('./controllers/SalesController')
   require('./controllers/UserController')
   require('./controllers/ProductsController')

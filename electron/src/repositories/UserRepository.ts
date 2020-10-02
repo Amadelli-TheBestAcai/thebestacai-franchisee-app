@@ -1,19 +1,19 @@
 import knex from '../database'
-import {User} from '../models/User'
+import { User } from '../models/User'
 
 class UserRepository {
   async create(payload) {
     return await knex('users').insert(payload)
   }
 
-  async findByUsername(username: string): Promise<User>{
+  async findByUsername(username: string): Promise<User> {
     const users = await knex('users').where({
       username,
     })
     return users[0]
   }
 
-  async deleteById(id: number){
+  async deleteById(id: number) {
     return await knex('users')
       .where({
         id,
