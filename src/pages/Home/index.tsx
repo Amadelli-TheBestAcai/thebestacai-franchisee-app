@@ -37,7 +37,6 @@ const Home: React.FC = () => {
   const [sale, setSale] = useState<Sale>()
   const [items, setItems] = useState<Item[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
-  const [totalSold, setTotalSold] = useState(0)
   const [currentPayment, setCurrentPayment] = useState()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
@@ -56,7 +55,6 @@ const Home: React.FC = () => {
     ipcRenderer.send('sale:getCurrent')
     ipcRenderer.once('sale:getCurrent:response', (event, sale) => {
       setSale(sale)
-      setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
       setItems(ipcRenderer.sendSync('item:get', sale.id))
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
       setLoading(false)
@@ -71,9 +69,9 @@ const Home: React.FC = () => {
       product_id,
       total: price_unit,
     })
-    ipcRenderer.once('item:add:response', (event, { total, items }) => {
-      setTotalSold(total)
+    ipcRenderer.once('item:add:response', (event, { sale, items }) => {
       setItems(items)
+      setSale(sale)
     })
   }
 
@@ -83,9 +81,9 @@ const Home: React.FC = () => {
       sale: sale.id,
       id,
     })
-    ipcRenderer.once('item:decress:response', (event, { total, items }) => {
-      setTotalSold(total)
+    ipcRenderer.once('item:decress:response', (event, { sale, items }) => {
       setItems(items)
+      setSale(sale)
     })
   }
 
@@ -136,7 +134,6 @@ const Home: React.FC = () => {
     })
     ipcRenderer.once('sale:command:create:response', (event, sale) => {
       setSale(sale)
-      setTotalSold(ipcRenderer.sendSync('item:total', sale.id))
       setItems(ipcRenderer.sendSync('item:get', sale.id))
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
       setLoading(false)
@@ -153,7 +150,6 @@ const Home: React.FC = () => {
       message.success('Venda salva com sucesso')
       setItems([])
       setPayments([])
-      setTotalSold(0)
       setSale(newSale)
     })
   }
@@ -164,6 +160,7 @@ const Home: React.FC = () => {
       handleOpenPayment(PaymentType.CREDITO, getTotalSoldOnSale()),
     C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO, getTotalSoldOnSale()),
     TICKET: () => handleOpenPayment(PaymentType.TICKET, getTotalSoldOnSale()),
+    REGISTER: () => registerSale(),
   }
 
   return (
@@ -208,7 +205,12 @@ const Home: React.FC = () => {
                   />
                 </PaymentsTypesContainer>
                 <FinishContainer>
-                  <Register />
+                  <Register
+                    registerSale={registerSale}
+                    quantity={sale.quantity}
+                    discount={sale.discount}
+                    total={sale.total}
+                  />
                 </FinishContainer>
               </PaymentsContainer>
             </Content>

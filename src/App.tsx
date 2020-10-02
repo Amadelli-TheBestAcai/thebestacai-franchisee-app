@@ -15,6 +15,7 @@ const keyMap = {
   C_CREDIT: 's',
   C_DEBIT: 'd',
   TICKET: 't',
+  REGISTER: 'f1',
 }
 
 const App = () => {

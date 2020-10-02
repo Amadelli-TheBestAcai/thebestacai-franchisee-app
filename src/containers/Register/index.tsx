@@ -8,22 +8,42 @@ import {
   AmountValue,
 } from './styles'
 
-const Register: React.FC = () => {
+type IProps = {
+  quantity: number
+  discount: number
+  total: number
+  registerSale: () => void
+}
+
+const Register: React.FC<IProps> = ({
+  discount,
+  quantity,
+  total,
+  registerSale,
+}) => {
+  const monetaryFormat = (value: number): string => {
+    if (!value) {
+      return '0,00'
+    }
+    return value.toFixed(2).replace('.', ',')
+  }
   return (
     <Container>
       <Content>
         <AmountContainer style={{ width: '40%' }}>
           <Description>Quantidade</Description>
-          <AmountValue>R$ 15,00</AmountValue>
+          <AmountValue>{quantity}</AmountValue>
           <Description>Desconto</Description>
-          <AmountValue>R$ 15,00</AmountValue>
+          <AmountValue>R$ {monetaryFormat(discount)}</AmountValue>
         </AmountContainer>
         <AmountContainer style={{ width: '60%' }}>
           <Description>Total</Description>
-          <AmountValue style={{ fontSize: '40px' }}>R$ 15,00</AmountValue>
+          <AmountValue style={{ fontSize: '40px' }}>
+            R$ {monetaryFormat(total)}
+          </AmountValue>
         </AmountContainer>
       </Content>
-      <Footer>[F1] REGISTRAR</Footer>
+      <Footer onClick={() => registerSale()}>[F1] REGISTRAR</Footer>
     </Container>
   )
 }
