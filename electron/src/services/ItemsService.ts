@@ -15,7 +15,7 @@ class ItemsService {
       item.product_id,
       sale_id
     )
-    if (oldItem) {
+    if (oldItem && oldItem.product_id !== 1) {
       const payload: CreateItemDTO = {
         ...oldItem,
         total: +oldItem.total + +item.total,
@@ -64,7 +64,7 @@ class ItemsService {
     const item = await ItemsRepository.findById(id)
     const quantity = +item.quantity - 1
     const total = +item.total - +item.price_unit
-    if (quantity === 0) {
+    if (quantity === 0 || item.product_id === 1) {
       await ItemsRepository.deleteById(id)
     } else {
       await ItemsRepository.update(id, { quantity, total })

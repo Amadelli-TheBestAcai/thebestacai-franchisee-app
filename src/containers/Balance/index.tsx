@@ -32,10 +32,14 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
 
   const handleSubmit = () => {
     addItem(selfService, getQuantity(), amount)
+    setAmount(undefined)
   }
 
   const getQuantity = (): number => {
-    return +(+amount / +selfService.price_unit).toFixed(2)
+    if (!amount) {
+      return 0
+    }
+    return +(+amount / +selfService.price_unit).toFixed(4)
   }
 
   return (
@@ -54,7 +58,7 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
             <Price>
               R$ {selfService.price_unit.toFixed(2).replace('.', ',')}
             </Price>
-            <Weight> KG 0,0015</Weight>
+            <Weight> KG {getQuantity().toFixed(2).replace('.', ',')}</Weight>
           </BottomContainer>
         </Container>
       )}
