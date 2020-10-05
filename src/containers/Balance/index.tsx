@@ -13,7 +13,7 @@ const BalanceContainer: React.FC = () => {
   return (
     <Container>
       <TopContainer>
-        <InputPrice> R$ 1,000</InputPrice>
+        <InputPrice getValue={(value) => console.log(value)} />
       </TopContainer>
       <BottomContainer>
         <Price> R$ 29,90 </Price>

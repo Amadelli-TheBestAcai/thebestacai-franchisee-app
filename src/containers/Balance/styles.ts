@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components'
 
+import MonetaryInput from '../../components/MonetaryInput'
+
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -12,21 +14,19 @@ export const TopContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  input {
+    background: orange;
+    width: 95%;
+    height: 9vh;
+    padding-right: 10px;
+    border-radius: 2px;
+    font-size: 32px;
+    text-align: end;
+  }
 `
 
-export const InputPrice = styled.div`
-  background: orange;
-  width: 90%;
-  height: 9vh;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-size: 30px;
-  font-weight: 600;
-  padding-right: 10px;
-
-  border-radius: 2px;
-`
+export const InputPrice = styled(MonetaryInput)``
 
 export const BottomContainer = styled.div`
   width: 100%;

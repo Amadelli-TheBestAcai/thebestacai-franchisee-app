@@ -137,7 +137,6 @@ const Home: React.FC = () => {
   }
 
   const addChangeAmount = (amount: number): void => {
-    console.log(amount)
     setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
   }
 
