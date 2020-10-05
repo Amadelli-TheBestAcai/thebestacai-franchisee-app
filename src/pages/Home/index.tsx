@@ -197,6 +197,7 @@ const Home: React.FC = () => {
                     removePayment={removePayment}
                     modalState={paymentModal}
                     setModalState={setPaymentModal}
+                    discount={sale.discount || 0}
                     totalSale={sale.total}
                   />
                 </PaymentsTypesContainer>

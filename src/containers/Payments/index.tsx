@@ -30,6 +30,7 @@ interface IProps {
   modalState: boolean
   setModalState
   totalSale
+  discount: number
 }
 
 const PaymentsContainer: React.FC<IProps> = ({
@@ -42,6 +43,7 @@ const PaymentsContainer: React.FC<IProps> = ({
   modalState,
   totalSale,
   removePayment,
+  discount,
 }) => {
   const onModalCancel = (): void => {
     setModalState(false)
@@ -60,7 +62,7 @@ const PaymentsContainer: React.FC<IProps> = ({
     if (!totalPaid || !totalSale) {
       return '0,00'
     }
-    const totalSold = +totalPaid - +totalSale
+    const totalSold = +totalPaid - +totalSale - +discount
     return totalSold.toFixed(2).replace('.', ',')
   }
 
