@@ -29,7 +29,6 @@ class ItemsService {
       const payload: CreateItemDTO = {
         id: uuidv4(),
         ...item,
-        quantity: 1,
         sale_id,
       }
       await ItemsRepository.create(payload)
