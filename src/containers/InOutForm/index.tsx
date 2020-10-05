@@ -70,6 +70,11 @@ const InOutForm: React.FC<IProps> = ({
     setReasonType(null)
   }
 
+  const getAmount = (amount: number): void => {
+    console.log(amount)
+    setValue(amount)
+  }
+
   const inValue = [
     { id: 'Troco', value: 'Troco' },
     { id: 'Outros', value: 'Outros' },
@@ -107,12 +112,7 @@ const InOutForm: React.FC<IProps> = ({
     >
       <GroupContainer>
         <Description>Valor</Description>
-        <Input
-          autoFocus={true}
-          value={value}
-          onPressEnter={handleSubmit}
-          onChange={({ target: { value } }) => setValue(+value)}
-        />
+        <Input getValue={getAmount} />
       </GroupContainer>
       <GroupContainer>
         <Description>Motivo</Description>

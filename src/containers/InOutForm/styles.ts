@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import MonetaryInput from '../../components/MonetaryInput'
+
 import { Modal as ModalAnt, Input as InputAnt, Select as SelectAnt } from 'antd'
 
 export const Container = styled(ModalAnt)`
@@ -20,7 +22,7 @@ export const Title = styled.label`
   color: white;
 `
 
-export const Input = styled(InputAnt)``
+export const Input = styled(MonetaryInput)``
 
 export const InputArea = styled(InputAnt.TextArea)``
 
