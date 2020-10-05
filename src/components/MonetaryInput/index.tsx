@@ -36,6 +36,7 @@ const MonetaryInput: React.FC<IProps> = ({ getValue, onEnterPress }) => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       onEnterPress()
+      setAmount(0)
     }
   }
 

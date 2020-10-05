@@ -10,3 +10,12 @@ ipcMain.on('products:get', async (event, isConnected) => {
     event.returnValue = []
   }
 })
+
+ipcMain.on('products:get:selfService', async (event) => {
+  try {
+    const item = await ProductsService.getSelfService()
+    event.reply('products:get:selfService:response', item)
+  } catch (err) {
+    console.error(err)
+  }
+})

@@ -41,6 +41,19 @@ class ProductsService {
     }
     return await this.getOfflineProducts()
   }
+
+  async getSelfService() {
+    const serfService = await ProductsRepository.getSelfService()
+    return {
+      product_id: serfService.product_id,
+      name: serfService.name,
+      price_unit: serfService.price_unit,
+      category: {
+        id: serfService.category_id,
+        name: serfService.category_name,
+      },
+    }
+  }
 }
 
 export default new ProductsService()

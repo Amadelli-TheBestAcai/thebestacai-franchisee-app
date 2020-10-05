@@ -15,7 +15,10 @@ type FormatedProduct = {
 
 export const formaterToCategory = (products: Product[]): FormatedProduct[] => {
   const allCategories = products.map((product) => +product.category.id)
-  const cleanedCategories = Array.from(new Set(allCategories))
+  let cleanedCategories = Array.from(new Set(allCategories))
+  cleanedCategories = cleanedCategories.filter(
+    (category) => category !== 1 && category !== 999
+  )
   const formatedProducts = cleanedCategories.map((categoryId) => {
     const productsByCategory = products.filter(
       (product) => +product.category.id === categoryId

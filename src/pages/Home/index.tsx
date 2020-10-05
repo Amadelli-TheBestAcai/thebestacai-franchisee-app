@@ -63,14 +63,15 @@ const Home: React.FC = () => {
 
   const addItem = (
     { product_id, price_unit, name }: Product,
-    quantity: number
+    quantity?: number,
+    total?: number
   ): void => {
     ipcRenderer.send('item:add', {
       sale: sale.id,
       name,
       price_unit,
       product_id,
-      total: price_unit,
+      total: total || price_unit,
       quantity,
     })
     ipcRenderer.once('item:add:response', (event, { sale, items }) => {
@@ -171,7 +172,7 @@ const Home: React.FC = () => {
         <>
           <LeftSide>
             <BalanceContainer>
-              <Balance />
+              <Balance addItem={addItem} />
             </BalanceContainer>
             <ProductsContainer>
               <Products handleItem={addItem} />
