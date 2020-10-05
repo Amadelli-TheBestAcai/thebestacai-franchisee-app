@@ -23,6 +23,11 @@ const DiscountForm: React.FC<IProps> = ({
     setModalState(false)
     onFinish(value)
   }
+
+  const getAmount = (amount: number): void => {
+    setValue(amount)
+  }
+
   return (
     <Container
       visible={modalState}
@@ -32,13 +37,7 @@ const DiscountForm: React.FC<IProps> = ({
       width={300}
       destroyOnClose={true}
     >
-      <Input
-        placeholder="Digite o valor do desconto"
-        autoFocus={true}
-        value={value}
-        onPressEnter={handleSubmit}
-        onChange={({ target: { value } }) => setValue(+value)}
-      />
+      <Input getValue={getAmount} />
     </Container>
   )
 }

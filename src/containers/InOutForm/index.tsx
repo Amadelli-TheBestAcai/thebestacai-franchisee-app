@@ -71,7 +71,6 @@ const InOutForm: React.FC<IProps> = ({
   }
 
   const getAmount = (amount: number): void => {
-    console.log(amount)
     setValue(amount)
   }
 

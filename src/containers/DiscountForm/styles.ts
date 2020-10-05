@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 
-import { Modal as ModalAnt, Input as InputAnt } from 'antd'
+import MonetaryInput from '../../components/MonetaryInput'
+
+import { Modal as ModalAnt } from 'antd'
 
 export const Container = styled(ModalAnt)``
 
-export const Input = styled(InputAnt)`
+export const Input = styled(MonetaryInput)`
   margin-top: 20px;
 `

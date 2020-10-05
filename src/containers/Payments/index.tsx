@@ -47,13 +47,6 @@ const PaymentsContainer: React.FC<IProps> = ({
     setModalState(false)
   }
 
-  const handleCurrentPayment = (value: string): void => {
-    if (value.length === 3) {
-      value = value.substring(0, 1) + '.' + value.substring(1, 3)
-    }
-    setCurrentPayment(value)
-  }
-
   const getTotalPaid = (): string => {
     const totalPaid = payments.reduce(
       (total, payment) => total + +payment.amount,
@@ -69,6 +62,10 @@ const PaymentsContainer: React.FC<IProps> = ({
     }
     const totalSold = +totalPaid - +totalSale
     return totalSold.toFixed(2).replace('.', ',')
+  }
+
+  const getAmount = (amount: number): void => {
+    setCurrentPayment(amount)
   }
 
   return (
@@ -125,12 +122,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         closable={true}
       >
         Valor:
-        <Input
-          onPressEnter={addPayment}
-          autoFocus={true}
-          onChange={({ target: { value } }) => handleCurrentPayment(value)}
-          value={currentPayment}
-        />
+        <Input getValue={getAmount} />
       </Modal>
     </Container>
   )

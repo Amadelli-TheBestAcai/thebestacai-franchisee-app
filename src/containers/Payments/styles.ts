@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import MonetaryInput from '../../components/MonetaryInput'
+
 import {
   Button as ButtonAnt,
   Row as RowAnt,
@@ -62,9 +64,7 @@ export const Button = styled(ButtonAnt)`
 
 export const Modal = styled(ModalAnt)``
 
-export const Input = styled(InputAnt)`
-  direction: rtl;
-`
+export const Input = styled(MonetaryInput)``
 
 export const Header = styled(RowAnt)`
   display: flex;
