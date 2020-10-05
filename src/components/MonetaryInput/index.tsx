@@ -3,29 +3,51 @@ import React, { useState } from 'react'
 import { Input } from './styles'
 
 type IProps = {
-  getValue: (value: number) => void
+  getValue
+  onEnterPress?
 }
 
-const MonetaryInput: React.FC<IProps> = ({ getValue }) => {
-  const [amount, setAmount] = useState<string>()
-  const handleChange = (value: string): void => {
+const MonetaryInput: React.FC<IProps> = ({ getValue, onEnterPress }) => {
+  const currencyConfig = {
+    locale: 'pt-BR',
+    formats: {
+      number: {
+        BRL: {
+          style: 'currency',
+          currency: 'BRL',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        },
+      },
+    },
+  }
+
+  const [amount, setAmount] = useState<number>()
+
+  const handleChange = (event, value, maskedValue) => {
     if (typeof value !== 'number' && typeof value !== 'string') {
       return
     }
-    setAmount(value)
-    const cleanedValue = +value.replace(/[^0-9,]/g, '').replace(',', '.')
-    getValue(cleanedValue)
+    event.preventDefault()
+    setAmount(+value)
+    getValue(value)
   }
+
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      onEnterPress()
+    }
+  }
+
   return (
     <Input
       value={amount}
+      currency="BRL"
       autoFocus={true}
       className="ant-input"
-      prefix="R$"
-      decimalSeparator=","
-      thousandSeparator="."
-      precision="2"
-      onChangeEvent={handleChange}
+      config={currencyConfig}
+      onChange={handleChange}
+      onKeyPress={handleKeyPress}
     />
   )
 }

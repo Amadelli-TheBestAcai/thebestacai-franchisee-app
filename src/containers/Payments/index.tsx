@@ -122,7 +122,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         closable={true}
       >
         Valor:
-        <Input getValue={getAmount} />
+        <Input getValue={getAmount} onEnterPress={addPayment} />
       </Modal>
     </Container>
   )

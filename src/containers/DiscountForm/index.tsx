@@ -37,7 +37,7 @@ const DiscountForm: React.FC<IProps> = ({
       width={300}
       destroyOnClose={true}
     >
-      <Input getValue={getAmount} />
+      <Input getValue={getAmount} onEnterPress={handleSubmit} />
     </Container>
   )
 }

@@ -39,7 +39,8 @@ const InOutForm: React.FC<IProps> = ({
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
-    if (reasontype === 'Troco') {
+    console.log(reasontype === 'Troco' && type === 'saida')
+    if (reasontype === 'Troco' && type === 'saida') {
       addChangeAmount(value)
     }
     ipcRenderer.send('handler:create', {
@@ -111,7 +112,7 @@ const InOutForm: React.FC<IProps> = ({
     >
       <GroupContainer>
         <Description>Valor</Description>
-        <Input getValue={getAmount} />
+        <Input getValue={getAmount} onEnterPress={handleSubmit} />
       </GroupContainer>
       <GroupContainer>
         <Description>Motivo</Description>
@@ -119,8 +120,8 @@ const InOutForm: React.FC<IProps> = ({
           {type === 'entrada'
             ? inValue.map((item) => <Option key={item.id}>{item.value}</Option>)
             : outValue.map((item) => (
-                <Option key={item.id}>{item.value}</Option>
-              ))}
+              <Option key={item.id}>{item.value}</Option>
+            ))}
         </Select>
         {reasontype === 'Outros' && (
           <InputArea
