@@ -9,6 +9,9 @@ type IProps = {
 const MonetaryInput: React.FC<IProps> = ({ getValue }) => {
   const [amount, setAmount] = useState<string>()
   const handleChange = (value: string): void => {
+    if (typeof value !== 'number' && typeof value !== 'string') {
+      return
+    }
     setAmount(value)
     const cleanedValue = +value.replace(/[^0-9,]/g, '').replace(',', '.')
     getValue(cleanedValue)
@@ -22,7 +25,7 @@ const MonetaryInput: React.FC<IProps> = ({ getValue }) => {
       decimalSeparator=","
       thousandSeparator="."
       precision="2"
-      onChange={handleChange}
+      onChangeEvent={handleChange}
     />
   )
 }
