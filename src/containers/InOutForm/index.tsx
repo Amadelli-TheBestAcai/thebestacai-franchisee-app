@@ -21,8 +21,14 @@ type IProps = {
   modalState: boolean
   type: string
   setModalState: Dispatch<SetStateAction<boolean>>
+  addChangeAmount?: (amount: number) => void
 }
-const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
+const InOutForm: React.FC<IProps> = ({
+  modalState,
+  setModalState,
+  type,
+  addChangeAmount,
+}) => {
   const [value, setValue] = useState<number>()
   const [reasson, setReasson] = useState<string>()
   const [reasontype, setReasonType] = useState<string>()
@@ -32,6 +38,9 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       return message.warning('Informe um valor')
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
+    }
+    if (reasontype === 'Troco') {
+      addChangeAmount(value)
     }
     ipcRenderer.send('handler:create', {
       type,

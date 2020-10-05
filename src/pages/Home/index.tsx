@@ -136,6 +136,11 @@ const Home: React.FC = () => {
     return 1
   }
 
+  const addChangeAmount = (amount: number): void => {
+    console.log(amount)
+    setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
+  }
+
   const registerSale = (): void => {
     ipcRenderer.send('sale:finish', sale)
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
@@ -172,7 +177,11 @@ const Home: React.FC = () => {
           <RightSide>
             <Content>
               <ActionsContainer>
-                <Actions addToQueue={addToQueue} addDiscount={addDiscount} />
+                <Actions
+                  addToQueue={addToQueue}
+                  addDiscount={addDiscount}
+                  addChangeAmount={addChangeAmount}
+                />
               </ActionsContainer>
               <ItemsContainer>
                 <Items items={items} handleItem={removeItem} />
