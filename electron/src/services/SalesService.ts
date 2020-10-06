@@ -42,12 +42,11 @@ class SalesService {
   }
 
   async finishSale(sale: CreateSaleDTO): Promise<void> {
-    const payload: CreateSaleDTO = {
+    await SalesRepository.update(sale.id, {
       ...sale,
       is_current: false,
       to_integrate: true,
-    }
-    await SalesRepository.update(sale.id, payload)
+    })
   }
 
   async delete(sale: string): Promise<void> {
@@ -70,7 +69,7 @@ class SalesService {
         }
         try {
           await api.post(`/sales/${cash_code}`, [saleToIntegrate])
-          await this.delete(id)
+          await SalesRepository.update(id, { to_integrate: false })
           console.log('Venda integrada com sucesso')
         } catch (err) {
           // TODO: Criar integração de log de vendas com erro

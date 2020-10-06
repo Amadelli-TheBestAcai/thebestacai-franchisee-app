@@ -39,7 +39,7 @@ class HandlersService {
       await Promise.all(
         handlers.map(async (handler) => {
           await HandlersRepository.update(handler.id, { to_integrate: false })
-          console.log(`Movimentacao ${handler.id} integrada com sucesso`)
+          console.log('Movimentacao integrada com sucesso')
         })
       )
     } catch (err) {

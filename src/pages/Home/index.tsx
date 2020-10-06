@@ -45,7 +45,7 @@ const Home: React.FC = () => {
     const integrate = async () => {
       while (true) {
         await sleep(10000)
-        // ipcRenderer.send('sale:integrate')
+        ipcRenderer.send('sale:integrate')
         ipcRenderer.send('handler:integrate')
       }
     }
@@ -174,7 +174,8 @@ const Home: React.FC = () => {
     if (!totalPaid || !sale.total) {
       return '0,00'
     }
-    const totalSold = +totalPaid - (+sale.total + +sale.discount)
+    const totalSold =
+      +totalPaid - (+sale.total + +sale.discount) - +sale.change_amount
     return totalSold.toFixed(2).replace('.', ',')
   }
 
