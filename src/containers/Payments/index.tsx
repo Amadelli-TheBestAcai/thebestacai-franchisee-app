@@ -25,17 +25,18 @@ interface IProps {
   handleOpenPayment: (type: number, defaultValue?: number) => void
   addPayment
   removePayment
-  currentPayment
   setCurrentPayment
   modalState: boolean
   setModalState
   totalSale
-  discount: number
+  totalPaid: string
+  changeAmount: string
 }
 
 const PaymentsContainer: React.FC<IProps> = ({
+  totalPaid,
+  changeAmount,
   payments,
-  currentPayment,
   setCurrentPayment,
   setModalState,
   handleOpenPayment,
@@ -43,27 +44,9 @@ const PaymentsContainer: React.FC<IProps> = ({
   modalState,
   totalSale,
   removePayment,
-  discount,
 }) => {
   const onModalCancel = (): void => {
     setModalState(false)
-  }
-
-  const getTotalPaid = (): string => {
-    const totalPaid = payments.reduce(
-      (total, payment) => total + +payment.amount,
-      0
-    )
-    return totalPaid.toFixed(2).replace('.', ',')
-  }
-
-  const getChangeAmount = (): string => {
-    const totalPaid = getTotalPaid().replace(',', '.')
-    if (!totalPaid || !totalSale) {
-      return '0,00'
-    }
-    const totalSold = +totalPaid - (+totalSale - +discount)
-    return totalSold.toFixed(2).replace('.', ',')
   }
 
   const getAmount = (amount: number): void => {
@@ -108,11 +91,11 @@ const PaymentsContainer: React.FC<IProps> = ({
       <Footer>
         <AmountContainer span={11}>
           <AmountDescription>Valor Pago</AmountDescription>
-          <AmountValue>RS {getTotalPaid()}</AmountValue>
+          <AmountValue>RS {totalPaid}</AmountValue>
         </AmountContainer>
         <AmountContainer span={11}>
           <AmountDescription>Troco</AmountDescription>
-          <AmountValue>RS {getChangeAmount()}</AmountValue>
+          <AmountValue>RS {changeAmount}</AmountValue>
         </AmountContainer>
       </Footer>
       <Modal

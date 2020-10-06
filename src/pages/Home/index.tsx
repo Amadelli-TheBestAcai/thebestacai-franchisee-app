@@ -144,7 +144,13 @@ const Home: React.FC = () => {
     setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
   }
 
-  const registerSale = (): void => {
+  const registerSale = () => {
+    if (getChangeAmount() !== '0,00') {
+      return message.warning('Pagamento inválido')
+    }
+    if (!items.length) {
+      return message.warning('Nenhum item cadastrado para a venda')
+    }
     ipcRenderer.send('sale:finish', sale)
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
       message.success('Venda salva com sucesso')
@@ -152,6 +158,23 @@ const Home: React.FC = () => {
       setPayments([])
       setSale(newSale)
     })
+  }
+
+  const getTotalPaid = (): string => {
+    const totalPaid = payments.reduce(
+      (total, payment) => total + +payment.amount,
+      0
+    )
+    return totalPaid.toFixed(2).replace('.', ',')
+  }
+
+  const getChangeAmount = (): string => {
+    const totalPaid = getTotalPaid().replace(',', '.')
+    if (!totalPaid || !sale.total) {
+      return '0,00'
+    }
+    const totalSold = +totalPaid - (+sale.total + +sale.discount)
+    return totalSold.toFixed(2).replace('.', ',')
   }
 
   const handlers = {
@@ -196,13 +219,13 @@ const Home: React.FC = () => {
                     payments={payments}
                     handleOpenPayment={handleOpenPayment}
                     addPayment={addPayment}
-                    currentPayment={currentPayment}
                     setCurrentPayment={setCurrentPayment}
                     removePayment={removePayment}
                     modalState={paymentModal}
                     setModalState={setPaymentModal}
-                    discount={sale.discount || 0}
                     totalSale={sale.total}
+                    changeAmount={getChangeAmount()}
+                    totalPaid={getTotalPaid()}
                   />
                 </PaymentsTypesContainer>
                 <FinishContainer>
