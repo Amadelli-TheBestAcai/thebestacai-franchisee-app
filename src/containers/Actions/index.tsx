@@ -4,6 +4,10 @@ import CommandForm from '../CommandForm'
 import DiscountForm from '../DiscountForm'
 import InOutForm from '../InOutForm'
 
+import { Item } from '../../models/saleItem'
+
+import { message } from 'antd'
+
 import {
   Container,
   DiscountButton,
@@ -17,12 +21,14 @@ import {
 } from './styles'
 
 type IProps = {
+  haveItensOnSale: boolean
   addToQueue: (name: string) => void
   addDiscount: (value: number) => void
   addChangeAmount: (amount: number) => void
 }
 
 const Actions: React.FC<IProps> = ({
+  haveItensOnSale,
   addToQueue,
   addDiscount,
   addChangeAmount,
@@ -31,6 +37,13 @@ const Actions: React.FC<IProps> = ({
   const [discountState, setDiscountState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
   const [handlerOutState, setHandlerOutState] = useState(false)
+
+  const handleCommand = () => {
+    if (!haveItensOnSale) {
+      return message.warning('A lista de items está vazia')
+    }
+    setCommandState(true)
+  }
 
   return (
     <Container>
@@ -46,7 +59,7 @@ const Actions: React.FC<IProps> = ({
         SAÍDA
         <OutIcon />
       </OutButton>
-      <CommandButton onClick={() => setCommandState(true)}>
+      <CommandButton onClick={() => handleCommand()}>
         COMANDA
         <CommandIcon />
       </CommandButton>

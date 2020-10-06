@@ -17,7 +17,7 @@ import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
-import { Button, message } from 'antd'
+import { message } from 'antd'
 import {
   Container,
   Content,
@@ -181,6 +181,7 @@ const Home: React.FC = () => {
             <Content>
               <ActionsContainer>
                 <Actions
+                  haveItensOnSale={!!items.length}
                   addToQueue={addToQueue}
                   addDiscount={addDiscount}
                   addChangeAmount={addChangeAmount}
