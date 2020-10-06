@@ -42,14 +42,14 @@ const Home: React.FC = () => {
   const [paymentModal, setPaymentModal] = useState(false)
 
   useEffect(() => {
-    const integrateSale = async () => {
+    const integrate = async () => {
       while (true) {
         await sleep(10000)
         // ipcRenderer.send('sale:integrate')
         ipcRenderer.send('handler:integrate')
       }
     }
-    integrateSale()
+    integrate()
   }, [])
 
   useEffect(() => {

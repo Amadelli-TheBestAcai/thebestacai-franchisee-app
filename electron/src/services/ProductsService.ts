@@ -21,10 +21,9 @@ class ProductsService {
       data: { data },
     } = await api.get(`products_store/${store}`)
     this.updateAllProducts(data)
-    return formaterToCategory(data)
   }
 
-  async getOfflineProducts() {
+  async getProducts() {
     const products = await ProductsRepository.getAll()
     const formatedProducts = products.map((product) => ({
       product_id: product.product_id,
@@ -33,13 +32,6 @@ class ProductsService {
       category: { id: product.category_id, name: product.category_name },
     }))
     return formaterToCategory(formatedProducts)
-  }
-
-  async getProducts(isConnected: boolean) {
-    if (isConnected) {
-      return await this.getOnlineProducts()
-    }
-    return await this.getOfflineProducts()
   }
 
   async getSelfService() {
