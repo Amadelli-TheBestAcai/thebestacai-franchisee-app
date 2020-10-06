@@ -10,3 +10,11 @@ ipcMain.on('handler:create', async (event, handler) => {
     console.error(err)
   }
 })
+
+ipcMain.on('handler:integrate', async (event) => {
+  try {
+    await HandlersService.integrate()
+  } catch (err) {
+    console.error(err)
+  }
+})

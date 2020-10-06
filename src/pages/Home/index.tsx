@@ -44,8 +44,9 @@ const Home: React.FC = () => {
   useEffect(() => {
     const integrateSale = async () => {
       while (true) {
-        await sleep(30000)
+        await sleep(10000)
         // ipcRenderer.send('sale:integrate')
+        ipcRenderer.send('handler:integrate')
       }
     }
     integrateSale()
