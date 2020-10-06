@@ -15,6 +15,14 @@ class ItemsRepository {
     await knex('items').where({ sale_id }).update(payload)
   }
 
+  async updateByProductAndSale(
+    product_id: number,
+    sale_id: string,
+    payload: UpdateItemDTO
+  ): Promise<void> {
+    await knex('items').where({ sale_id, product_id }).update(payload)
+  }
+
   async getByProductAndSale(
     product_id: number,
     sale_id: string

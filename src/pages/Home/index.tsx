@@ -63,7 +63,7 @@ const Home: React.FC = () => {
 
   const addItem = (
     { product_id, price_unit, name }: Product,
-    quantity?: number,
+    quantity: number,
     total?: number
   ): void => {
     ipcRenderer.send('item:add', {
@@ -81,7 +81,6 @@ const Home: React.FC = () => {
   }
 
   const removeItem = ({ id }: Item): void => {
-    console.log(id)
     ipcRenderer.send('item:decress', {
       sale: sale.id,
       id,

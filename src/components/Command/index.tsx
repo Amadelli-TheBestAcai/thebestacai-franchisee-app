@@ -66,7 +66,7 @@ const Command: React.FC<IProps> = ({
       <Column span={4}>
         <AmountContainer>
           <Title>Valor:</Title>
-          <Description>R$ {total}</Description>
+          <Description>R$ {total.toFixed(2).replace('.', ',')}</Description>
         </AmountContainer>
       </Column>
       <Column span={3}>

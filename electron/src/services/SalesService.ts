@@ -2,9 +2,9 @@ import SalesRepository from '../repositories/SalesRepository'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import api from '../utils/Api'
-import { getTotalAndQuantity } from '../utils/ItemsHandler'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 import { Sale } from '../models/Sale'
+import { Item } from '../models/Item'
 import { v4 as uuidv4 } from 'uuid'
 import { getNow } from '../utils/DateHandler'
 class SalesService {
@@ -91,13 +91,40 @@ class SalesService {
     return await this.create()
   }
 
-  async transferItemsCommand(sale: string): Promise<void> {
-    const { id: sale_id } = await this.getCurrentSale()
-    await ItemsService.updateBySale(sale, { sale_id })
-    await SalesRepository.deleteById(sale)
-    const newItems = await ItemsService.getBySale(sale_id)
-    const quantityAndTotal = getTotalAndQuantity(newItems)
-    await SalesRepository.update(sale_id, { ...quantityAndTotal })
+  async transferItemsCommand(oldSale: string): Promise<void> {
+    const { id: currentSale } = await this.getCurrentSale()
+    const items = await ItemsService.getBySale(oldSale)
+    await Promise.all(
+      items.map(async (item) => {
+        const oldItem = await ItemsService.getByProductAndSale(
+          currentSale,
+          item.product_id
+        )
+        if (oldItem && oldItem.product_id !== 1) {
+          const newItem: Item = {
+            ...oldItem,
+            quantity: +oldItem.quantity + +item.quantity,
+            total: +oldItem.total + +item.total,
+          }
+          await ItemsService.updateByProductAndSale(
+            item.product_id,
+            currentSale,
+            {
+              ...newItem,
+              sale_id: currentSale,
+            }
+          )
+        } else {
+          await ItemsService.createOrUpdate(
+            { ...item, sale_id: currentSale },
+            currentSale
+          )
+        }
+      })
+    )
+    await ItemsService.updateQuantityAndTotal(currentSale)
+    await ItemsService.deleteBySale(oldSale)
+    await SalesRepository.deleteById(oldSale)
   }
 }
 

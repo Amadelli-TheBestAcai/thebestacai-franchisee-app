@@ -39,7 +39,6 @@ const InOutForm: React.FC<IProps> = ({
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
-    console.log(reasontype === 'Troco' && type === 'saida')
     if (reasontype === 'Troco' && type === 'saida') {
       addChangeAmount(value)
     }
