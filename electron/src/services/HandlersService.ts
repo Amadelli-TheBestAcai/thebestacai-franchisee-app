@@ -31,20 +31,17 @@ class HandlersService {
     if (!store_id || !code) {
       return
     }
-    const formatedHandlers = handlers.map(
-      ({ id, created_at, ...props }) => props
+
+    await Promise.all(
+      handlers.map(async ({ id, created_at, ...handler }) => {
+        try {
+          await api.post(`/cash_handler/${store_id}-${code}`, handler)
+          await HandlersRepository.update(id, { to_integrate: false })
+        } catch (err) {
+          console.log(err)
+        }
+      })
     )
-    try {
-      await api.post(`/cash_handler/${store_id}-${code}`, formatedHandlers)
-      await Promise.all(
-        handlers.map(async (handler) => {
-          await HandlersRepository.update(handler.id, { to_integrate: false })
-          console.log('Movimentacao integrada com sucesso')
-        })
-      )
-    } catch (err) {
-      console.log(err)
-    }
   }
 }
 

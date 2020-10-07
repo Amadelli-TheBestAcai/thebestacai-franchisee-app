@@ -31,7 +31,7 @@ ipcMain.on('sale:command:create', async (event, { id, name }) => {
 
 ipcMain.on('sale:integrate', async (event) => {
   try {
-    await SalesService.integrate('2-05')
+    await SalesService.integrate()
   } catch (err) {
     console.error(err)
   }

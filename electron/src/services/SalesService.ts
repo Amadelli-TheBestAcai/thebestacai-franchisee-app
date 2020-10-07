@@ -1,4 +1,5 @@
 import SalesRepository from '../repositories/SalesRepository'
+import CashierRepository from '../repositories/CashierRepository'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import api from '../utils/Api'
@@ -55,8 +56,19 @@ class SalesService {
     await SalesRepository.deleteById(sale)
   }
 
-  async integrate(cash_code: string): Promise<void> {
+  async integrate(): Promise<void> {
     const sales = await SalesRepository.getToIntegrate()
+    if (!sales.length) {
+      return
+    }
+    const currentCash = await CashierRepository.get()
+    if (!currentCash) {
+      return
+    }
+    const { store_id, code } = currentCash
+    if (!store_id || !code) {
+      return
+    }
     await Promise.all(
       sales.map(async (sale) => {
         const items = await ItemsService.getItemsToIntegrate(sale.id)
@@ -68,7 +80,7 @@ class SalesService {
           payments,
         }
         try {
-          await api.post(`/sales/${cash_code}`, [saleToIntegrate])
+          await api.post(`/sales/${store_id}-${code}`, [saleToIntegrate])
           await SalesRepository.update(id, { to_integrate: false })
           console.log('Venda integrada com sucesso')
         } catch (err) {
