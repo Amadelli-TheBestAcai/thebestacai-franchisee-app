@@ -29,8 +29,8 @@ interface IProps {
   modalState: boolean
   setModalState
   totalSale
-  totalPaid: string
-  changeAmount: string
+  totalPaid: number
+  changeAmount: number
 }
 
 const PaymentsContainer: React.FC<IProps> = ({
@@ -91,11 +91,13 @@ const PaymentsContainer: React.FC<IProps> = ({
       <Footer>
         <AmountContainer span={11}>
           <AmountDescription>Valor Pago</AmountDescription>
-          <AmountValue>RS {totalPaid}</AmountValue>
+          <AmountValue>RS {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
         <AmountContainer span={11}>
           <AmountDescription>Troco</AmountDescription>
-          <AmountValue>RS {changeAmount}</AmountValue>
+          <AmountValue>
+            RS {changeAmount.toFixed(2).replace('.', ',')}
+          </AmountValue>
         </AmountContainer>
       </Footer>
       <Modal

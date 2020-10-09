@@ -147,7 +147,7 @@ const Home: React.FC = () => {
   }
 
   const registerSale = () => {
-    if (getChangeAmount() !== '0,00') {
+    if (getChangeAmount() < 0) {
       return message.warning('Pagamento inválido')
     }
     if (!items.length) {
@@ -162,22 +162,18 @@ const Home: React.FC = () => {
     })
   }
 
-  const getTotalPaid = (): string => {
+  const getTotalPaid = (): number => {
     const totalPaid = payments.reduce(
       (total, payment) => total + +payment.amount,
       0
     )
-    return totalPaid.toFixed(2).replace('.', ',')
+    return totalPaid
   }
 
-  const getChangeAmount = (): string => {
-    const totalPaid = getTotalPaid().replace(',', '.')
-    if (!totalPaid || !sale.total) {
-      return '0,00'
-    }
-    const totalSold =
-      +totalPaid - (+sale.total + +sale.discount) - +sale.change_amount
-    return totalSold.toFixed(2).replace('.', ',')
+  const getChangeAmount = (): number => {
+    const totalPaid = getTotalPaid()
+    const changeAmount = totalPaid - (+sale.total - +sale.discount)
+    return changeAmount || 0
   }
 
   const handlers = {
