@@ -147,6 +147,7 @@ const Home: React.FC = () => {
   }
 
   const registerSale = () => {
+    console.log(items, getChangeAmount() < 0, getChangeAmount())
     if (getChangeAmount() < 0) {
       return message.warning('Pagamento inválido')
     }
@@ -176,6 +177,14 @@ const Home: React.FC = () => {
     return changeAmount || 0
   }
 
+  const keyMap = {
+    MONEY: 'a',
+    C_CREDIT: 's',
+    C_DEBIT: 'd',
+    TICKET: 't',
+    REGISTER: 'f1',
+  }
+
   const handlers = {
     MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 0),
     C_CREDIT: () =>
@@ -186,7 +195,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Container handlers={handlers}>
+    <Container handlers={handlers} keyMap={keyMap} allowChanges={true}>
       {loading ? (
         <Spinner />
       ) : (
