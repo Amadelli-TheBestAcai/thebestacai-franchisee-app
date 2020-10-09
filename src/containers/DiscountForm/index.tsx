@@ -17,10 +17,11 @@ const DiscountForm: React.FC<IProps> = ({
   const [value, setValue] = useState<number>()
 
   const handleSubmit = () => {
-    if (!value) {
-      return message.warning('Informe um valor')
+    if (value < 0) {
+      return message.warning('Informe um valor válido')
     }
     setModalState(false)
+    setValue(0)
     onFinish(value)
   }
 
