@@ -7,18 +7,20 @@ import { Container, Input } from './styles'
 type IProps = {
   modalState: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
+  placeHolder: string
   onFinish: (name: string) => void
 }
 
-const CommandForm: React.FC<IProps> = ({
+const InputForm: React.FC<IProps> = ({
   onFinish,
+  placeHolder,
   modalState,
   setModalState,
 }) => {
   const [name, setName] = useState<string>()
   const handleSubmit = () => {
     if (!name) {
-      return message.warning('Informe um nome')
+      return message.warning('Preencha o campo')
     }
     setModalState(false)
     onFinish(name)
@@ -33,7 +35,7 @@ const CommandForm: React.FC<IProps> = ({
       destroyOnClose={true}
     >
       <Input
-        placeholder="Digite o nome do cliente"
+        placeholder={placeHolder}
         autoFocus={true}
         value={name}
         onPressEnter={handleSubmit}
@@ -43,4 +45,4 @@ const CommandForm: React.FC<IProps> = ({
   )
 }
 
-export default CommandForm
+export default InputForm

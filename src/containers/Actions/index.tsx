@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 
-import CommandForm from '../CommandForm'
+import InputForm from '../InputForm'
 import DiscountForm from '../DiscountForm'
 import InOutForm from '../InOutForm'
-
-import { Item } from '../../models/saleItem'
 
 import { message } from 'antd'
 
@@ -63,7 +61,8 @@ const Actions: React.FC<IProps> = ({
         COMANDA
         <CommandIcon />
       </CommandButton>
-      <CommandForm
+      <InputForm
+        placeHolder="Digite o nome do cliente"
         onFinish={addToQueue}
         modalState={commandState}
         setModalState={setCommandState}

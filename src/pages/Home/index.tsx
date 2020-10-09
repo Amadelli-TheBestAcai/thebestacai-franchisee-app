@@ -49,7 +49,7 @@ const Home: React.FC = () => {
         ipcRenderer.send('handler:integrate')
       }
     }
-    integrate()
+    // integrate()
   }, [])
 
   useEffect(() => {

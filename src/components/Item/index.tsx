@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Item as ItemModel } from '../../models/saleItem'
+
+import InputForm from '../../containers/InputForm'
 
 import { Container, Column, Button, Description, RemoveIcon } from './styles'
 
@@ -10,7 +12,13 @@ type IProps = {
 }
 
 const Item: React.FC<IProps> = ({ item, handleItem }) => {
+  const [modalState, setModalState] = useState(false)
   const { name, price_unit, total, quantity } = item
+
+  const onFinish = (reason: string) => {
+    console.log({ item, reason })
+  }
+
   return (
     <Container>
       <Column span={10}>
@@ -26,10 +34,16 @@ const Item: React.FC<IProps> = ({ item, handleItem }) => {
         <Description>R$ {total.toFixed(2).replace('.', ',')}</Description>
       </Column>
       <Column span={2}>
-        <Button onClick={() => handleItem(item)}>
-          <RemoveIcon/>
+        <Button onClick={() => setModalState(true)}>
+          <RemoveIcon />
         </Button>
       </Column>
+      <InputForm
+        placeHolder="Informe a razão"
+        modalState={modalState}
+        setModalState={setModalState}
+        onFinish={onFinish}
+      />
     </Container>
   )
 }
