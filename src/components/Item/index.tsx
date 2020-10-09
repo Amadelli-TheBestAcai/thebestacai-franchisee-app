@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
+import { ipcRenderer } from 'electron'
 
 import { Item as ItemModel } from '../../models/saleItem'
 
 import InputForm from '../../containers/InputForm'
+
+import { message as messageAnt } from 'antd'
 
 import { Container, Column, Button, Description, RemoveIcon } from './styles'
 
@@ -16,7 +19,20 @@ const Item: React.FC<IProps> = ({ item, handleItem }) => {
   const { name, price_unit, total, quantity } = item
 
   const onFinish = (reason: string) => {
-    console.log({ item, reason })
+    ipcRenderer.send('itemOutCart:create', {
+      reason,
+      product_id: item.product_id,
+    })
+    ipcRenderer.once(
+      'itemOutCart:create:response',
+      (event, { success, message }) => {
+        if (!success) {
+          return messageAnt.warning(message)
+        }
+        handleItem(item)
+        return messageAnt.success(message)
+      }
+    )
   }
 
   return (
