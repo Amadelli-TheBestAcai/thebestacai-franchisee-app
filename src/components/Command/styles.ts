@@ -21,6 +21,7 @@ export const Column = styled(Col)`
 export const InfoContainer = styled.div`
   display: flex;
   justify-content: flex-start;
+  width: 100%;
 `
 
 export const AvatarContainer = styled.div`
@@ -32,6 +33,9 @@ export const AvatarContainer = styled.div`
 export const BasicInfoContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
 
   padding-left: 20px;
 `
@@ -109,8 +113,10 @@ export const ChangeIcon = styled(Repeat)`
 `
 
 export const CommandName = styled.label`
-  max-width: 30%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
   font-size: 28px;
   font-weight: 700;
-  text-overflow: ellipsis;
 `
