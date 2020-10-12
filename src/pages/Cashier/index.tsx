@@ -36,7 +36,9 @@ type IProps = RouteComponentProps
 
 const Cashier: React.FC<IProps> = ({ history }) => {
   const [loadingCashes, setLoadingCashes] = useState(true)
-  const [cashes, setCashes] = useState<{cashier: string, avaliable: boolean}[]>([])
+  const [cashes, setCashes] = useState<
+    { cashier: string; avaliable: boolean }[]
+  >([])
   const [loading, setLoading] = useState(false)
   const [amount, setAmount] = useState({
     twoHundred: null,
@@ -60,7 +62,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    ipcRenderer.send('cashier:get', isOnline())
+    ipcRenderer.send('cashier:get')
     ipcRenderer.on('cashier:get:response', (event, { cashes, current }) => {
       if (current?.is_opened === 1) {
         setCurrentCash(current.code)
@@ -123,7 +125,6 @@ const Cashier: React.FC<IProps> = ({ history }) => {
           ipcRenderer.send('cashier:close', {
             code: currentCash,
             amount_on_close: total || '0',
-            isConnected: isOnline(),
           })
           ipcRenderer.once(
             'cashier:close:response',
@@ -140,7 +141,6 @@ const Cashier: React.FC<IProps> = ({ history }) => {
           ipcRenderer.send('cashier:open', {
             code: cash,
             amount_on_open: total || '0',
-            isConnected: isOnline(),
           })
           ipcRenderer.once(
             'cashier:open:response',

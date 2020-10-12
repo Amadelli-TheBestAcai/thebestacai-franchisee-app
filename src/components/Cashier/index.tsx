@@ -11,7 +11,7 @@ import {
 } from './styles'
 
 type IProps = {
-  cash: CashierModel
+  cash: { cashier: string; avaliable: boolean }
   handleClick: any
 }
 

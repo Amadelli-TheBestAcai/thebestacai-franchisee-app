@@ -33,7 +33,7 @@ import {
   ActionsContainer,
   NotFoundContainer,
   NotFoundIcon,
-  NotFoundDescription
+  NotFoundDescription,
 } from './styles'
 
 const Home: React.FC = () => {
@@ -59,13 +59,16 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
-    ipcRenderer.once('sale:getCurrent:response', (event, { sale, items, payments, cashier }) => {
-      setCashier(cashier)
-      setSale(sale)
-      setItems(items)
-      setPayments(payments)
-      setLoading(false)
-    })
+    ipcRenderer.once(
+      'sale:getCurrent:response',
+      (event, { sale, items, payments, cashier }) => {
+        setCashier(cashier)
+        setSale(sale)
+        setItems(items)
+        setPayments(payments)
+        setLoading(false)
+      }
+    )
   }, [])
 
   const addItem = (
@@ -206,64 +209,62 @@ const Home: React.FC = () => {
         <Spinner />
       ) : (
         <>
-          {
-            !cashier || !cashier.is_opened
-              ? <NotFoundContainer>
-                <NotFoundIcon />
-                <NotFoundDescription>
-                  Nenhum caixa aberto
-                </NotFoundDescription>
-              </NotFoundContainer>
-              : <>
-                <LeftSide>
-                  <BalanceContainer>
-                    <Balance addItem={addItem} />
-                  </BalanceContainer>
-                  <ProductsContainer>
-                    <Products handleItem={addItem} />
-                  </ProductsContainer>
-                </LeftSide>
-                <RightSide>
-                  <Content>
-                    <ActionsContainer>
-                      <Actions
-                        haveItensOnSale={!!items.length}
-                        addToQueue={addToQueue}
-                        addDiscount={addDiscount}
-                        addChangeAmount={addChangeAmount}
+          {!cashier || !cashier.is_opened ? (
+            <NotFoundContainer>
+              <NotFoundIcon />
+              <NotFoundDescription>Nenhum caixa aberto</NotFoundDescription>
+            </NotFoundContainer>
+          ) : (
+            <>
+              <LeftSide>
+                <BalanceContainer>
+                  <Balance addItem={addItem} />
+                </BalanceContainer>
+                <ProductsContainer>
+                  <Products handleItem={addItem} />
+                </ProductsContainer>
+              </LeftSide>
+              <RightSide>
+                <Content>
+                  <ActionsContainer>
+                    <Actions
+                      haveItensOnSale={!!items.length}
+                      addToQueue={addToQueue}
+                      addDiscount={addDiscount}
+                      addChangeAmount={addChangeAmount}
+                    />
+                  </ActionsContainer>
+                  <ItemsContainer>
+                    <Items items={items} handleItem={removeItem} />
+                  </ItemsContainer>
+                  <PaymentsContainer>
+                    <PaymentsTypesContainer>
+                      <Payments
+                        payments={payments}
+                        handleOpenPayment={handleOpenPayment}
+                        addPayment={addPayment}
+                        setCurrentPayment={setCurrentPayment}
+                        removePayment={removePayment}
+                        modalState={paymentModal}
+                        setModalState={setPaymentModal}
+                        totalSale={sale.total}
+                        changeAmount={getChangeAmount()}
+                        totalPaid={getTotalPaid()}
                       />
-                    </ActionsContainer>
-                    <ItemsContainer>
-                      <Items items={items} handleItem={removeItem} />
-                    </ItemsContainer>
-                    <PaymentsContainer>
-                      <PaymentsTypesContainer>
-                        <Payments
-                          payments={payments}
-                          handleOpenPayment={handleOpenPayment}
-                          addPayment={addPayment}
-                          setCurrentPayment={setCurrentPayment}
-                          removePayment={removePayment}
-                          modalState={paymentModal}
-                          setModalState={setPaymentModal}
-                          totalSale={sale.total}
-                          changeAmount={getChangeAmount()}
-                          totalPaid={getTotalPaid()}
-                        />
-                      </PaymentsTypesContainer>
-                      <FinishContainer>
-                        <Register
-                          registerSale={registerSale}
-                          quantity={sale.quantity}
-                          discount={sale.discount}
-                          total={sale.total}
-                        />
-                      </FinishContainer>
-                    </PaymentsContainer>
-                  </Content>
-                </RightSide>
-              </>
-          }
+                    </PaymentsTypesContainer>
+                    <FinishContainer>
+                      <Register
+                        registerSale={registerSale}
+                        quantity={sale.quantity}
+                        discount={sale.discount}
+                        total={sale.total}
+                      />
+                    </FinishContainer>
+                  </PaymentsContainer>
+                </Content>
+              </RightSide>
+            </>
+          )}
         </>
       )}
     </Container>

@@ -1,9 +1,9 @@
 import { ipcMain } from 'electron'
 import CashierService from '../services/CashierService'
 
-ipcMain.on('cashier:get', async (event, isConnected) => {
+ipcMain.on('cashier:get', async (event) => {
   try {
-    const cashes = await CashierService.getCashes(isConnected)
+    const cashes = await CashierService.getCashes()
     const current = await CashierService.getCurrentCashier()
     event.reply('cashier:get:response', { cashes, current })
   } catch (err) {
@@ -12,9 +12,9 @@ ipcMain.on('cashier:get', async (event, isConnected) => {
   }
 })
 
-ipcMain.on('cashier:open', async (event, { isConnected, ...cashier }) => {
+ipcMain.on('cashier:open', async (event, { ...cashier }) => {
   try {
-    await CashierService.openCashier(cashier, isConnected)
+    await CashierService.openCashier(cashier)
     event.reply('cashier:open:response', {
       success: true,
       message: 'Caixa aberto com sucesso',
@@ -28,15 +28,9 @@ ipcMain.on('cashier:open', async (event, { isConnected, ...cashier }) => {
   }
 })
 
-ipcMain.on('cashier:close', async (event, { isConnected, ...cashier }) => {
-  if (!isConnected) {
-    event.reply('cashier:close:response', {
-      success: false,
-      message: 'Sem conexão para fechar o caixa',
-    })
-  }
+ipcMain.on('cashier:close', async (event, { ...cashier }) => {
   try {
-    await CashierService.closeCashier(cashier, isConnected)
+    await CashierService.closeCashier(cashier)
     event.reply('cashier:close:response', {
       success: true,
       message: 'Caixa fechado com sucesso',
