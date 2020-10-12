@@ -1,4 +1,8 @@
 export interface Cashier {
-  cashier: string
-  avaliable: boolean
+  id: number
+  code: string
+  cash_id: number
+  history_id: number
+  store_id: number
+  is_opened: number
 }

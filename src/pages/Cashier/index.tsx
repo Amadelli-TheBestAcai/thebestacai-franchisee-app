@@ -9,8 +9,6 @@ import Spinner from '../../components/Spinner'
 
 import CashInfo from '../../containers/CashInfo'
 
-import { Cashier as CashierModel } from '../../models/cashier'
-
 import { message as messageAnt, Modal } from 'antd'
 
 import {
@@ -38,7 +36,7 @@ type IProps = RouteComponentProps
 
 const Cashier: React.FC<IProps> = ({ history }) => {
   const [loadingCashes, setLoadingCashes] = useState(true)
-  const [cashes, setCashes] = useState<CashierModel[]>([])
+  const [cashes, setCashes] = useState<{cashier: string, avaliable: boolean}[]>([])
   const [loading, setLoading] = useState(false)
   const [amount, setAmount] = useState({
     twoHundred: null,
@@ -102,7 +100,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
     setAmount((oldValues) => ({ ...oldValues, [name]: value }))
   }
 
-  const selectCashier = ({ avaliable, cashier }: CashierModel) => {
+  const selectCashier = ({ avaliable, cashier }) => {
     if (!avaliable) {
       return messageAnt.warning('Caixa não disponível')
     }

@@ -6,7 +6,7 @@ ipcMain.on('item:add', async (event, { sale, ...payload }) => {
   try {
     await ItemsService.createOrUpdate(payload, sale)
     const items = await ItemsService.getBySale(sale)
-    const currentSale = await SalesService.getCurrentSale()
+    const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:add:response', { sale: currentSale, items })
   } catch (err) {
     console.error(err)
@@ -17,7 +17,7 @@ ipcMain.on('item:decress', async (event, { id, sale }) => {
   try {
     await ItemsService.decressQuantity(id, sale)
     const items = await ItemsService.getBySale(sale)
-    const currentSale = await SalesService.getCurrentSale()
+    const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:decress:response', { sale: currentSale, items })
   } catch (err) {
     console.error(err)

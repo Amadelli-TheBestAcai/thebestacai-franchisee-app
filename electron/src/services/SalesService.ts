@@ -6,6 +6,7 @@ import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
 import { Sale } from '../models/Sale'
 import { Item } from '../models/Item'
+import { Payment } from '../models/Payment'
 import { v4 as uuidv4 } from 'uuid'
 import { getNow } from '../utils/DateHandler'
 class SalesService {
@@ -23,10 +24,16 @@ class SalesService {
     return newSale
   }
 
-  async getCurrentSale(): Promise<CreateSaleDTO> {
+  async getCurrentSale(): Promise<{
+    sale: CreateSaleDTO
+    items: Item[]
+    payments: Payment[]
+  }> {
     const currentSale = await SalesRepository.getCurrentSale()
     if (currentSale) {
-      return currentSale
+      const items = await ItemsService.getBySale(currentSale.id)
+      const payments = await PaymentsService.getBySale(currentSale.id)
+      return { sale: currentSale, items, payments }
     } else {
       const newSale: CreateSaleDTO = {
         id: uuidv4(),
@@ -38,7 +45,7 @@ class SalesService {
         created_at: getNow(),
       }
       await SalesRepository.create(newSale)
-      return newSale
+      return { sale: newSale, items: [], payments: [] }
     }
   }
 
@@ -103,7 +110,9 @@ class SalesService {
   }
 
   async transferItemsCommand(oldSale: string): Promise<void> {
-    const { id: currentSale } = await this.getCurrentSale()
+    const {
+      sale: { id: currentSale },
+    } = await this.getCurrentSale()
     const items = await ItemsService.getBySale(oldSale)
     await Promise.all(
       items.map(async (item) => {
