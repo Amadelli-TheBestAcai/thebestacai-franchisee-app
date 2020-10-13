@@ -64,3 +64,13 @@ ipcMain.on('sale:command:remove', async (event, sale) => {
     console.error(err)
   }
 })
+
+ipcMain.on('sale:integrate:pending', async (event, { cash, amount }) => {
+  try {
+    await SalesService.integratePending(amount, cash)
+    event.reply('sale:integrate:pending:response', true)
+  } catch (err) {
+    event.reply('sale:integrate:pending:response', false)
+    console.error(err)
+  }
+})

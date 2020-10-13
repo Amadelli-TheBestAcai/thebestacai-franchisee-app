@@ -84,10 +84,14 @@ class CashierService {
       await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
     }
     const { id } = await this.getCurrentCashier()
+    await this.closeLocalCashier(id)
+  }
+
+  async closeLocalCashier(id: number): Promise<void> {
     await CashierRepository.findAndUpdate(id, { is_opened: false })
   }
 
-  async getCurrentCashier(): Promise<Cashier | null> {
+  async getCurrentCashier(): Promise<Cashier> {
     return await CashierRepository.get()
   }
 

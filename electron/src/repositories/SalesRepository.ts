@@ -23,7 +23,9 @@ class SalesRepository {
   }
 
   async getPending(): Promise<Sale[]> {
-    return await knex('sales').whereNull('cash_history_id')
+    return await knex('sales')
+      .where({ to_integrate: true })
+      .whereNull('cash_history_id')
   }
 
   async update(id: string, payload: UpdateSaleDTO): Promise<void> {

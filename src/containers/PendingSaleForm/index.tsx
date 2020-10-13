@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import { ipcRenderer } from 'electron'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-
+import { message } from 'antd'
 import MonetaryInput from '../../components/MonetaryInput'
 
 import {
@@ -25,8 +26,17 @@ const PendingSaleForm: React.FC<IProps> = ({ modalState, cashes, history }) => {
   const [isIntegrating, setIntegrating] = useState(false)
 
   const onFinish = () => {
-    console.log({ cash, amount })
-    setVisible(false)
+    setIntegrating(true)
+    ipcRenderer.send('sale:integrate:pending', { cash, amount })
+    ipcRenderer.on('sale:integrate:pending:response', (event, success) => {
+      setIntegrating(false)
+      if (success) {
+        message.success('Vendas integradas com sucesso')
+        return setVisible(false)
+      } else {
+        return message.warning('Erro ao integrar vendas. Contate o suporte')
+      }
+    })
   }
 
   const handleSelect = (value: string) => {

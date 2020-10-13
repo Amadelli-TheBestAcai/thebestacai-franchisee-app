@@ -1,7 +1,9 @@
 import SalesRepository from '../repositories/SalesRepository'
-import CashierRepository from '../repositories/CashierRepository'
+import CashierService from '../services/CashierService'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
+import UserService from '../services/UserService'
+
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
 import { Sale } from '../models/Sale'
@@ -11,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { getNow } from '../utils/DateHandler'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
-    const cashier = await CashierRepository.get()
+    const cashier = await CashierService.getCurrentCashier()
     if (!cashier && cashier?.is_opened !== 1) {
       return null
     }
@@ -67,7 +69,7 @@ class SalesService {
     if (!sales.length) {
       return
     }
-    const currentCash = await CashierRepository.get()
+    const currentCash = await CashierService.getCurrentCashier()
     if (!currentCash) {
       return
     }
@@ -148,6 +150,47 @@ class SalesService {
 
   async getPending(): Promise<Sale[]> {
     return await SalesRepository.getPending()
+  }
+
+  async integratePending(amount_on_close: number, code: string): Promise<void> {
+    const sales = await SalesRepository.getPending()
+    const { store } = await UserService.getTokenInfo()
+    const {
+      amount_on_open,
+      id: cashId,
+    } = await CashierService.getCurrentCashier()
+    const {
+      data: {
+        data: { cash_id, history_id },
+      },
+    } = await api.put(`/store_cashes/${store}-${code}/open`, {
+      amount_on_open,
+    })
+    await Promise.all(
+      sales.map(async (sale) => {
+        const items = await ItemsService.getItemsToIntegrate(sale.id)
+        const payments = await PaymentsService.getPaymentsToIntegrate(sale.id)
+        const formatedSale = {
+          change_amount: sale.change_amount,
+          type: sale.type,
+          discount: sale.discount,
+          cash_id,
+          history_id,
+          payments,
+          items,
+        }
+        try {
+          await api.post(`/sales/${store}-${code}`, [formatedSale])
+          await SalesRepository.update(sale.id, { to_integrate: false })
+        } catch (err) {
+          console.log(err)
+        }
+      })
+    )
+    await api.put(`/store_cashes/${store}-${code}/close`, {
+      amount_on_close,
+    })
+    await CashierService.closeLocalCashier(cashId)
   }
 }
 

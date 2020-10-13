@@ -5,7 +5,7 @@ export interface UpdateSaleDTO {
   cash_history_id?: number
   change_amount?: number
   name?: string
-  type: string
+  type?: string
   discount?: number
   total?: number
   quantity?: number
