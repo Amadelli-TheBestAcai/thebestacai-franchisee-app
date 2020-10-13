@@ -7,6 +7,7 @@ import Cash from '../../components/Cashier'
 import Spinner from '../../components/Spinner'
 
 import CashInfo from '../../containers/CashInfo'
+import PendingSaleForm from '../../containers/PendingSaleForm'
 
 import { message as messageAnt, Modal } from 'antd'
 
@@ -61,17 +62,19 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   const [currentCash, setCurrentCash] = useState<string>()
   const [step, setStep] = useState(1)
   const [total, setTotal] = useState(0)
+  const [pendingSale, setPendingSale] = useState<boolean>()
 
   useEffect(() => {
     ipcRenderer.send('cashier:get')
     ipcRenderer.on(
       'cashier:get:response',
-      (event, { cashes, current, is_connected }) => {
+      (event, { cashes, current, is_connected, has_pending }) => {
         setIsConnected(is_connected)
         if (current?.is_opened === 1) {
           setCurrentCash(current.code)
           setStep(2)
         }
+        setPendingSale(has_pending && is_connected)
         setCashes(cashes)
         setLoadingCashes(false)
       }
@@ -353,6 +356,9 @@ const Cashier: React.FC<IProps> = ({ history }) => {
               ))}
           </>
         </>
+      )}
+      {!loadingCashes && (
+        <PendingSaleForm modalState={pendingSale} cashes={cashes} />
       )}
     </Container>
   )

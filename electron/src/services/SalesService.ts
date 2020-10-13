@@ -145,6 +145,10 @@ class SalesService {
     await ItemsService.deleteBySale(oldSale)
     await SalesRepository.deleteById(oldSale)
   }
+
+  async getPending(): Promise<Sale[]> {
+    return await SalesRepository.getPending()
+  }
 }
 
 export default new SalesService()

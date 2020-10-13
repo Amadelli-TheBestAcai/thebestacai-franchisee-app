@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron'
 import CashierService from '../services/CashierService'
+import SalesService from '../services/SalesService'
 import { checkInternet } from '../utils/InternetConnection'
 
 ipcMain.on('cashier:get', async (event) => {
@@ -7,7 +8,13 @@ ipcMain.on('cashier:get', async (event) => {
     const cashes = await CashierService.getCashes()
     const current = await CashierService.getCurrentCashier()
     const is_connected = await checkInternet()
-    event.reply('cashier:get:response', { cashes, current, is_connected })
+    const sales = await SalesService.getPending()
+    event.reply('cashier:get:response', {
+      cashes,
+      current,
+      is_connected,
+      has_pending: !!sales.length,
+    })
   } catch (err) {
     console.error(err)
     event.reply('cashier:get:response', [])

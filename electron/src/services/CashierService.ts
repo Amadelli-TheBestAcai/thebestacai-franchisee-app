@@ -97,7 +97,7 @@ class CashierService {
     history: any
   } | null> {
     const cashier = await this.getCurrentCashier()
-    if (cashier) {
+    if (cashier && cashier.history_id) {
       const { code, store_id, is_opened } = cashier
       const {
         data: { history },

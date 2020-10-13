@@ -26,6 +26,7 @@ const CashInfo: React.FC = () => {
     ipcRenderer.once('cashier:history:get:response', (event, response) => {
       if (response) {
         const { history, cash } = response
+        console.log(history)
         setCashHistory(history)
         setCash(cash)
       }
@@ -53,15 +54,6 @@ const CashInfo: React.FC = () => {
                 <ValueContainer
                   style={{ background: 'white', flexDirection: 'column' }}
                 >
-                  {/* <Description
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: '18px',
-                      color: 'black',
-                    }}
-                  >
-                    {cash}
-                  </Description> */}
                   <Value
                     style={{
                       color: cashHistory.amount_on_close ? 'red' : '#029E08',
