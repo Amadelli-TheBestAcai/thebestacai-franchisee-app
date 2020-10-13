@@ -1,11 +1,14 @@
 export interface UpdateSaleDTO {
+  store_id?: number
+  cash_id?: number
+  cash_code?: string
+  cash_history_id?: number
   change_amount?: number
-  type?: string
   name?: string
-  quantity?: number
-  total?: number
+  type: string
   discount?: number
-  to_integrate?: boolean
-  is_current?: boolean
-  created_at?: string
+  total?: number
+  quantity?: number
+  to_integrate: boolean
+  is_current?: boolean | number
 }

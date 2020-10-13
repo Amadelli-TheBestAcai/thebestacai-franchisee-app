@@ -3,7 +3,7 @@ import CashierRepository from '../repositories/CashierRepository'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import api from '../utils/Api'
-import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
+import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
 import { Sale } from '../models/Sale'
 import { Item } from '../models/Item'
 import { Payment } from '../models/Payment'
@@ -11,8 +11,16 @@ import { v4 as uuidv4 } from 'uuid'
 import { getNow } from '../utils/DateHandler'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
+    const cashier = await CashierRepository.get()
+    if (!cashier && cashier?.is_opened !== 1) {
+      return null
+    }
     const newSale: CreateSaleDTO = {
       id: uuidv4(),
+      store_id: cashier.store_id,
+      cash_id: cashier.cash_id,
+      cash_code: cashier.code,
+      cash_history_id: cashier.history_id,
       change_amount: 0,
       type: 'STORE',
       discount: 0,
@@ -35,16 +43,7 @@ class SalesService {
       const payments = await PaymentsService.getBySale(currentSale.id)
       return { sale: currentSale, items, payments }
     } else {
-      const newSale: CreateSaleDTO = {
-        id: uuidv4(),
-        change_amount: 0,
-        type: 'STORE',
-        discount: 0,
-        to_integrate: false,
-        is_current: true,
-        created_at: getNow(),
-      }
-      await SalesRepository.create(newSale)
+      const newSale = await this.create()
       return { sale: newSale, items: [], payments: [] }
     }
   }

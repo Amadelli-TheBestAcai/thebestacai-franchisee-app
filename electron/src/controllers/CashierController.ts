@@ -1,11 +1,13 @@
 import { ipcMain } from 'electron'
 import CashierService from '../services/CashierService'
+import { checkInternet } from '../utils/InternetConnection'
 
 ipcMain.on('cashier:get', async (event) => {
   try {
     const cashes = await CashierService.getCashes()
     const current = await CashierService.getCurrentCashier()
-    event.reply('cashier:get:response', { cashes, current })
+    const is_connected = await checkInternet()
+    event.reply('cashier:get:response', { cashes, current, is_connected })
   } catch (err) {
     console.error(err)
     event.reply('cashier:get:response', [])

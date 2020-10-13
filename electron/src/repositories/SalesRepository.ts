@@ -1,6 +1,6 @@
 import knex from '../database'
 import { Sale } from '../models/Sale'
-import { CreateSaleDTO } from '../models/dtos/CreateSaleDTO'
+import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
 import { UpdateSaleDTO } from '../models/dtos/sales/UpdateSaleDTO'
 class SalesRepository {
   async create(sales: CreateSaleDTO): Promise<void> {

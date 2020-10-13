@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { StatusOffline } from '../../styles/Icons'
+
 import {
   Button as ButtonAnt,
   Input as InputAnt,
@@ -33,13 +35,11 @@ export const CashesContainer = styled.div`
   width: 100%;
   flex-grow: 1;
   justify-content: center;
-  align-items: flex-start;
-  margin-top: 20px;
 `
 
 export const SecondaryContent = styled.div`
   display: flex;
-  height: 75vh;
+  flex-grow: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -110,4 +110,9 @@ export const AmountInput = styled(InputAnt)`
   max-width: 60%;
   border-radius: 10px;
   text-align: center;
+`
+
+export const OfflineIcon = styled(StatusOffline)`
+  width: 45px;
+  height: 45px;
 `
