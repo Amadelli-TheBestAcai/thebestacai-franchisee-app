@@ -58,7 +58,7 @@ class CashierService {
 
   async openCashier({ code, amount_on_open }: OpenCashierDTO): Promise<void> {
     const isConnected = await checkInternet()
-    let newCashier: CreateCashierDTO = { code, is_opened: true }
+    let newCashier: CreateCashierDTO = { code, is_opened: true, amount_on_open }
     if (isConnected) {
       const { store } = await UserService.getTokenInfo()
       const {
@@ -93,7 +93,7 @@ class CashierService {
 
   async getCurrentCashHistory(): Promise<{
     cash: string
-    is_opened: boolean
+    is_opened: boolean | number
     history: any
   } | null> {
     const cashier = await this.getCurrentCashier()

@@ -5,6 +5,7 @@ exports.up = async (knex) =>
     table.integer('cash_id')
     table.integer('history_id')
     table.integer('store_id')
+    table.decimal('amount_on_open', 8, 2)
     table.boolean('is_opened')
   })
 
