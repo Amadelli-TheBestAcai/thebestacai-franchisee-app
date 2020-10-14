@@ -62,7 +62,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   const [currentCash, setCurrentCash] = useState<string>()
   const [step, setStep] = useState(1)
   const [total, setTotal] = useState(0)
-  const [pendingSale, setPendingSale] = useState<boolean>()
+  const [pendingSale, setPendingSale] = useState<boolean>(false)
 
   useEffect(() => {
     ipcRenderer.send('cashier:get')
@@ -174,7 +174,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
         <Spinner />
       ) : (
         <>
-          {isConnected && (
+          {isConnected && !pendingSale && (
             <>
               <Header>
                 <CashInfo />
@@ -205,149 +205,158 @@ const Cashier: React.FC<IProps> = ({ history }) => {
           </>
           <>
             {step === 2 &&
-              (isConnected || !currentCash ? (
-                <SecondaryContent>
-                  <AmountContainer>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 200,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="twoHundred"
-                          value={amount.twoHundred}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 1,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="one"
-                          value={amount.one}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 100,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="oneHundred"
-                          value={amount.oneHundred}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 0,50</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="fiftyCents"
-                          value={amount.fiftyCents}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 50,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="fifty"
-                          value={amount.fifty}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 0,25</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="twentyFiveCents"
-                          value={amount.twentyFiveCents}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 20,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="twenty"
-                          value={amount.twenty}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 0,10</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="tenCents"
-                          value={amount.tenCents}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 10,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="ten"
-                          value={amount.ten}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 0,05</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="fiveCents"
-                          value={amount.fiveCents}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 5,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="five"
-                          value={amount.five}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>R$ 0,01</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="oneCents"
-                          value={amount.oneCents}
-                        />
-                      </Column>
-                    </AmountRow>
-                    <AmountRow align="middle" justify="center">
-                      <Column span={12}>
-                        <AmountLabel>R$ 2,00</AmountLabel>
-                        <AmountInput
-                          onChange={(event) => handleState(event)}
-                          name="two"
-                          value={amount.two}
-                        />
-                      </Column>
-                      <Column span={12}>
-                        <AmountLabel>VALOR CHEIO</AmountLabel>
-                        <AmountInput
-                          style={{ width: '47%' }}
-                          onChange={(event) => handleState(event)}
-                          name="fullAmount"
-                          value={amount.fullAmount}
-                        />
-                      </Column>
-                    </AmountRow>
-                  </AmountContainer>
-                  <AmountResult>
-                    <Result>R$ {total.toFixed(2).replace('.', ',')} </Result>
-                  </AmountResult>
-                  <AmountAction>
-                    {!currentCash && cash && (
-                      <BackButton onClick={() => setStep(1)}>Voltar</BackButton>
-                    )}
-                    <FinishButton onClick={() => onFinish()} loading={loading}>
-                      Registrar
-                    </FinishButton>
-                  </AmountAction>
-                </SecondaryContent>
+              (isConnected ? (
+                pendingSale ? (
+                  <PendingSaleForm modalState={pendingSale} cashes={cashes} />
+                ) : (
+                  <SecondaryContent>
+                    <AmountContainer>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 200,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="twoHundred"
+                            value={amount.twoHundred}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 1,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="one"
+                            value={amount.one}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 100,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="oneHundred"
+                            value={amount.oneHundred}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 0,50</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="fiftyCents"
+                            value={amount.fiftyCents}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 50,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="fifty"
+                            value={amount.fifty}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 0,25</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="twentyFiveCents"
+                            value={amount.twentyFiveCents}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 20,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="twenty"
+                            value={amount.twenty}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 0,10</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="tenCents"
+                            value={amount.tenCents}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 10,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="ten"
+                            value={amount.ten}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 0,05</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="fiveCents"
+                            value={amount.fiveCents}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 5,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="five"
+                            value={amount.five}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>R$ 0,01</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="oneCents"
+                            value={amount.oneCents}
+                          />
+                        </Column>
+                      </AmountRow>
+                      <AmountRow align="middle" justify="center">
+                        <Column span={12}>
+                          <AmountLabel>R$ 2,00</AmountLabel>
+                          <AmountInput
+                            onChange={(event) => handleState(event)}
+                            name="two"
+                            value={amount.two}
+                          />
+                        </Column>
+                        <Column span={12}>
+                          <AmountLabel>VALOR CHEIO</AmountLabel>
+                          <AmountInput
+                            style={{ width: '47%' }}
+                            onChange={(event) => handleState(event)}
+                            name="fullAmount"
+                            value={amount.fullAmount}
+                          />
+                        </Column>
+                      </AmountRow>
+                    </AmountContainer>
+                    <AmountResult>
+                      <Result>R$ {total.toFixed(2).replace('.', ',')} </Result>
+                    </AmountResult>
+                    <AmountAction>
+                      {!currentCash && cash && (
+                        <BackButton onClick={() => setStep(1)}>
+                          Voltar
+                        </BackButton>
+                      )}
+                      <FinishButton
+                        onClick={() => onFinish()}
+                        loading={loading}
+                      >
+                        Registrar
+                      </FinishButton>
+                    </AmountAction>
+                  </SecondaryContent>
+                )
               ) : (
                 <SecondaryContent>
                   <OfflineIcon />
@@ -356,9 +365,6 @@ const Cashier: React.FC<IProps> = ({ history }) => {
               ))}
           </>
         </>
-      )}
-      {!loadingCashes && (
-        <PendingSaleForm modalState={pendingSale} cashes={cashes} />
       )}
     </Container>
   )

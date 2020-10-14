@@ -31,8 +31,8 @@ const PendingSaleForm: React.FC<IProps> = ({ modalState, cashes, history }) => {
     ipcRenderer.on('sale:integrate:pending:response', (event, success) => {
       setIntegrating(false)
       if (success) {
-        message.success('Vendas integradas com sucesso')
-        return setVisible(false)
+        window.location.reload()
+        return message.success('Vendas integradas com sucesso')
       } else {
         return message.warning('Erro ao integrar vendas. Contate o suporte')
       }
