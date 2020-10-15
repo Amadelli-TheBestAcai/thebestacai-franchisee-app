@@ -6,6 +6,7 @@ import UserService from '../services/UserService'
 
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
+import { UpdateSaleDTO } from '../models/dtos/sales/UpdateSaleDTO'
 import { Sale } from '../models/Sale'
 import { Item } from '../models/Item'
 import { Payment } from '../models/Payment'
@@ -150,6 +151,10 @@ class SalesService {
 
   async getPending(): Promise<Sale[]> {
     return await SalesRepository.getPending()
+  }
+
+  async update(id: string, payload: UpdateSaleDTO): Promise<void> {
+    return await SalesRepository.update(id, payload)
   }
 
   async integratePending(amount_on_close: number, code: string): Promise<void> {

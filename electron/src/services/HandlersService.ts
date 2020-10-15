@@ -2,6 +2,7 @@ import HandlersRepository from '../repositories/HandlersRepository'
 import CashierRepository from '../repositories/CashierRepository'
 
 import { CreateHandlerDTO } from '../models/dtos/handler/CreateHandlerDTO'
+import { UpdateHandlerDTO } from '../models/dtos/handler/UpdateHandlerDTO'
 
 import { getNow } from '../utils/DateHandler'
 
@@ -9,13 +10,21 @@ import { v4 as uuidv4 } from 'uuid'
 import api from '../utils/Api'
 class HandlersService {
   async create(payload): Promise<void> {
+    const currentCash = await CashierRepository.get()
     const handler: CreateHandlerDTO = {
       ...payload,
       id: uuidv4(),
+      cash_id: currentCash.cash_id,
+      store_id: currentCash.store_id,
+      cash_history_id: currentCash.history_id,
       to_integrate: true,
       created_at: getNow(),
     }
     await HandlersRepository.create(handler)
+  }
+
+  async update(id: string, payload: UpdateHandlerDTO): Promise<void> {
+    await HandlersRepository.update(id, payload)
   }
 
   async integrate(): Promise<void> {

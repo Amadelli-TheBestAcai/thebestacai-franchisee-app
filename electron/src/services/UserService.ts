@@ -2,6 +2,7 @@ import UserRepository from '../repositories/UserRepository'
 import jwt_decode from 'jwt-decode'
 import api from '../utils/Api'
 import { hash, compare } from '../utils/Bcrypt'
+import { checkInternet } from '../utils/InternetConnection'
 import { LoginUserDTO } from '../models/dtos/user/LoginUserDTO'
 import { TokenUserDTO } from '../models/dtos/user/TokenUserDTO'
 
@@ -53,7 +54,8 @@ class UserService {
     }
   }
 
-  async login(user: LoginUserDTO, isConnected): Promise<boolean> {
+  async login(user: LoginUserDTO): Promise<boolean> {
+    const isConnected = await checkInternet()
     if (isConnected) {
       const access_token = await this.onlineLogin(user)
       if (access_token) {

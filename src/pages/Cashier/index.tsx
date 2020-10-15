@@ -205,8 +205,8 @@ const Cashier: React.FC<IProps> = ({ history }) => {
           </>
           <>
             {step === 2 &&
-              (isConnected ? (
-                pendingSale ? (
+              (isConnected || !currentCash ? (
+                pendingSale && isConnected ? (
                   <PendingSaleForm modalState={pendingSale} cashes={cashes} />
                 ) : (
                   <SecondaryContent>

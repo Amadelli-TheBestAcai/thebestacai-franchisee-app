@@ -27,8 +27,11 @@ const PendingSaleForm: React.FC<IProps> = ({ modalState, cashes, history }) => {
 
   const onFinish = () => {
     setIntegrating(true)
-    ipcRenderer.send('sale:integrate:pending', { cash, amount })
-    ipcRenderer.on('sale:integrate:pending:response', (event, success) => {
+    ipcRenderer.send('integrate:offline', {
+      code: cash,
+      amount_on_close: amount,
+    })
+    ipcRenderer.on('integrate:offline:response', (event, success) => {
       setIntegrating(false)
       if (success) {
         window.location.reload()

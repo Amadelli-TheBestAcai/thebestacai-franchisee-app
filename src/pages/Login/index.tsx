@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form } from 'antd'
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../helpers/InternetConnection'
+
 import {
   Container,
   FormContainer,
@@ -30,7 +30,7 @@ const Login: React.FC<IProps> = ({ history }) => {
 
   const onFinish = async () => {
     setLoading(true)
-    ipcRenderer.send('user:login', { isConnected: isOnline(), ...user })
+    ipcRenderer.send('user:login', user)
     ipcRenderer.on('user:login', (event, isValid) => {
       if (isValid) {
         history.push('/home')
