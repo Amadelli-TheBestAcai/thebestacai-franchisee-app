@@ -84,10 +84,34 @@ export const AmountAction = styled.div`
 
 export const FinishButton = styled(ButtonAnt)`
   margin: 0 15px;
+  background: var(--primary-orange);
+  border: 1px solid var(--primary-orange);
+  color: black;
+  font-weight: 700;
+  border-radius: 8px;
+
+  :hover {
+    background: var(--hover-bottomLogin);
+    color: var(--primary-orange);
+    transition: 0.5s;
+    border: 1px solid var(--hover-bottomLogin);
+  }
 `
 
 export const BackButton = styled(ButtonAnt)`
   margin: 0 15px;
+  background: #ffffff;
+  border: 1px solid var(--primary-orange);
+  color: var(--primary-orange);
+  font-weight: 700;
+  border-radius: 8px;
+
+  :hover {
+    background: var(--hover-bottomLogin);
+    color: var(--primary-orange);
+    transition: 0.5s;
+    border: 1px solid var(--hover-bottomLogin);
+  }
 `
 
 export const AmountRow = styled(RowAnt)`
