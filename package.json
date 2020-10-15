@@ -1,5 +1,5 @@
 {
-  "name": "electron-react-typescript",
+  "name": "gestor-de-vendas",
   "version": "1.0.0",
   "main": "./dist/main.js",
   "scripts": {
