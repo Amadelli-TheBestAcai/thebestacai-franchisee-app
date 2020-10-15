@@ -134,7 +134,10 @@ const Home: React.FC = () => {
     setSale((oldValues) => ({ ...oldValues, discount: value }))
   }
 
-  const addToQueue = (name?: string): void => {
+  const addToQueue = (name: string): void => {
+    if (!name) {
+      return
+    }
     ipcRenderer.send('sale:command:create', {
       id: sale.id,
       name,
