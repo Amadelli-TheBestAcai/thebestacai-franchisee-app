@@ -30,6 +30,9 @@ export const IconContainer = styled.div`
     background: var(--primary-orange);
     color: black;
     transition: 0.5s;
+    svg {
+      color: black;
+    }
   }
 `
 
@@ -37,9 +40,6 @@ const IconCSS = css`
   color: var(--primary-orange);
   width: 5vw;
   height: 25px;
-  :hover {
-    color: black;
-  }
 `
 export const Command = styled(ListOl)`
   ${IconCSS}
