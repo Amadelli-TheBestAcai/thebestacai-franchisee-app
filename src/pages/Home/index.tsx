@@ -49,12 +49,11 @@ const Home: React.FC = () => {
   useEffect(() => {
     const integrate = async () => {
       while (true) {
-        await sleep(10000)
-        ipcRenderer.send('sale:integrate')
-        ipcRenderer.send('handler:integrate')
+        await sleep(5000)
+        ipcRenderer.send('integrate:online')
       }
     }
-    // integrate()
+    integrate()
   }, [])
 
   useEffect(() => {
@@ -130,7 +129,6 @@ const Home: React.FC = () => {
   }
 
   const addDiscount = (value: number): void => {
-    console.log(value)
     setSale((oldValues) => ({ ...oldValues, discount: value }))
   }
 
@@ -159,7 +157,6 @@ const Home: React.FC = () => {
   }
 
   const registerSale = () => {
-    console.log(items, getChangeAmount() < 0, getChangeAmount())
     if (getChangeAmount() < 0) {
       return message.warning('Pagamento inválido')
     }

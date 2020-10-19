@@ -15,6 +15,7 @@ class HandlersService {
       ...payload,
       id: uuidv4(),
       cash_id: currentCash.cash_id,
+      cash_code: currentCash.code,
       store_id: currentCash.store_id,
       cash_history_id: currentCash.history_id,
       to_integrate: true,

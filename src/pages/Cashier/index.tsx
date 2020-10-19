@@ -104,7 +104,6 @@ const Cashier: React.FC<IProps> = ({ history }) => {
   }, [amount])
 
   const handleState = ({ target: { name, value } }) => {
-    console.log(typeof value !== 'number')
     if (isNaN(+value)) {
       return
     }

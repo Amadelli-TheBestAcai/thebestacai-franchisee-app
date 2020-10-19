@@ -20,10 +20,10 @@ function createWindow() {
       nodeIntegration: true,
     },
   })
-  mainWindow.removeMenu()
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:4000')
   } else {
+    mainWindow.removeMenu()
     mainWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, 'renderer/index.html'),

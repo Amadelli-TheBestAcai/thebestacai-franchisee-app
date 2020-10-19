@@ -10,3 +10,7 @@ ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
     event.reply('integrate:offline:response', false)
   }
 })
+
+ipcMain.on('integrate:online', async () => {
+  await IntegrateService.integrateOnline()
+})

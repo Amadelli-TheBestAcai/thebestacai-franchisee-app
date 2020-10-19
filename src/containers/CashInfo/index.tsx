@@ -26,7 +26,6 @@ const CashInfo: React.FC = () => {
     ipcRenderer.once('cashier:history:get:response', (event, response) => {
       if (response) {
         const { history, cash } = response
-        console.log(history)
         setCashHistory(history)
         setCash(cash)
       }

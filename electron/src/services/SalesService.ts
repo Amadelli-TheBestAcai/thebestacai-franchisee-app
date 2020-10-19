@@ -91,7 +91,6 @@ class SalesService {
         try {
           await api.post(`/sales/${store_id}-${code}`, [saleToIntegrate])
           await SalesRepository.update(id, { to_integrate: false })
-          console.log('Venda integrada com sucesso')
         } catch (err) {
           // TODO: Criar integração de log de vendas com erro
           console.error(err)

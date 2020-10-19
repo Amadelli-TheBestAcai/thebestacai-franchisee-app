@@ -8,21 +8,25 @@ type FormatedSale = {
   type: string
   discount: number
   cash_id: number
+  cash_code: string
+  store_id: number
   cash_history_id: number
 }
 
 export const formatSalesToIntegrate = (
   sales: Sale[],
-  cash_id: number,
-  cash_history_id: number
+  cash_id?: number,
+  cash_history_id?: number
 ): FormatedSale[] => {
   const formatedSales = sales.map((sale) => ({
     id: sale.id,
     change_amount: sale.change_amount,
     type: sale.type,
     discount: sale.discount,
-    cash_id,
-    cash_history_id,
+    cash_id: cash_id || sale.cash_id,
+    cash_code: sale.cash_code,
+    store_id: sale.store_id,
+    cash_history_id: cash_history_id || sale.cash_history_id,
   }))
   return cleanDuplicatedValues<FormatedSale>(formatedSales, 'id')
 }
@@ -33,21 +37,25 @@ type FormatedHandler = {
   reason: string
   amount: number
   cash_id: number
+  cash_code: string
+  store_id: number
   cash_history_id: number
 }
 
 export const formatHandlesToIntegrate = (
   handlers: Handler[],
-  cash_id: number,
-  cash_history_id: number
+  cash_id?: number,
+  cash_history_id?: number
 ): FormatedHandler[] => {
   const formatedHandlers = handlers.map((handler) => ({
     id: handler.id,
     type: handler.type,
     reason: handler.reason,
     amount: handler.amount,
-    cash_id,
-    cash_history_id,
+    store_id: handler.store_id,
+    cash_id: cash_id || handler.cash_id,
+    cash_code: handler.cash_code,
+    cash_history_id: cash_history_id || handler.cash_history_id,
   }))
   return cleanDuplicatedValues<FormatedHandler>(formatedHandlers, 'id')
 }
