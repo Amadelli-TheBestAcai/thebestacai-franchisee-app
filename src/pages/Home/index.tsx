@@ -153,7 +153,14 @@ const Home: React.FC = () => {
   }
 
   const addChangeAmount = (amount: number): void => {
-    setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
+    if (sale.change_amount) {
+      setSale((oldValues) => ({
+        ...oldValues,
+        change_amount: +amount + +oldValues.change_amount,
+      }))
+    } else {
+      setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
+    }
   }
 
   const registerSale = () => {
