@@ -33,7 +33,7 @@ class SalesRepository {
   }
 
   async getCommands(): Promise<Sale[]> {
-    return await knex('sales').where({ to_integrate: false })
+    return await knex('sales').whereNotNull('name')
   }
 
   async createCommand(id: string, name: string): Promise<void> {
