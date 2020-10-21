@@ -7,6 +7,9 @@ import Cashier from '../pages/Cashier'
 import Command from '../pages/Command'
 import Delivery from '../pages/Delivery'
 import Login from '../pages/Login'
+import Balance from '../pages/Balance'
+import Sale from '../pages/Sale'
+import Handler from '../pages/Handler'
 
 interface RouteWithLayoutProps extends RouteProps {
   component: any
@@ -32,6 +35,9 @@ const Routes = () => (
     <RouteWithLayout exact path="/cashier" component={Cashier} />
     <RouteWithLayout exact path="/command" component={Command} />
     <RouteWithLayout exact path="/delivery" component={Delivery} />
+    <RouteWithLayout exact path="/balance" component={Balance} />
+    <RouteWithLayout exact path="/sale" component={Sale} />
+    <RouteWithLayout exact path="/handler" component={Handler} />
     <Route path="*" component={Login} />
   </Switch>
 )

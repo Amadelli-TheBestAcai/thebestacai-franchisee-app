@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 
-import { StatusOffline } from '../../styles/Icons'
-
 import {
   Button as ButtonAnt,
   Input as InputAnt,
@@ -134,9 +132,4 @@ export const AmountInput = styled(InputAnt)`
   max-width: 60%;
   border-radius: 10px;
   text-align: center;
-`
-
-export const OfflineIcon = styled(StatusOffline)`
-  width: 45px;
-  height: 45px;
 `

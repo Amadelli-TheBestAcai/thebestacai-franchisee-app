@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 
 import {
@@ -15,46 +15,74 @@ import {
 
 type IProps = RouteComponentProps
 
-const SideBar: React.FC<IProps> = ({ history }) => {
-  const [page, setPage] = useState(1)
-  const handleClick = (route: string, newPage: number): void => {
-    setPage(newPage)
+const SideBar: React.FC<IProps> = ({ history, location }) => {
+  const [page, setPage] = useState<number>()
+
+  const handleClick = (route: string): void => {
     history.push(route)
   }
+
+  const isRoute = (route: string): boolean => {
+    return location.pathname === route
+  }
+
   return (
     <Container>
-      <IconContainer style={{ background: page === 1 ? '#FF9D0A' : 'black' }}>
+      <IconContainer
+        style={{ background: isRoute('/home') ? '#FF9D0A' : 'black' }}
+      >
         <Home
-          style={{ color: page === 1 ? 'black' : '#FF9D0A' }}
-          onClick={() => handleClick('/home', 1)}
+          style={{ color: isRoute('/home') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/home')}
         />
       </IconContainer>
-      <IconContainer style={{ background: page === 2 ? '#FF9D0A' : 'black' }}>
+      <IconContainer
+        style={{ background: isRoute('/command') ? '#FF9D0A' : 'black' }}
+      >
         <Command
-          style={{ color: page === 2 ? 'black' : '#FF9D0A' }}
-          onClick={() => handleClick('/command', 2)}
+          style={{ color: isRoute('/command') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/command')}
         />
       </IconContainer>
-      <IconContainer style={{ background: page === 3 ? '#FF9D0A' : 'black' }}>
+      <IconContainer
+        style={{ background: isRoute('/cashier') ? '#FF9D0A' : 'black' }}
+      >
         <Cash
-          style={{ color: page === 3 ? 'black' : '#FF9D0A' }}
-          onClick={() => handleClick('/cashier', 3)}
+          style={{ color: isRoute('/cashier') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/cashier')}
         />
       </IconContainer>
-      <IconContainer style={{ background: page === 4 ? '#FF9D0A' : 'black' }}>
+      <IconContainer
+        style={{ background: isRoute('/delivery') ? '#FF9D0A' : 'black' }}
+      >
         <Delivery
-          style={{ color: page === 4 ? 'black' : '#FF9D0A' }}
-          onClick={() => handleClick('/delivery', 4)}
+          style={{ color: isRoute('/delivery') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/delivery')}
         />
       </IconContainer>
-      <IconContainer>
-        <ArrowIcon />
+      <IconContainer
+        style={{ background: isRoute('/handler') ? '#FF9D0A' : 'black' }}
+      >
+        <ArrowIcon
+          style={{ color: isRoute('/handler') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/handler')}
+        />
       </IconContainer>
-      <IconContainer>
-        <Graph />
+      <IconContainer
+        style={{ background: isRoute('/balance') ? '#FF9D0A' : 'black' }}
+      >
+        <Graph
+          style={{ color: isRoute('/balance') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/balance')}
+        />
       </IconContainer>
-      <IconContainer>
-        <Money />
+      <IconContainer
+        style={{ background: isRoute('/sale') ? '#FF9D0A' : 'black' }}
+      >
+        <Money
+          style={{ color: isRoute('/sale') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/sale')}
+        />
       </IconContainer>
     </Container>
   )

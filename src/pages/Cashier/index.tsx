@@ -7,6 +7,7 @@ import Cash from '../../components/Cashier'
 import Spinner from '../../components/Spinner'
 
 import CashInfo from '../../containers/CashInfo'
+import DisconectedForm from '../../containers/DisconectedForm'
 import PendingSaleForm from '../../containers/PendingSaleForm'
 
 import { message as messageAnt, Modal } from 'antd'
@@ -28,7 +29,6 @@ import {
   AmountLabel,
   AmountInput,
   Title,
-  OfflineIcon,
 } from './styles'
 
 const { confirm } = Modal
@@ -357,10 +357,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
                   </SecondaryContent>
                 )
               ) : (
-                <SecondaryContent>
-                  <OfflineIcon />
-                  Sem conexão
-                </SecondaryContent>
+                <DisconectedForm />
               ))}
           </>
         </>
