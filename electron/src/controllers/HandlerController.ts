@@ -11,10 +11,25 @@ ipcMain.on('handler:create', async (event, handler) => {
   }
 })
 
-ipcMain.on('handler:integrate', async (event) => {
+ipcMain.on('handler:get', async (event, handler) => {
   try {
-    await HandlersService.integrate()
+    const { isConnected, data } = await HandlersService.getHandlerByCash()
+    event.reply('handler:get:response', { isConnected, data })
   } catch (err) {
+    event.reply('handler:get:response', { isConnected: false, data: [] })
+    console.error(err)
+  }
+})
+
+ipcMain.on('handler:delete', async (event, id) => {
+  try {
+    const { success, data } = await HandlersService.delete(id)
+    event.reply('handler:delete:response', { success, data })
+  } catch (err) {
+    event.reply('handler:delete:response', {
+      success: false,
+      data: [],
+    })
     console.error(err)
   }
 })

@@ -11,10 +11,6 @@ class HandlersRepository {
   async update(id: string, payload: UpdateHandlerDTO): Promise<void> {
     await knex('handlers').where({ id }).update(payload)
   }
-
-  async getToIntegrate(): Promise<Handler[]> {
-    return await knex('handlers').where({ to_integrate: true })
-  }
 }
 
 export default new HandlersRepository()

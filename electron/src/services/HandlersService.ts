@@ -1,5 +1,5 @@
 import HandlersRepository from '../repositories/HandlersRepository'
-import CashierRepository from '../repositories/CashierRepository'
+import CashierService from '../services/CashierService'
 
 import { CreateHandlerDTO } from '../models/dtos/handler/CreateHandlerDTO'
 import { UpdateHandlerDTO } from '../models/dtos/handler/UpdateHandlerDTO'
@@ -8,9 +8,10 @@ import { getNow } from '../utils/DateHandler'
 
 import { v4 as uuidv4 } from 'uuid'
 import api from '../utils/Api'
+import { checkInternet } from '../utils/InternetConnection'
 class HandlersService {
   async create(payload): Promise<void> {
-    const currentCash = await CashierRepository.get()
+    const currentCash = await CashierService.getCurrentCashier()
     const handler: CreateHandlerDTO = {
       ...payload,
       id: uuidv4(),
@@ -28,30 +29,77 @@ class HandlersService {
     await HandlersRepository.update(id, payload)
   }
 
-  async integrate(): Promise<void> {
-    const handlers = await HandlersRepository.getToIntegrate()
-    if (!handlers.length) {
-      return
+  async getHandlerByCash(): Promise<{ isConnected: boolean; data: any[] }> {
+    const isConnected = await checkInternet()
+    if (!isConnected) {
+      return {
+        isConnected,
+        data: [],
+      }
     }
-    const currentCash = await CashierRepository.get()
-    if (!currentCash) {
-      return
+    const currentCash = await CashierService.getCurrentCashier()
+    if (!currentCash || currentCash?.is_opened !== 1) {
+      return {
+        isConnected,
+        data: [],
+      }
     }
     const { store_id, code } = currentCash
     if (!store_id || !code) {
-      return
+      return {
+        isConnected,
+        data: [],
+      }
+    }
+    const {
+      data: { data },
+    } = await api.get(`/cash_handler/${store_id}-${code}`)
+    return {
+      isConnected,
+      data,
+    }
+  }
+
+  async delete(id: number): Promise<{ success: boolean; data: any[] }> {
+    const isConnected = await checkInternet()
+    if (!isConnected) {
+      return {
+        success: false,
+        data: [],
+      }
     }
 
-    await Promise.all(
-      handlers.map(async ({ id, created_at, ...handler }) => {
-        try {
-          await api.post(`/cash_handler/${store_id}-${code}`, handler)
-          await HandlersRepository.update(id, { to_integrate: false })
-        } catch (err) {
-          console.log(err)
-        }
-      })
-    )
+    const currentCash = await CashierService.getCurrentCashier()
+    if (!currentCash || currentCash?.is_opened !== 1) {
+      return {
+        success: false,
+        data: [],
+      }
+    }
+    const { store_id, code } = currentCash
+    if (!store_id || !code) {
+      return {
+        success: false,
+        data: [],
+      }
+    }
+
+    try {
+      await api.delete(`/cash_handler/${id}`)
+      const {
+        data: { data },
+      } = await api.get(`/cash_handler/${store_id}-${code}`)
+      return {
+        success: true,
+        data: data || [],
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        success: false,
+        data: [],
+      }
+    }
   }
 }
 
