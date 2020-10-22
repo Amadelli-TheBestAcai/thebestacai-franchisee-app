@@ -11,6 +11,7 @@ import { Sale } from '../models/Sale'
 import { Item } from '../models/Item'
 import { Payment } from '../models/Payment'
 import { v4 as uuidv4 } from 'uuid'
+import { checkInternet } from '../utils/InternetConnection'
 import { getNow } from '../utils/DateHandler'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
@@ -63,40 +64,6 @@ class SalesService {
     await ItemsService.deleteBySale(sale)
     await PaymentsService.deleteBySale(sale)
     await SalesRepository.deleteById(sale)
-  }
-
-  async integrate(): Promise<void> {
-    const sales = await SalesRepository.getToIntegrate()
-    if (!sales.length) {
-      return
-    }
-    const currentCash = await CashierService.getCurrentCashier()
-    if (!currentCash) {
-      return
-    }
-    const { store_id, code } = currentCash
-    if (!store_id || !code) {
-      return
-    }
-    await Promise.all(
-      sales.map(async (sale) => {
-        const items = await ItemsService.getItemsToIntegrate(sale.id)
-        const payments = await PaymentsService.getPaymentsToIntegrate(sale.id)
-        const { id, ...saleWithoutId } = sale
-        const saleToIntegrate = {
-          ...saleWithoutId,
-          items,
-          payments,
-        }
-        try {
-          await api.post(`/sales/${store_id}-${code}`, [saleToIntegrate])
-          await SalesRepository.update(id, { to_integrate: false })
-        } catch (err) {
-          // TODO: Criar integração de log de vendas com erro
-          console.error(err)
-        }
-      })
-    )
   }
 
   async getSalesCommands(): Promise<Sale[]> {
@@ -195,6 +162,77 @@ class SalesService {
       amount_on_close,
     })
     await CashierService.closeLocalCashier(cashId)
+  }
+
+  async getFromApi(): Promise<{ isConnected: boolean; data: any[] }> {
+    const isConnected = await checkInternet()
+    if (!isConnected) {
+      return {
+        isConnected,
+        data: [],
+      }
+    }
+    const currentCash = await CashierService.getCurrentCashier()
+    if (!currentCash || currentCash?.is_opened !== 1) {
+      return {
+        isConnected,
+        data: [],
+      }
+    }
+    const { store_id, code } = currentCash
+    if (!store_id || !code) {
+      return {
+        isConnected,
+        data: [],
+      }
+    }
+    const {
+      data: { data },
+    } = await api.get(`/current_sales_history/${store_id}-${code}`)
+    return {
+      isConnected,
+      data: data || [],
+    }
+  }
+
+  async deleteFromApi(id: number): Promise<{ success: boolean; data: any[] }> {
+    const isConnected = await checkInternet()
+    if (!isConnected) {
+      return {
+        success: false,
+        data: [],
+      }
+    }
+
+    const currentCash = await CashierService.getCurrentCashier()
+    if (!currentCash || currentCash?.is_opened !== 1) {
+      return {
+        success: false,
+        data: [],
+      }
+    }
+    const { store_id, code } = currentCash
+    if (!store_id || !code) {
+      return {
+        success: false,
+        data: [],
+      }
+    }
+
+    try {
+      await api.delete(`/sales/${id}`)
+      const { data } = await this.getFromApi()
+      return {
+        success: true,
+        data,
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        success: false,
+        data: [],
+      }
+    }
   }
 }
 

@@ -21,7 +21,7 @@ const HandlerItem: React.FC<IProps> = ({ handler, onDelete }) => {
         <Description>{type === 1 ? 'Entrada' : 'Saída'}</Description>
       </Column>
       <Column span={4}>
-        <Description>{amount}</Description>
+        <Description>{(+amount).toFixed(2).replace('.', ',')}R$</Description>
       </Column>
       <Column span={4}>
         <Description>{time}</Description>

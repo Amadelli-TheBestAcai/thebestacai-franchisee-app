@@ -11,12 +11,12 @@ ipcMain.on('handler:create', async (event, handler) => {
   }
 })
 
-ipcMain.on('handler:get', async (event, handler) => {
+ipcMain.on('handler:api:get', async (event) => {
   try {
     const { isConnected, data } = await HandlersService.getHandlerByCash()
-    event.reply('handler:get:response', { isConnected, data })
+    event.reply('handler:api:get:response', { isConnected, data })
   } catch (err) {
-    event.reply('handler:get:response', { isConnected: false, data: [] })
+    event.reply('handler:api:get:response', { isConnected: false, data: [] })
     console.error(err)
   }
 })

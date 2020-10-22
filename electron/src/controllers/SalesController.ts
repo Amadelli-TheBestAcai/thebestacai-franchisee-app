@@ -31,14 +31,6 @@ ipcMain.on('sale:command:create', async (event, { id, name }) => {
   }
 })
 
-ipcMain.on('sale:integrate', async (event) => {
-  try {
-    await SalesService.integrate()
-  } catch (err) {
-    console.error(err)
-  }
-})
-
 ipcMain.on('sale:finish', async (event, sale) => {
   await SalesService.finishSale(sale)
   const { sale: newSale } = await SalesService.getCurrentSale()
@@ -71,6 +63,26 @@ ipcMain.on('sale:integrate:pending', async (event, { cash, amount }) => {
     event.reply('sale:integrate:pending:response', true)
   } catch (err) {
     event.reply('sale:integrate:pending:response', false)
+    console.error(err)
+  }
+})
+
+ipcMain.on('sale:api:get', async (event) => {
+  try {
+    const { isConnected, data } = await SalesService.getFromApi()
+    event.reply('sale:api:get:response', { isConnected, data })
+  } catch (err) {
+    event.reply('sale:api:get:response', { isConnected: false, data: [] })
+    console.error(err)
+  }
+})
+
+ipcMain.on('sale:api:delete', async (event, id) => {
+  try {
+    const { success, data } = await SalesService.deleteFromApi(id)
+    event.reply('sale:api:delete:response', { success, data })
+  } catch (err) {
+    event.reply('sale:api:delete:response', { success: false, data: [] })
     console.error(err)
   }
 })

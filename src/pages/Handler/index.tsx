@@ -27,12 +27,15 @@ const Handler: React.FC = () => {
   const [isConected, setIsConected] = useState(true)
 
   useEffect(() => {
-    ipcRenderer.send('handler:get')
-    ipcRenderer.on('handler:get:response', (event, { isConnected, data }) => {
-      setIsLoading(false)
-      setIsConected(isConnected)
-      setHandlers(data)
-    })
+    ipcRenderer.send('handler:api:get')
+    ipcRenderer.on(
+      'handler:api:get:response',
+      (event, { isConnected, data }) => {
+        setIsLoading(false)
+        setIsConected(isConnected)
+        setHandlers(data || [])
+      }
+    )
   }, [])
 
   const onDelete = (id: number): void => {
