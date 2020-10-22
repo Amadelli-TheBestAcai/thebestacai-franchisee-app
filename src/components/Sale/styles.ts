@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { TrashAlt } from '../../styles/Icons'
+import { Trash } from '../../styles/Icons'
 
 import { Row as RowAnt, Col as ColAnt, Collapse } from 'antd'
 
@@ -25,6 +25,7 @@ export const Col = styled(ColAnt)`
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  text-transform: capitalize;
 `
 
 export const Description = styled.label`
@@ -32,9 +33,9 @@ export const Description = styled.label`
   margin-right: 5px;
 `
 
-export const RemoveIcon = styled(TrashAlt)`
-  width: 25px;
-  height: 25px;
-  fill: red;
+export const RemoveIcon = styled(Trash)`
+  width: 22px;
+  height: 22px;
+  color: red;
   cursor: pointer;
 `
