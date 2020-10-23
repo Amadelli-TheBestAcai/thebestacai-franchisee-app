@@ -18,6 +18,11 @@ import {
   AmountContainer,
   AmountValue,
   AmountDescription,
+  MoneyIcon,
+  CreditIcon,
+  DebitIcon,
+  TicketIcon
+
 } from './styles'
 
 interface IProps {
@@ -56,20 +61,20 @@ const PaymentsContainer: React.FC<IProps> = ({
   return (
     <Container>
       <Header>
-        <Button onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}>
+        <Button className="ant-btn" onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}>
           [A] DINHEIRO
         </Button>
-        <Button
+        <Button className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
         >
           [S] CRÉDITO
         </Button>
-        <Button
+        <Button className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
         >
           [D] DÉBITO
         </Button>
-        <Button
+        <Button className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
         >
           [T] TICKET
@@ -89,16 +94,32 @@ const PaymentsContainer: React.FC<IProps> = ({
         </ListContainer>
       </Content>
       <Footer>
-        <AmountContainer span={11}>
+        {/* Valor Pago */}
+        <AmountContainer span={6}>
           <AmountDescription>Valor Pago</AmountDescription>
-          <AmountValue>RS {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
+          <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
-        <AmountContainer span={11}>
-          <AmountDescription>Troco</AmountDescription>
-          <AmountValue>
-            RS {changeAmount.toFixed(2).replace('.', ',')}
+        {/* Troco */}
+        <AmountContainer span={6}>
+          <AmountDescription >Troco</AmountDescription>
+          <AmountValue style={{color:'red'}}>
+            R$ {changeAmount.toFixed(2).replace('.', ',')}
           </AmountValue>
         </AmountContainer>
+      {/* Desconto */}
+        <AmountContainer span={6}>
+          <AmountDescription>Desconto:</AmountDescription>
+          <AmountValue>
+            R$ {changeAmount.toFixed(2).replace('.', ',')}
+          </AmountValue>
+        </AmountContainer>
+        {/* Quantidade Itens */}
+        <AmountContainer span={6}>
+          <AmountDescription>Quantidade Itens:</AmountDescription>
+          <AmountValue>
+            2
+          </AmountValue>
+        </AmountContainer> 
       </Footer>
       <Modal
         width={250}

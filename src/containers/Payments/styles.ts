@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css }from 'styled-components'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
@@ -9,6 +9,14 @@ import {
   Modal as ModalAnt,
   Input as InputAnt,
 } from 'antd'
+
+
+import {
+  AttachMoney,
+  CreditCard2Back,
+  CreditCard,
+  Ticket
+} from '../../styles/Icons'
 
 export const Container = styled.div`
   display: flex;
@@ -40,7 +48,7 @@ export const ListContainer = styled.div`
   box-sizing: border-box;
 `
 
-export const Button = styled(ButtonAnt)`
+export const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -50,7 +58,7 @@ export const Button = styled(ButtonAnt)`
   color: white;
   margin: 0 5px;
   border: none;
-  width: 7vw;
+  width: 8vw;
 
   :hover,
   :focus {
@@ -68,7 +76,7 @@ export const Input = styled(MonetaryInput)``
 
 export const Header = styled(RowAnt)`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
   width: 100%;
   height: 25%;
@@ -88,23 +96,62 @@ export const Footer = styled(RowAnt)`
   justify-content: space-around;
   width: 100%;
   height: 35%;
+  margin-left: 6px;
+  
+  
 `
 
 export const AmountContainer = styled(ColAnt)`
-  display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  
+  
 `
 
-export const AmountDescription = styled.div``
+export const AmountDescription = styled.div`
+
+font-size: 13px;
+margin: 0 6px;
+color: #5E5E5E;
+`
 
 export const AmountValue = styled(ColAnt)`
   display: flex;
-  flex-grow: 1;
-  color: #696969;
+
+  color: #5E5E5E;
   justify-content: flex-end;
   align-items: center;
-  background: #ff7a0061;
-  font-size: 22px;
+  background: #EEEEEE;
+  font-size: 20px;
   padding: 0 10px;
+  margin: 0 6px;
+
+`
+
+const IconCSS = css`
+  width: 3vw;
+  height: 3vh;
+`
+
+export const MoneyIcon = styled(AttachMoney)`
+  color: #007C05;
+  ${IconCSS};
+
+`
+
+export const CreditIcon = styled(CreditCard2Back)`
+  color: #2B40FD;
+  ${IconCSS};
+  
+`
+
+export const DebitIcon = styled(CreditCard)`
+  color: #F97700;
+  ${IconCSS};
+
+`
+
+export const TicketIcon = styled(Ticket)`
+  color: #FF00C7;
+  ${IconCSS};
+
 `
