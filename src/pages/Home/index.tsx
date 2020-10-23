@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { sleep } from '../../helpers/Sleep'
 import { ipcRenderer } from 'electron'
 
 import { Sale } from '../../models/sale'
@@ -45,16 +44,6 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
-
-  useEffect(() => {
-    const integrate = async () => {
-      while (true) {
-        await sleep(5000)
-        ipcRenderer.send('integrate:online')
-      }
-    }
-    integrate()
-  }, [])
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')

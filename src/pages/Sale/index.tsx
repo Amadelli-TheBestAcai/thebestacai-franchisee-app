@@ -19,13 +19,13 @@ import {
   SalesContainer,
 } from './styles'
 
-import { SaleResponse } from '../../models/saleResponse'
+import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 
 const { confirm } = Modal
 
 const Sale: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [sales, setSales] = useState<SaleResponse[]>([])
+  const [sales, setSales] = useState<SalesHistory[]>([])
   const [isConected, setIsConected] = useState<boolean>(true)
 
   useEffect(() => {

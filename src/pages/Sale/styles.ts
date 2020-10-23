@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const SalesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: 90%;
   margin: 1%;
   background: #dddddd;
 `
@@ -38,7 +38,7 @@ export const SalesList = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  overflow: scroll;
+  overflow-y: scroll;
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;

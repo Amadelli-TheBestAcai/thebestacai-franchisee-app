@@ -10,9 +10,10 @@ import PaymentsService from '../services/PaymentsService'
 
 import api from '../utils/Api'
 import { checkInternet } from '../utils/InternetConnection'
+import { sleep } from '../utils/Sleep'
 
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
-import { PaymentType } from '../models/enums/paymentType'
+import { PaymentType } from '../../../shared/enums/PaymentType'
 
 import {
   formatHandlesToIntegrate,
@@ -109,58 +110,63 @@ class IntegrateService {
   }
 
   async integrateOnline(): Promise<void> {
-    const isConnected = await checkInternet()
+    console.log('Inicializando integracao de vendas')
+    while (true) {
+      const isConnected = await checkInternet()
 
-    if (!isConnected) {
-      return
+      if (!isConnected) {
+        return
+      }
+
+      const currentCash = await CashierService.getCurrentCashier()
+
+      if (!currentCash || !currentCash.history_id || !currentCash.is_opened) {
+        return
+      }
+
+      const sales = await IntegrateRepository.getOnlineSales()
+      const formatedSales = formatSalesToIntegrate(sales)
+
+      await Promise.all(
+        formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
+          const items = await ItemsService.getItemsToIntegrate(id)
+          const quantity = getQuantityItems(items)
+          let payments = await PaymentsService.getPaymentsToIntegrate(id)
+          payments = payments.map((payment) => ({
+            ...payment,
+            type: PaymentType[payment.type],
+          }))
+          const saleToIntegrate = {
+            ...payload,
+            quantity,
+            items,
+            payments,
+          }
+          try {
+            await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
+            await SalesService.update(id, { to_integrate: false })
+          } catch (err) {
+            console.log(err)
+          }
+        })
+      )
+
+      const handlers = await IntegrateRepository.getOnlineHandlers()
+      const formatedHandler = formatHandlesToIntegrate(handlers)
+
+      await Promise.all(
+        formatedHandler.map(async ({ id, store_id, cash_code, ...payload }) => {
+          try {
+            await api.post(`/cash_handler/${store_id}-${cash_code}`, [payload])
+            await HandlersService.update(id, { to_integrate: false })
+          } catch (err) {
+            console.log(err)
+          }
+        })
+      )
+
+      await sleep(5000)
     }
-
-    const currentCash = await CashierService.getCurrentCashier()
-
-    if (!currentCash || !currentCash.history_id || !currentCash.is_opened) {
-      return
-    }
-
-    const sales = await IntegrateRepository.getOnlineSales()
-    const formatedSales = formatSalesToIntegrate(sales)
-
-    await Promise.all(
-      formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
-        const items = await ItemsService.getItemsToIntegrate(id)
-        const quantity = getQuantityItems(items)
-        let payments = await PaymentsService.getPaymentsToIntegrate(id)
-        payments = payments.map((payment) => ({
-          ...payment,
-          type: PaymentType[payment.type],
-        }))
-        const saleToIntegrate = {
-          ...payload,
-          quantity,
-          items,
-          payments,
-        }
-        try {
-          await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
-          await SalesService.update(id, { to_integrate: false })
-        } catch (err) {
-          console.log(err)
-        }
-      })
-    )
-
-    const handlers = await IntegrateRepository.getOnlineHandlers()
-    const formatedHandler = formatHandlesToIntegrate(handlers)
-
-    await Promise.all(
-      formatedHandler.map(async ({ id, store_id, cash_code, ...payload }) => {
-        try {
-          await api.post(`/cash_handler/${store_id}-${cash_code}`, [payload])
-          await HandlersService.update(id, { to_integrate: false })
-        } catch (err) {
-          console.log(err)
-        }
-      })
-    )
   }
 }
 

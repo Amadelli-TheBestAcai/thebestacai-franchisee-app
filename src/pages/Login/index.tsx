@@ -31,10 +31,11 @@ const Login: React.FC<IProps> = ({ history }) => {
   const onFinish = async () => {
     setLoading(true)
     ipcRenderer.send('user:login', user)
-    ipcRenderer.on('user:login', (event, isValid) => {
+    ipcRenderer.once('user:login', (event, isValid) => {
       if (isValid) {
-        history.push('/home')
-        return message.success(`Bem vindo ${user.username}`)
+        ipcRenderer.send('integrate:online')
+        message.success(`Bem vindo ${user.username}`)
+        return history.push('/home')
       }
       message.error('Credenciais inválidas')
       setLoading(false)

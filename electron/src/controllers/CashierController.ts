@@ -61,3 +61,12 @@ ipcMain.on('cashier:history:get', async (event) => {
     console.error(err)
   }
 })
+
+ipcMain.on('cashier:balance:get', async (event) => {
+  try {
+    const response = await CashierService.getBalance()
+    event.reply('cashier:balance:get:response', response)
+  } catch (err) {
+    console.error(err)
+  }
+})

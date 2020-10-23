@@ -1,10 +1,12 @@
 import api from '../utils/Api'
 
 import UserService from './UserService'
+import SalesService from './SalesService'
 
 import CashierRepository from '../repositories/CashierRepository'
 
 import { checkInternet } from '../utils/InternetConnection'
+import { getBalance } from '../utils/BalanceFormater'
 
 import { Cashier } from '../models/Cashier'
 import { OpenCashierDTO } from '../models/dtos/Cashier/OpenCashierDTO'
@@ -113,6 +115,16 @@ class CashierService {
       }
     } else {
       return null
+    }
+  }
+
+  async getBalance(): Promise<{ isConnected: boolean; balance: any }> {
+    const { isConnected, data } = await SalesService.getFromApi()
+    const balance = getBalance(data)
+    console.log({ data, balance })
+    return {
+      isConnected,
+      balance,
     }
   }
 }

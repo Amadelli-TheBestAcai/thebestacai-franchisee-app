@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SaleResponse } from '../../models/saleResponse'
+import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
 
 import {
@@ -14,7 +14,7 @@ import {
 } from './styles'
 
 type IProps = {
-  sale: SaleResponse
+  sale: SalesHistory
   onDelete: (id: number) => void
 }
 
