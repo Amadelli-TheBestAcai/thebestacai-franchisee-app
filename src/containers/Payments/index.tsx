@@ -21,8 +21,7 @@ import {
   MoneyIcon,
   CreditIcon,
   DebitIcon,
-  TicketIcon
-
+  TicketIcon,
 } from './styles'
 
 interface IProps {
@@ -34,6 +33,8 @@ interface IProps {
   modalState: boolean
   setModalState
   totalSale
+  quantity: number
+  discount: number
   totalPaid: number
   changeAmount: number
 }
@@ -49,6 +50,8 @@ const PaymentsContainer: React.FC<IProps> = ({
   modalState,
   totalSale,
   removePayment,
+  quantity,
+  discount,
 }) => {
   const onModalCancel = (): void => {
     setModalState(false)
@@ -61,20 +64,26 @@ const PaymentsContainer: React.FC<IProps> = ({
   return (
     <Container>
       <Header>
-        <Button className="ant-btn" onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}>
+        <Button
+          className="ant-btn"
+          onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}
+        >
           [A] DINHEIRO
         </Button>
-        <Button className="ant-btn"
+        <Button
+          className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
         >
           [S] CRÉDITO
         </Button>
-        <Button className="ant-btn"
+        <Button
+          className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
         >
           [D] DÉBITO
         </Button>
-        <Button className="ant-btn"
+        <Button
+          className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
         >
           [T] TICKET
@@ -94,32 +103,24 @@ const PaymentsContainer: React.FC<IProps> = ({
         </ListContainer>
       </Content>
       <Footer>
-        {/* Valor Pago */}
         <AmountContainer span={6}>
           <AmountDescription>Valor Pago</AmountDescription>
           <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
-        {/* Troco */}
         <AmountContainer span={6}>
-          <AmountDescription >Troco</AmountDescription>
-          <AmountValue style={{color:'red'}}>
+          <AmountDescription>Troco</AmountDescription>
+          <AmountValue style={{ color: changeAmount < 0 ? 'red' : '#5E5E5E' }}>
             R$ {changeAmount.toFixed(2).replace('.', ',')}
           </AmountValue>
         </AmountContainer>
-      {/* Desconto */}
         <AmountContainer span={6}>
           <AmountDescription>Desconto:</AmountDescription>
-          <AmountValue>
-            R$ {changeAmount.toFixed(2).replace('.', ',')}
-          </AmountValue>
+          <AmountValue>R$ {discount.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
-        {/* Quantidade Itens */}
         <AmountContainer span={6}>
           <AmountDescription>Quantidade Itens:</AmountDescription>
-          <AmountValue>
-            2
-          </AmountValue>
-        </AmountContainer> 
+          <AmountValue>{quantity}</AmountValue>
+        </AmountContainer>
       </Footer>
       <Modal
         width={250}

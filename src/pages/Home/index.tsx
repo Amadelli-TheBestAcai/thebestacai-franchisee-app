@@ -236,6 +236,8 @@ const Home: React.FC = () => {
                   <PaymentsContainer>
                     <PaymentsTypesContainer>
                       <Payments
+                        quantity={sale.quantity}
+                        discount={sale.discount}
                         payments={payments}
                         handleOpenPayment={handleOpenPayment}
                         addPayment={addPayment}

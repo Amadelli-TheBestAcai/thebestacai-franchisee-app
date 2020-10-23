@@ -8,20 +8,19 @@ export const Container = styled.div`
 `
 
 export const TopContainer = styled.div`
-  background: white;
-  width: 100%;
-  height: 65%;
   display: flex;
+  align-items: flex-end;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
+  background: white;
+  height: 65%;
   font-size: 20px;
   color: black;
-
+  padding: 0 15px;
+  justify-content: center;
 
   input {
     background: white;
-    width: 95%;
     height: 10vh;
     padding-right: 10px;
     border-radius: 2px;
@@ -39,7 +38,6 @@ export const BottomContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  
 `
 
 export const BottomContainerCSS = css`
@@ -49,7 +47,7 @@ export const BottomContainerCSS = css`
   justify-content: flex-end;
   align-items: center;
   font-size: 24px;
-  background: #EAE8E8;
+  background: #eae8e8;
 `
 
 export const Price = styled.div`
@@ -67,7 +65,7 @@ export const PriceContainer = styled.div`
   width: 50%;
   height: 80%;
   margin: 5px 10px 5px 10px;
-  color: #9A9A9A;
+  color: #9a9a9a;
 `
 
 export const Text = styled.label`
@@ -83,5 +81,5 @@ export const WeightContainer = styled.div`
   width: 50%;
   height: 80%;
   margin: 5px 10px 5px 10px;
-  color: #9A9A9A;
+  color: #9a9a9a;
 `
