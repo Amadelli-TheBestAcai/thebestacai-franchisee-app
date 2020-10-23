@@ -9,6 +9,7 @@ import {
   SideBarContainer,
   Content,
   Footer,
+  TextFooter
 } from './styles'
 
 const Layout: React.FC = ({ children }) => {
@@ -23,7 +24,9 @@ const Layout: React.FC = ({ children }) => {
         </SideBarContainer>
         <Content>{children}</Content>
       </MainContainer>
-      <Footer></Footer>
+      <Footer>
+        <TextFooter>DEVELOPED BY THE BEST AÇAI COMPANY</TextFooter>
+      </Footer>
     </Container>
   )
 }
