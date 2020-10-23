@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const LogosConatiner = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 70vw;
+  width: 75vw;
   flex-grow: 1;
   margin: 10px 0 0px 68px;
 `
@@ -21,7 +21,7 @@ export const Logo2 = styled.img`
 export const MenuContainer = styled.div`
   display: flex;
   height: 80%;
-  width: 30vw;
+  width: 25vw;
   margin-left: 10px;
   border-left: 1px solid #cecece;
 `

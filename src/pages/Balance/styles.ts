@@ -33,7 +33,7 @@ export const Card = styled(Row)`
   flex-direction: column;
   margin: 0 20px;
   width: 23%;
-  height: 66%;
+  height: 80%;
   border-radius: 10px 10px 0px 0px;
 `
 

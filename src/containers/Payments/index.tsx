@@ -119,7 +119,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         </AmountContainer>
         <AmountContainer span={6}>
           <AmountDescription>Quantidade Itens:</AmountDescription>
-          <AmountValue>{quantity}</AmountValue>
+          <AmountValue>{quantity || 0}</AmountValue>
         </AmountContainer>
       </Footer>
       <Modal

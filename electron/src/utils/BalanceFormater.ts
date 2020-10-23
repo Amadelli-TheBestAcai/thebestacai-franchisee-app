@@ -3,7 +3,7 @@ import {
   PaymentResponse,
 } from '../../../shared/httpResponses/salesHistoryResponse'
 import { Balance } from '../../../shared/models/balance'
-import {PaymentType} from '../../../shared/enums/paymentType'
+import { PaymentType } from '../../../shared/enums/paymentType'
 
 export const getBalance = (sales: SalesHistory[]): Balance => {
   const balance: Balance = {
@@ -53,6 +53,12 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
   balance.billing.sales = sales.length
   balance.billing.total = +(
     balance.store.total + balance.delivery.total
+  ).toFixed(2)
+  balance.billing.delivery_ticket = +(
+    balance.delivery.total / (balance.billing.delivery_sales || 1)
+  ).toFixed(2)
+  balance.billing.store_ticket = +(
+    balance.store.total / (balance.billing.store_sales || 1)
   ).toFixed(2)
   return balance
 }
