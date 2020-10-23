@@ -53,6 +53,7 @@ export const CardHeader = styled.div`
 interface IProps {
   green?: boolean
   black?: boolean
+  fontWhite?: boolean
 }
 
 export const CardBody = styled.div<IProps>`
@@ -71,6 +72,11 @@ export const CardBody = styled.div<IProps>`
     black &&
     css`
       background: #282828;
+    `}
+    ${({ fontWhite }) =>
+    fontWhite &&
+    css`
+      color: white;
     `}
 `
 
@@ -113,7 +119,11 @@ export const CardFooter = styled.div<IProps>`
     `}
 `
 
-export const Description = styled.label`
+interface FontProps {
+  white?: boolean
+}
+
+export const Description = styled.label<FontProps>`
   font-family: 'Roboto';
   font-style: normal;
   font-weight: normal;
@@ -122,4 +132,9 @@ export const Description = styled.label`
   font-variant: small-caps;
   margin-top: 5px;
   color: #898989;
+  ${({ white }) =>
+    white &&
+    css`
+      color: white;
+    `}
 `

@@ -45,89 +45,89 @@ const Balance: React.FC = () => {
       ) : isConected ? (
         <CardContainer>
           <Card>
-            <CardHeader style={{ background: '#007305' }}>DELIVERY</CardHeader>
-            <CardBody green>
-              <CardRow style={{ background: '#058A0A', width: '100%' }}>
+            <CardHeader>DELIVERY</CardHeader>
+            <CardBody>
+              <CardRow style={{ background: '#4356FF', width: '100%' }}>
                 <Title>
                   {' '}
                   R$ {balance.delivery.total.toFixed(2).replace('.', ',')}
                 </Title>
               </CardRow>
-              <CardRow green>
+              <CardRow>
                 R$ {balance.delivery.money.toFixed(2).replace('.', ',')}
                 <Description>Dinheiro</Description>
               </CardRow>
-              <CardRow green>
+              <CardRow>
                 R$ {balance.delivery.credit.toFixed(2).replace('.', ',')}
                 <Description>Crédito</Description>
               </CardRow>
-              <CardRow green>
+              <CardRow>
                 R$ {balance.delivery.debit.toFixed(2).replace('.', ',')}
                 <Description>Débito</Description>
               </CardRow>
-              <CardRow green>
+              <CardRow>
                 R$ {balance.delivery.online.toFixed(2).replace('.', ',')}
                 <Description>Ticket</Description>
-              </CardRow>
-            </CardBody>
-            <CardFooter green />
-          </Card>
-          <Card>
-            <CardHeader>LOJA</CardHeader>
-            <CardBody>
-              <CardRow style={{ background: '#4356FF', width: '100%' }}>
-                <Title>
-                  R$ {balance.store.total.toFixed(2).replace('.', ',')}
-                </Title>
-              </CardRow>
-              <CardRow>
-                R$ {balance.store.money.toFixed(2).replace('.', ',')}
-                <Description>Dinheiro</Description>
-              </CardRow>
-              <CardRow>
-                R$ {balance.store.credit.toFixed(2).replace('.', ',')}
-                <Description>Crédito</Description>
-              </CardRow>
-              <CardRow>
-                R$ {balance.store.debit.toFixed(2).replace('.', ',')}
-                <Description>Débito</Description>
-              </CardRow>
-              <CardRow>
-                R$ {balance.store.ticket.toFixed(2).replace('.', ',')}
-                <Description>Online</Description>
               </CardRow>
             </CardBody>
             <CardFooter />
           </Card>
           <Card>
+            <CardHeader style={{ background: '#007305' }}>LOJA</CardHeader>
+            <CardBody green>
+              <CardRow style={{ background: '#058A0A', width: '100%' }}>
+                <Title>
+                  R$ {balance.store.total.toFixed(2).replace('.', ',')}
+                </Title>
+              </CardRow>
+              <CardRow green>
+                R$ {balance.store.money.toFixed(2).replace('.', ',')}
+                <Description>Dinheiro</Description>
+              </CardRow>
+              <CardRow green>
+                R$ {balance.store.credit.toFixed(2).replace('.', ',')}
+                <Description>Crédito</Description>
+              </CardRow>
+              <CardRow green>
+                R$ {balance.store.debit.toFixed(2).replace('.', ',')}
+                <Description>Débito</Description>
+              </CardRow>
+              <CardRow green>
+                R$ {balance.store.ticket.toFixed(2).replace('.', ',')}
+                <Description>Online</Description>
+              </CardRow>
+            </CardBody>
+            <CardFooter green />
+          </Card>
+          <Card>
             <CardHeader style={{ background: '#FF9D0A' }}>
               FATURAMENTO
             </CardHeader>
-            <CardBody black>
+            <CardBody black fontWhite>
               <CardRow style={{ background: '#FF9D0A', width: '100%' }}>
                 <Title>
                   R$ {balance.billing.total.toFixed(2).replace('.', ',')}
                 </Title>
               </CardRow>
               <CardRow black>
-                <Description>VENDAS</Description>
+                <Description white>VENDAS</Description>
                 R$ {balance.billing.sales.toFixed(2).replace('.', ',')}
               </CardRow>
               <CardRow black>
-                <Description>VENDAS DELIVERY</Description>
+                <Description white>VENDAS DELIVERY</Description>
                 R$ {balance.billing.delivery_sales.toFixed(2).replace('.', ',')}
               </CardRow>
               <CardRow black>
-                <Description>VENDAR LOJA</Description>
+                <Description white>VENDAR LOJA</Description>
                 R$ {balance.billing.store_sales.toFixed(2).replace('.', ',')}
               </CardRow>
               <CardRow black>
-                <Description>TICKET MÉDIO DELIVERY</Description>
+                <Description white>TICKET MÉDIO DELIVERY</Description>
                 R${' '}
                 {balance.billing.delivery_ticket.toFixed(2).replace('.', ',')}
               </CardRow>
               <CardRow black>
-                <Description>TICKET MÉDIO LOJA</Description>
+                <Description white>TICKET MÉDIO LOJA</Description>
                 R$ {balance.billing.store_ticket.toFixed(2).replace('.', ',')}
               </CardRow>
             </CardBody>
