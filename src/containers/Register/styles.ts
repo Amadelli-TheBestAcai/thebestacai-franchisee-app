@@ -4,6 +4,7 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  margin-right: 10px;
 `
 
 export const Content = styled.div`
@@ -26,11 +27,12 @@ export const AmountValue = styled.div`
   justify-content: flex-end;
   flex-grow: 1;
   align-items: center;
-  color: #696969;
+  color: black;
   width: 100%;
   font-size: 22px;
   padding-right: 10px;
-  background: #ff7a0061;
+  background: #FF9D0A;
+  font-weight: bold;
 `
 
 export const Footer = styled.div`
@@ -38,10 +40,10 @@ export const Footer = styled.div`
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 28px;
+  font-size: 20px;
   font-weight: 400;
-  height: 35%;
-  margin: 1% 1% 0% 1%;
+  height: 30%;
+  margin: 3% 1% 0% 1%;
   background: black;
   cursor: pointer;
 `

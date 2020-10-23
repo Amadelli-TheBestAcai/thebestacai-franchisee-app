@@ -16,8 +16,6 @@ type IProps = {
 }
 
 const Register: React.FC<IProps> = ({
-  discount,
-  quantity,
   total,
   registerSale,
 }) => {
@@ -30,13 +28,7 @@ const Register: React.FC<IProps> = ({
   return (
     <Container>
       <Content>
-        <AmountContainer style={{ width: '40%' }}>
-          <Description>Quantidade</Description>
-          <AmountValue>{quantity || 0}</AmountValue>
-          <Description>Desconto</Description>
-          <AmountValue>R$ {monetaryFormat(discount)}</AmountValue>
-        </AmountContainer>
-        <AmountContainer style={{ width: '60%' }}>
+        <AmountContainer style={{ width: '100%' }}>
           <Description>Total</Description>
           <AmountValue style={{ fontSize: '40px' }}>
             R$ {monetaryFormat(total)}
