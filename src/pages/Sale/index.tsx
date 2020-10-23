@@ -36,10 +36,6 @@ const Sale: React.FC = () => {
         setIsLoading(false)
         setIsConected(isConnected)
         setSales(data)
-        console.log({
-          isConnected,
-          data,
-        })
       }
     )
   }, [])

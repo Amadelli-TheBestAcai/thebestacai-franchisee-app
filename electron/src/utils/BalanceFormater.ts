@@ -2,46 +2,27 @@ import {
   SalesHistory,
   PaymentResponse,
 } from '../../../shared/httpResponses/salesHistoryResponse'
-
-import { PaymentType } from '../../../shared/enums/PaymentType'
-
-type Balance = {
-  store: {
-    money: number
-    credit: number
-    debit: number
-    online: number
-  }
-  delivery: {
-    money: number
-    credit: number
-    debit: number
-    ticket: number
-  }
-  billing: {
-    sales: number
-    delivery_sales: number
-    store_sales: number
-    delivery_ticket: number
-    store_ticket: number
-  }
-}
+import { Balance } from '../../../shared/models/balance'
+import { PaymentType } from '../../../shared/enums/paymentType'
 
 export const getBalance = (sales: SalesHistory[]): Balance => {
   const balance: Balance = {
     store: {
-      money: 0,
-      credit: 0,
-      debit: 0,
-      online: 0,
-    },
-    delivery: {
+      total: 0,
       money: 0,
       credit: 0,
       debit: 0,
       ticket: 0,
     },
+    delivery: {
+      total: 0,
+      money: 0,
+      credit: 0,
+      debit: 0,
+      online: 0,
+    },
     billing: {
+      total: 0,
       sales: 0,
       delivery_sales: 0,
       store_sales: 0,
@@ -49,30 +30,35 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
       store_ticket: 0,
     },
   }
+
   sales.forEach((sale) => {
     if (sale.type === 0) {
-      const { money, credit, debit, online } = getPayments(sale.payments)
+      const { total, money, credit, debit, ticket } = getPayments(sale.payments)
+      balance.store.total += +total
       balance.store.money += +money
       balance.store.credit += +credit
       balance.store.debit += +debit
-      balance.store.online += +online
+      balance.store.ticket += +ticket
       balance.billing.store_sales += 1
     } else {
-      const { money, credit, debit, ticket } = getPayments(sale.payments)
+      const { total, money, credit, debit, online } = getPayments(sale.payments)
+      balance.delivery.total += +total
       balance.delivery.money += +money
       balance.delivery.credit += +credit
       balance.delivery.debit += +debit
-      balance.delivery.ticket += +ticket
+      balance.delivery.online += +online
       balance.billing.delivery_sales += 1
     }
   })
-
   balance.billing.sales = sales.length
-
+  balance.billing.total = +(
+    balance.store.total + balance.delivery.total
+  ).toFixed(2)
   return balance
 }
 
 type PaymentResult = {
+  total: number
   money: number
   credit: number
   debit: number
@@ -82,6 +68,7 @@ type PaymentResult = {
 
 export const getPayments = (payments: PaymentResponse[]): PaymentResult => {
   const result = {
+    total: 0,
     money: 0,
     credit: 0,
     debit: 0,
@@ -89,26 +76,26 @@ export const getPayments = (payments: PaymentResponse[]): PaymentResult => {
     online: 0,
   }
   payments.forEach((payment) => {
-    if (payment.type) {
-      if (payment.type === PaymentType.MONEY) {
-        result.money += +payment.amount
-      }
-      if (payment.type === PaymentType.CREDIT_CARD) {
-        result.credit += +payment.amount
-      }
-      if (payment.type === PaymentType.DEBIT_CARD) {
-        result.debit += +payment.amount
-      }
-      if (payment.type === PaymentType.TICKET) {
-        result.ticket += +payment.amount
-      }
-      if (payment.type === PaymentType.ONLINE) {
-        result.online += +payment.amount
-      }
+    if (payment.type === PaymentType.MONEY) {
+      result.money += +payment.amount
     }
+    if (payment.type === PaymentType.CREDIT_CARD) {
+      result.credit += +payment.amount
+    }
+    if (payment.type === PaymentType.DEBIT_CARD) {
+      result.debit += +payment.amount
+    }
+    if (payment.type === PaymentType.TICKET) {
+      result.ticket += +payment.amount
+    }
+    if (payment.type === PaymentType.ONLINE) {
+      result.online += +payment.amount
+    }
+    result.total += +payment.amount
   })
 
   return {
+    total: +result.total.toFixed(2),
     money: +result.money.toFixed(2),
     credit: +result.credit.toFixed(2),
     debit: +result.debit.toFixed(2),

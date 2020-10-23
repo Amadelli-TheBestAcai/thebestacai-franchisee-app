@@ -121,7 +121,6 @@ class CashierService {
   async getBalance(): Promise<{ isConnected: boolean; balance: any }> {
     const { isConnected, data } = await SalesService.getFromApi()
     const balance = getBalance(data)
-    console.log({ data, balance })
     return {
       isConnected,
       balance,

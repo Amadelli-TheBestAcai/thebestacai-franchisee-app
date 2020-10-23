@@ -36,6 +36,10 @@ export const TabContainer = styled(TabsAnd)`
   }
   .ant-tabs-tab {
     font-weight: bold;
+    line-height: 0.2;
+  }
+  .ant-tabs-tab-btn {
+    color: black !important;
   }
 `
 

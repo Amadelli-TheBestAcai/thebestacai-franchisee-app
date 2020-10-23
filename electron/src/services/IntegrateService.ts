@@ -13,7 +13,7 @@ import { checkInternet } from '../utils/InternetConnection'
 import { sleep } from '../utils/Sleep'
 
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
-import { PaymentType } from '../../../shared/enums/PaymentType'
+import { PaymentType } from '../../../shared/enums/paymentType'
 
 import {
   formatHandlesToIntegrate,

@@ -30,19 +30,16 @@ export const Content = styled.div`
 
 export const Footer = styled.div`
   display: flex;
-  height: 3vh;
-  width: 100vw;
-  background: black;
-  display: flex;
   justify-content: center;
-  text-align: center;
-
+  align-items: center;
+  height: 3vh;
+  background: black;
 `
 
 export const TextFooter = styled.label`
   font-size: 15px;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    margin-bottom: 0;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  margin-bottom: 0;
 `
