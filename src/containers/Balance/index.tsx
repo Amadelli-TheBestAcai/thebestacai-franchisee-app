@@ -12,6 +12,9 @@ import {
   BottomContainer,
   Price,
   Weight,
+  PriceContainer,
+  Text,
+  WeightContainer
 } from './styles'
 
 type IProps = {
@@ -49,16 +52,23 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
       ) : (
         <Container>
           <TopContainer>
+            <Text>Preço indicado na balança</Text>
             <InputPrice
               getValue={(value) => setAmount(value)}
               onEnterPress={handleSubmit}
             />
           </TopContainer>
           <BottomContainer>
+            <PriceContainer>
+            <Text>Preço do KG</Text>
             <Price>
               R$ {selfService.price_unit.toFixed(2).replace('.', ',')}
             </Price>
+            </PriceContainer>
+            <WeightContainer>
+            <Text>Peso</Text>
             <Weight> KG {getQuantity().toFixed(4).replace('.', ',')}</Weight>
+            </WeightContainer>
           </BottomContainer>
         </Container>
       )}

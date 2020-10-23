@@ -14,15 +14,20 @@ export const TopContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  font-size: 20px;
+  color: black;
+
 
   input {
-    background: orange;
+    background: white;
     width: 95%;
-    height: 9vh;
+    height: 10vh;
     padding-right: 10px;
     border-radius: 2px;
     font-size: 32px;
     text-align: end;
+    border: 1px solid #b0afae;
   }
 `
 
@@ -34,24 +39,49 @@ export const BottomContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  
 `
 
-export const TopContainerCSS = css`
-  width: 50%;
+export const BottomContainerCSS = css`
   height: 100%;
   color: #b0afae;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding-right: 10px;
-  margin-right: 20px;
   font-size: 24px;
+  background: #EAE8E8;
 `
 
 export const Price = styled.div`
-  ${TopContainerCSS};
+  ${BottomContainerCSS};
 `
 
 export const Weight = styled.div`
-  ${TopContainerCSS};
+  ${BottomContainerCSS};
+`
+
+export const PriceContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  width: 50%;
+  height: 80%;
+  margin: 5px 10px 5px 10px;
+  color: #9A9A9A;
+`
+
+export const Text = styled.label`
+  font-size: 14px;
+
+  text-align: end;
+`
+
+export const WeightContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  width: 50%;
+  height: 80%;
+  margin: 5px 10px 5px 10px;
+  color: #9A9A9A;
 `

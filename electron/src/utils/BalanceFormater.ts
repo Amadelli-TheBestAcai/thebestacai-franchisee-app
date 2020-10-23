@@ -3,7 +3,7 @@ import {
   PaymentResponse,
 } from '../../../shared/httpResponses/salesHistoryResponse'
 import { Balance } from '../../../shared/models/balance'
-import { PaymentType } from '../../../shared/enums/paymentType'
+import {PaymentType} from '../../../shared/enums/paymentType'
 
 export const getBalance = (sales: SalesHistory[]): Balance => {
   const balance: Balance = {
