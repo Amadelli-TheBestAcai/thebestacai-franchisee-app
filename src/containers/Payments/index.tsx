@@ -69,24 +69,28 @@ const PaymentsContainer: React.FC<IProps> = ({
           onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}
         >
           [A] DINHEIRO
+          <MoneyIcon/>
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
         >
           [S] CRÉDITO
+          <CreditIcon/>
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
         >
           [D] DÉBITO
+          <DebitIcon/>
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
         >
           [T] TICKET
+          <TicketIcon/>
         </Button>
       </Header>
       <Content>

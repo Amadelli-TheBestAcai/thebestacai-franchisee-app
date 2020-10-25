@@ -50,15 +50,18 @@ export const ListContainer = styled.div`
 
 export const Button = styled.button`
   display: flex;
-  justify-content: center;
   align-items: center;
-
+  justify-content: space-evenly;
+  text-align: center;
+  margin: 0 2px;
   background: var(--hover-bottomLogin);
   font-weight: 500;
   color: white;
-  margin: 0 5px;
   border: none;
-  width: 8vw;
+  width: 9vw;
+  padding: 0;
+  font-size: 12px;
+ 
 
   :hover,
   :focus {
@@ -76,8 +79,8 @@ export const Input = styled(MonetaryInput)``
 
 export const Header = styled(RowAnt)`
   display: flex;
-  justify-content: space-around;
   align-items: center;
+  justify-content: center;
   width: 100%;
   height: 25%;
 `
@@ -128,8 +131,10 @@ export const AmountValue = styled(ColAnt)`
 `
 
 const IconCSS = css`
-  width: 3vw;
+  width: 2vw;
   height: 3vh;
+  padding: 0;
+  margin: 0;
 `
 
 export const MoneyIcon = styled(AttachMoney)`
