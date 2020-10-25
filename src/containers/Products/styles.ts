@@ -41,6 +41,11 @@ export const TabContainer = styled(TabsAnd)`
   .ant-tabs-tab-btn {
     color: black !important;
   }
+  .ant-tabs-ink-bar {
+    position: absolute;
+    background: black;
+    pointer-events: none;
+}
 `
 
 export const TabItem = styled(TabsAnd.TabPane)``
