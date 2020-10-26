@@ -41,11 +41,11 @@ export const SecondaryContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-y: scroll;
+  /* overflow-y: scroll;
   ::-webkit-scrollbar {
     width: 0px;
     background: transparent;
-  }
+  } */
 `
 
 export const AmountContainer = styled.div`
@@ -77,22 +77,24 @@ export const AmountAction = styled.div`
   align-items: center;
   width: 70%;
   height: 20%;
-  margin: 20px 0;
+  margin: 10px 0;
 `
 
 export const FinishButton = styled(ButtonAnt)`
   margin: 0 15px;
-  background: var(--primary-orange);
-  border: 1px solid var(--primary-orange);
-  color: black;
+  background: black;
+  border: 1px solid black;
+  color: white;
   font-weight: 700;
   border-radius: 8px;
+  width: 15vw;
+  height: 5vh;
 
   :hover {
-    background: var(--hover-bottomLogin);
-    color: var(--primary-orange);
+    color: var(--hover-bottomLogin);
+    background: var(--primary-orange);
     transition: 0.5s;
-    border: 1px solid var(--hover-bottomLogin);
+    border: 1px solid var(--primary-orange);
   }
 `
 
@@ -103,6 +105,8 @@ export const BackButton = styled(ButtonAnt)`
   color: var(--primary-orange);
   font-weight: 700;
   border-radius: 8px;
+  width: 15vw;
+  height: 5vh;
 
   :hover {
     background: var(--hover-bottomLogin);
@@ -113,7 +117,7 @@ export const BackButton = styled(ButtonAnt)`
 `
 
 export const AmountRow = styled(RowAnt)`
-  margin: 15px 0px;
+  margin: 10px 0;
 `
 
 export const Column = styled(ColAnt)`
