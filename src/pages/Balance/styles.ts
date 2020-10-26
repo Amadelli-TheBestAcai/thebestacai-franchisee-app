@@ -16,12 +16,6 @@ export const Container = styled.div`
   background: #fff;
 `
 
-export const Column = styled(Col)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
 export const Title = styled.label`
   font-size: 32px;
   color: white;
@@ -89,10 +83,10 @@ export const CardBody = styled.div<IProps>`
 
 export const CardRow = styled.div<IProps>`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   flex-grow: 1;
-  width: 85%;
+  width: 75%;
   border-bottom: 1px solid #b4b4b4;
   background: #f0f5ff;
   font-size: 28px;
@@ -108,21 +102,11 @@ export const CardRow = styled.div<IProps>`
     `}
 `
 
-export const IconContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  width: 20%;
-`
-
 export const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-grow: 1;
-  width: 65%;
 `
 
 export const CardFooter = styled.div<IProps>`
