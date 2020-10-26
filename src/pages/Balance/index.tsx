@@ -19,6 +19,14 @@ import {
   Description,
   CardFooter,
   Title,
+  MoneyIcon,
+  CreditIcon,
+  DebitIcon,
+  TicketIcon,
+  CardIcon,
+  IconContainer,
+  CardContent,
+  CheckOnline
 } from './styles'
 
 const Balance: React.FC = () => {
@@ -48,24 +56,39 @@ const Balance: React.FC = () => {
             <CardHeader>DELIVERY</CardHeader>
             <CardBody>
               <CardRow style={{ background: '#4356FF', width: '100%' }}>
+
                 <Title>
                   {' '}
                   R$ {balance.delivery.total.toFixed(2).replace('.', ',')}
                 </Title>
               </CardRow>
               <CardRow>
+                <IconContainer>
+                  <MoneyIcon/>
+                </IconContainer>
+                <CardContent>
                 R$ {balance.delivery.money.toFixed(2).replace('.', ',')}
-                <Description>Dinheiro</Description>
+                  <Description>Dinheiro</Description>
+                </CardContent>
               </CardRow>
               <CardRow>
+                <IconContainer>
+                  <CreditIcon/>
+                </IconContainer>
                 R$ {balance.delivery.credit.toFixed(2).replace('.', ',')}
                 <Description>Crédito</Description>
               </CardRow>
               <CardRow>
+                <IconContainer>
+                  <DebitIcon/>
+                </IconContainer>
                 R$ {balance.delivery.debit.toFixed(2).replace('.', ',')}
                 <Description>Débito</Description>
               </CardRow>
               <CardRow>
+                <IconContainer>
+                  <CheckOnline/>
+                </IconContainer>
                 R$ {balance.delivery.online.toFixed(2).replace('.', ',')}
                 <Description>Ticket</Description>
               </CardRow>

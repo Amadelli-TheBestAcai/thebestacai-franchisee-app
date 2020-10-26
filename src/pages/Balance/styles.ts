@@ -1,4 +1,11 @@
 import styled, { css } from 'styled-components'
+import {
+  AttachMoney,
+  CreditCard2Back,
+  CreditCard,
+  Ticket,
+  CheckCircleFill,
+} from '../../styles/Icons'
 
 import { Row, Col } from 'antd'
 
@@ -44,8 +51,8 @@ export const CardHeader = styled.div`
   height: 10%;
   background: blue;
   border-radius: 10px 10px 0px 0px;
-  font-size: 25px;
-  line-height: 29px;
+  font-size: 20px;
+  line-height: 23px;
   color: white;
   font-weight: bold;
 `
@@ -84,7 +91,6 @@ export const CardRow = styled.div<IProps>`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  flex-direction: column;
   flex-grow: 1;
   width: 85%;
   border-bottom: 1px solid #b4b4b4;
@@ -101,6 +107,24 @@ export const CardRow = styled.div<IProps>`
       background: #282828;
     `}
 `
+
+export const IconContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 20%;
+`
+
+export const CardContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 65%;
+`
+
 export const CardFooter = styled.div<IProps>`
   display: flex;
   height: 5%;
@@ -124,17 +148,48 @@ interface FontProps {
 }
 
 export const Description = styled.label<FontProps>`
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: normal;
-  font-size: 20px;
-  line-height: 23px;
-  font-variant: small-caps;
-  margin-top: 5px;
+  font-size: 15px;
+  line-height: 15px;
+  margin-top: 3px;
+  text-transform: uppercase;
   color: #898989;
   ${({ white }) =>
     white &&
     css`
       color: white;
     `}
+`
+
+const IconCSS = css`
+  width: 5vw;
+  height: 5vh;
+  padding: 0;
+  margin: 0;
+`
+
+export const MoneyIcon = styled(AttachMoney)`
+  color: #007c05;
+  ${IconCSS};
+`
+
+export const CreditIcon = styled(CreditCard2Back)`
+  color: #2b40fd;
+  ${IconCSS};
+`
+
+export const DebitIcon = styled(CreditCard)`
+  color: #f97700;
+  ${IconCSS};
+`
+
+export const TicketIcon = styled(Ticket)`
+  color: #ff00c7;
+  ${IconCSS};
+`
+
+export const CheckOnline = styled(CheckCircleFill)`
+  color: #009a7e;
+  ${IconCSS};
 `
