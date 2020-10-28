@@ -1,21 +1,14 @@
-import styled, { css }from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
-import {
-  Button as ButtonAnt,
-  Row as RowAnt,
-  Col as ColAnt,
-  Modal as ModalAnt,
-  Input as InputAnt,
-} from 'antd'
-
+import { Row as RowAnt, Col as ColAnt, Modal as ModalAnt } from 'antd'
 
 import {
   AttachMoney,
   CreditCard2Back,
   CreditCard,
-  Ticket
+  Ticket,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -61,7 +54,6 @@ export const Button = styled.button`
   width: 9vw;
   padding: 0;
   font-size: 12px;
- 
 
   :hover,
   :focus {
@@ -100,34 +92,28 @@ export const Footer = styled(RowAnt)`
   width: 100%;
   height: 35%;
   margin-left: 6px;
-  
-  
 `
 
 export const AmountContainer = styled(ColAnt)`
   flex-direction: column;
-  
-  
 `
 
 export const AmountDescription = styled.div`
-
-font-size: 13px;
-margin: 0 6px;
-color: #5E5E5E;
+  font-size: 13px;
+  margin: 0 6px;
+  color: #5e5e5e;
 `
 
 export const AmountValue = styled(ColAnt)`
   display: flex;
 
-  color: #5E5E5E;
+  color: #5e5e5e;
   justify-content: flex-end;
   align-items: center;
-  background: #EEEEEE;
+  background: #eeeeee;
   font-size: 20px;
   padding: 0 10px;
   margin: 0 6px;
-
 `
 
 const IconCSS = css`
@@ -138,25 +124,21 @@ const IconCSS = css`
 `
 
 export const MoneyIcon = styled(AttachMoney)`
-  color: #007C05;
+  color: #007c05;
   ${IconCSS};
-
 `
 
 export const CreditIcon = styled(CreditCard2Back)`
-  color: #2B40FD;
+  color: #2b40fd;
   ${IconCSS};
-  
 `
 
 export const DebitIcon = styled(CreditCard)`
-  color: #F97700;
+  color: #f97700;
   ${IconCSS};
-
 `
 
 export const TicketIcon = styled(Ticket)`
-  color: #FF00C7;
+  color: #ff00c7;
   ${IconCSS};
-
 `

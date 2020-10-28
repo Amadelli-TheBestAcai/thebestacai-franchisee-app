@@ -151,7 +151,7 @@ const Balance: React.FC = () => {
               </CardRow>
               <CardRow black>
                 <CardContent>
-                  <Description white>VENDAR LOJA</Description>
+                  <Description white>VENDAS LOJA</Description>
                   {balance.billing.store_sales}
                 </CardContent>
               </CardRow>

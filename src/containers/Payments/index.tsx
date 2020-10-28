@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { PaymentType } from '../../models/enums/paymentType'
 import { Payment as PaymentModel } from '../../models/payment'
@@ -37,6 +37,7 @@ interface IProps {
   discount: number
   totalPaid: number
   changeAmount: number
+  valueToPay: number
 }
 
 const PaymentsContainer: React.FC<IProps> = ({
@@ -52,6 +53,7 @@ const PaymentsContainer: React.FC<IProps> = ({
   removePayment,
   quantity,
   discount,
+  valueToPay,
 }) => {
   const onModalCancel = (): void => {
     setModalState(false)
@@ -69,28 +71,28 @@ const PaymentsContainer: React.FC<IProps> = ({
           onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}
         >
           [A] DINHEIRO
-          <MoneyIcon/>
+          <MoneyIcon />
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
         >
           [S] CRÉDITO
-          <CreditIcon/>
+          <CreditIcon />
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
         >
           [D] DÉBITO
-          <DebitIcon/>
+          <DebitIcon />
         </Button>
         <Button
           className="ant-btn"
           onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
         >
           [T] TICKET
-          <TicketIcon/>
+          <TicketIcon />
         </Button>
       </Header>
       <Content>
@@ -135,7 +137,11 @@ const PaymentsContainer: React.FC<IProps> = ({
         closable={true}
       >
         Valor:
-        <Input getValue={getAmount} onEnterPress={addPayment} />
+        <Input
+          getValue={getAmount}
+          onEnterPress={addPayment}
+          defaultValue={valueToPay}
+        />
       </Modal>
     </Container>
   )

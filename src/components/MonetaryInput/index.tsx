@@ -1,36 +1,45 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { Input } from './styles'
 
 type IProps = {
   getValue
   onEnterPress?
+  defaultValue?: number
 }
 
-const MonetaryInput: React.FC<IProps> = ({ getValue, onEnterPress }) => {
-  const currencyConfig = {
-    locale: 'pt-BR',
-    formats: {
-      number: {
-        BRL: {
-          style: 'currency',
-          currency: 'BRL',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        },
+const currencyConfig = {
+  locale: 'pt-BR',
+  formats: {
+    number: {
+      BRL: {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
       },
     },
-  }
+  },
+}
 
-  const [amount, setAmount] = useState<number>()
+const MonetaryInput: React.FC<IProps> = ({
+  getValue,
+  onEnterPress,
+  defaultValue,
+}) => {
+  const [amount, setAmount] = useState<number>(defaultValue || 0)
 
-  const handleChange = (event, value, maskedValue) => {
+  useEffect(() => {
+    getValue(defaultValue || 0)
+  }, [])
+
+  const handleChange = (event, value) => {
     if (typeof value !== 'number' && typeof value !== 'string') {
       return
     }
     event.preventDefault()
     setAmount(+value)
-    getValue(value)
+    getValue(+value)
   }
 
   const handleKeyPress = (event) => {

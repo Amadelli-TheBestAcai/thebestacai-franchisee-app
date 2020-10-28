@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   const [cashier, setCashier] = useState<Cashier>()
   const [items, setItems] = useState<Item[]>([])
   const [payments, setPayments] = useState<Payment[]>([])
-  const [currentPayment, setCurrentPayment] = useState()
+  const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
 
@@ -89,7 +89,10 @@ const Home: React.FC = () => {
     })
   }
 
-  const addPayment = (): void => {
+  const addPayment = () => {
+    if (!currentPayment) {
+      return message.warning('Pagamento inválido')
+    }
     ipcRenderer.send('payment:add', {
       sale: sale.id,
       type: paymentType,
@@ -112,7 +115,7 @@ const Home: React.FC = () => {
     })
   }
 
-  const handleOpenPayment = (type: number, defaultValue: number): void => {
+  const handleOpenPayment = (type: number): void => {
     setPaymentType(type)
     setPaymentModal(true)
   }
@@ -135,10 +138,6 @@ const Home: React.FC = () => {
       setPayments(ipcRenderer.sendSync('payment:get', sale.id))
       setLoading(false)
     })
-  }
-
-  const getTotalSoldOnSale = (): number => {
-    return 1
   }
 
   const addChangeAmount = (amount: number): void => {
@@ -178,8 +177,15 @@ const Home: React.FC = () => {
 
   const getChangeAmount = (): number => {
     const totalPaid = getTotalPaid()
-    const changeAmount = totalPaid - (+sale.total - +sale.discount)
+    const changeAmount = totalPaid - (+sale.total?.toFixed(2) - +sale.discount)
     return changeAmount || 0
+  }
+
+  const valueToPay = (): number => {
+    if (paymentType === PaymentType.DINHEIRO) {
+      return 0
+    }
+    return +((sale.total || 0) - (getTotalPaid() || 0)).toFixed(2)
   }
 
   const keyMap = {
@@ -191,11 +197,10 @@ const Home: React.FC = () => {
   }
 
   const handlers = {
-    MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 0),
-    C_CREDIT: () =>
-      handleOpenPayment(PaymentType.CREDITO, getTotalSoldOnSale()),
-    C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO, getTotalSoldOnSale()),
-    TICKET: () => handleOpenPayment(PaymentType.TICKET, getTotalSoldOnSale()),
+    MONEY: () => handleOpenPayment(PaymentType.DINHEIRO),
+    C_CREDIT: () => handleOpenPayment(PaymentType.CREDITO),
+    C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO),
+    TICKET: () => handleOpenPayment(PaymentType.TICKET),
     REGISTER: () => registerSale(),
   }
 
@@ -236,6 +241,7 @@ const Home: React.FC = () => {
                   <PaymentsContainer>
                     <PaymentsTypesContainer>
                       <Payments
+                        valueToPay={valueToPay()}
                         quantity={sale.quantity}
                         discount={sale.discount}
                         payments={payments}
