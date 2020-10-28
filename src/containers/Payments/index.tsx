@@ -135,6 +135,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         onOk={() => addPayment()}
         destroyOnClose={true}
         closable={true}
+        afterClose={() => document.getElementById('mainContainer').focus()}
       >
         Valor:
         <Input
