@@ -140,20 +140,19 @@ const Balance: React.FC = () => {
               <CardRow black>
                 <CardContent>
                   <Description white>VENDAS</Description>
-                  R$ {balance.billing.sales.toFixed(2).replace('.', ',')}
+                  {balance.billing.sales}
                 </CardContent>
               </CardRow>
               <CardRow black>
                 <CardContent>
                   <Description white>VENDAS DELIVERY</Description>
-                  R${' '}
-                  {balance.billing.delivery_sales.toFixed(2).replace('.', ',')}
+                  {balance.billing.delivery_sales}
                 </CardContent>
               </CardRow>
               <CardRow black>
                 <CardContent>
                   <Description white>VENDAR LOJA</Description>
-                  R$ {balance.billing.store_sales.toFixed(2).replace('.', ',')}
+                  {balance.billing.store_sales}
                 </CardContent>
               </CardRow>
               <CardRow black>
