@@ -1,7 +1,11 @@
 import styled from 'styled-components'
 
-import { Input as InputAnt, Button as ButtonAnt, Form as FormAnt } from 'antd'
-
+import {
+  Input as InputAnt,
+  Button as ButtonAnt,
+  Form as FormAnt,
+  Select as SelectAnt,
+} from 'antd'
 import BackgroundLogin from '../../assets/img/background_login.jpg'
 
 export const Container = styled.div`
@@ -55,11 +59,6 @@ export const FormContainer = styled.div`
   div.ant-form-item {
     margin-bottom: 12px !important;
   }
-
-  /* @media only screen and (max-width: 1100px) {
-    width: 30vw;
-    height: 60vh;
-  } */
 `
 
 export const Input = styled(InputAnt)`
@@ -114,3 +113,9 @@ export const ButtonSecondary = styled(ButtonAnt)`
 export const FormItem = styled(FormAnt.Item)`
   width: 20vw;
 `
+
+export const Select = styled(SelectAnt)`
+  width: 100%;
+`
+
+export const Option = styled(SelectAnt.Option)``

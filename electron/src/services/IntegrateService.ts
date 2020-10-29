@@ -1,7 +1,7 @@
 import IntegrateRepository from '../repositories/IntegrateRepository'
 
 import CashierService from '../services/CashierService'
-import UserService from '../services/UserService'
+import StoreService from '../services/StoreService'
 import SalesService from '../services/SalesService'
 import HandlersService from '../services/HandlersService'
 
@@ -25,7 +25,7 @@ import {
 
 class IntegrateService {
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
-    const { store } = await UserService.getTokenInfo()
+    const { id: store } = await StoreService.getOne()
 
     const {
       amount_on_open,

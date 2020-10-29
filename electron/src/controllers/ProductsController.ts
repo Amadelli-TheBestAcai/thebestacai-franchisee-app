@@ -11,6 +11,16 @@ ipcMain.on('products:get', async (event, isConnected) => {
   }
 })
 
+ipcMain.on('products:refresh', async (event) => {
+  try {
+    await ProductsService.getOnlineProducts
+    event.reply('products:refresh:response', { success: true })
+  } catch (err) {
+    console.error(err)
+    event.reply('products:refresh:response', { success: false })
+  }
+})
+
 ipcMain.on('products:get:selfService', async (event) => {
   try {
     const item = await ProductsService.getSelfService()

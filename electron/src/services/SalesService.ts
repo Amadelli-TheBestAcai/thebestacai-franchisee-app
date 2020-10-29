@@ -2,7 +2,7 @@ import SalesRepository from '../repositories/SalesRepository'
 import CashierService from '../services/CashierService'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
-import UserService from '../services/UserService'
+import StoreService from '../services/StoreService'
 
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
@@ -125,7 +125,7 @@ class SalesService {
 
   async integratePending(amount_on_close: number, code: string): Promise<void> {
     const sales = await SalesRepository.getPending()
-    const { store } = await UserService.getTokenInfo()
+    const { id: store } = await StoreService.getOne()
     const {
       amount_on_open,
       id: cashId,

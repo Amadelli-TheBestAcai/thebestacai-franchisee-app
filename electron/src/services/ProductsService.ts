@@ -1,5 +1,5 @@
 import api from '../utils/Api'
-import UserService from '../services/UserService'
+import StoreService from '../services/StoreService'
 import ProductsRepository from '../repositories/ProductsRepository'
 import { formaterToCategory } from '../utils/ProductFormater'
 class ProductsService {
@@ -16,10 +16,13 @@ class ProductsService {
   }
 
   async getOnlineProducts() {
-    const { store } = await UserService.getTokenInfo()
+    const store = await StoreService.getOne()
+    if (!store) {
+      return
+    }
     const {
       data: { data },
-    } = await api.get(`products_store/${store}`)
+    } = await api.get(`products_store/${store.id}`)
     this.updateAllProducts(data)
   }
 
