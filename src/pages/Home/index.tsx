@@ -151,6 +151,10 @@ const Home: React.FC = () => {
     }
   }
 
+  const sendFocusToBalance = () => {
+    document.getElementById('balanceInput').focus()
+  }
+
   const registerSale = () => {
     if (getChangeAmount() < 0) {
       return message.warning('Pagamento inválido')
@@ -164,6 +168,7 @@ const Home: React.FC = () => {
       setItems([])
       setPayments([])
       setSale(newSale)
+      sendFocusToBalance()
     })
   }
 
@@ -194,6 +199,7 @@ const Home: React.FC = () => {
     C_DEBIT: 'd',
     TICKET: 't',
     REGISTER: 'f1',
+    FOCUS_BALANCE: 'b',
   }
 
   const handlers = {
@@ -202,14 +208,15 @@ const Home: React.FC = () => {
     C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO),
     TICKET: () => handleOpenPayment(PaymentType.TICKET),
     REGISTER: () => registerSale(),
+    FOCUS_BALANCE: () => sendFocusToBalance(),
   }
 
   return (
     <Container
+      id="mainContainer"
       handlers={handlers}
       keyMap={keyMap}
       allowChanges={true}
-      id="mainContainer"
     >
       {loading ? (
         <Spinner />

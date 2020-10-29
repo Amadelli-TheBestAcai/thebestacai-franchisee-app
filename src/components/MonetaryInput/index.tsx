@@ -6,6 +6,7 @@ type IProps = {
   getValue
   onEnterPress?
   defaultValue?: number
+  id?: string
 }
 
 const currencyConfig = {
@@ -26,6 +27,7 @@ const MonetaryInput: React.FC<IProps> = ({
   getValue,
   onEnterPress,
   defaultValue,
+  id
 }) => {
   const [amount, setAmount] = useState<number>(defaultValue || 0)
 
@@ -51,6 +53,7 @@ const MonetaryInput: React.FC<IProps> = ({
 
   return (
     <Input
+      id={id}
       value={amount}
       currency="BRL"
       autoFocus={true}
