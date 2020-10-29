@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { ipcRenderer } from 'electron'
 import MenuAvatar from '../MenuAvatar'
+import Spinner from '../Spinner'
 import { Dropdown } from 'antd'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import {
@@ -12,15 +14,35 @@ import {
   Container,
 } from './styles'
 
-type ComponentProps = RouteComponentProps<any>
+type ComponentProps = RouteComponentProps
 
 const UserInfo: React.FC<ComponentProps> = ({ history }) => {
-  return (
+  const [store, setStore] = useState<string>()
+  const [cash, setCash] = useState<string>()
+  useEffect(() => {
+    ipcRenderer.send('store:get')
+    ipcRenderer.once('store:get:response', (event, { store }) => {
+      setStore(store?.company_name)
+    })
+    ipcRenderer.send('cashier:get', store)
+    ipcRenderer.once('cashier:get:response', (event, { current }) => {
+      if (current?.is_opened === 1) {
+        setCash('ABERTO')
+      } else {
+        setCash('FECHADO')
+      }
+    })
+  }, [history.location])
+
+  return store && cash ? (
     <Container>
       <UserContent>
-        <Store>SAO JOSE DO RIO PRETO I</Store>
+        <Store>{store}</Store>
         <Description>
-          CAIXA: <Description style={{ color: 'green' }}>ABERTO</Description>
+          CAIXA:{' '}
+          <Description style={{ color: cash === 'ABERTO' ? 'green' : 'red' }}>
+            {cash}
+          </Description>
         </Description>
       </UserContent>
       <AvatarContent>
@@ -31,6 +53,8 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
         </Dropdown>
       </AvatarContent>
     </Container>
+  ) : (
+    <Spinner />
   )
 }
 
