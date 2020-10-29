@@ -2,6 +2,7 @@
   "name": "gestor-de-vendas",
   "version": "1.0.0",
   "main": "./dist/main.js",
+  "description": "Gestor de Vendas",
   "scripts": {
     "dev": "npm-run-all -p dev:react electron:serve",
     "dev:electron": "cross-env NODE_ENV=development webpack --config webpack/electron.webpack.js --mode development && npm run start:electron",
@@ -99,15 +100,17 @@
   },
   "build": {
     "appId": "your.id",
-    "mac": {
-      "category": "public.app-category.video"
+    "productName": "GestorDeVendas",
+    "win":{
+      "icon": "amadelli_logo.ico"
     },
     "directories": {
       "output": "packages"
     },
     "files": [
       "package.json",
-      "dist/**"
+      "dist/**",
+      "amadelli_logo.icon"
     ]
   },
   "config": {
