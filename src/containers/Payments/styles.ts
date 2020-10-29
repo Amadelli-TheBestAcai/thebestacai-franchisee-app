@@ -36,7 +36,6 @@ export const PaymentsList = styled.div`
 export const ListContainer = styled.div`
   width: 96%;
   height: 80%;
-  background: #f4f4f4;
   border: 1px solid #c4c4c4;
   box-sizing: border-box;
 `
