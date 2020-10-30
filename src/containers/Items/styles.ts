@@ -5,7 +5,7 @@ import { Row, Col } from 'antd'
 export const Container = styled.div`
   display: flex;
   width: 100%;
-  height: 10vh;
+  height: 50vh;
   align-items: flex-start;
   flex-direction: column;
 `
@@ -30,7 +30,12 @@ export const Description = styled.label`
 export const ItemContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100%;
   flex-grow: 1;
+  overflow-y: scroll;
+  width: 100%;
   align-items: flex-start;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
 `

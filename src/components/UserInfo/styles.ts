@@ -41,7 +41,8 @@ export const Avatar = styled.div`
 `
 
 export const Store = styled.label`
-  font-size: 14;
+  font-size: 12px;
+  margin-bottom: 4px;
 `
 
 export const UserIcon = styled(User)`
@@ -55,6 +56,6 @@ export const UserIcon = styled(User)`
 `
 
 export const Description = styled.label`
-  font-size: 12;
+  font-size: 12px;
   color: white;
 `

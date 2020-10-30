@@ -40,7 +40,11 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
         <Store>{store}</Store>
         <Description>
           CAIXA:{' '}
-          <Description style={{ color: cash === 'ABERTO' ? 'green' : 'red' }}>
+          <Description
+            style={{
+              color: cash === 'ABERTO' ? 'green' : 'red',
+            }}
+          >
             {cash}
           </Description>
         </Description>

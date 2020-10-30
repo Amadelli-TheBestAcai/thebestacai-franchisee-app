@@ -41,11 +41,6 @@ export const SecondaryContent = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* overflow-y: scroll;
-  ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
-  } */
 `
 
 export const AmountContainer = styled.div`

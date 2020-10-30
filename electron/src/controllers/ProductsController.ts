@@ -13,7 +13,7 @@ ipcMain.on('products:get', async (event, isConnected) => {
 
 ipcMain.on('products:refresh', async (event) => {
   try {
-    await ProductsService.getOnlineProducts
+    await ProductsService.getOnlineProducts()
     event.reply('products:refresh:response', { success: true })
   } catch (err) {
     console.error(err)
