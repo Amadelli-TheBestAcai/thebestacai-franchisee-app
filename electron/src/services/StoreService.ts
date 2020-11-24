@@ -33,13 +33,13 @@ class StoreService {
   async getStoreByUser(): Promise<{ id: number; name: string }[]> {
     const isOnline = await checkInternet()
     if (isOnline) {
-      const { franchisee } = await UserService.getTokenInfo()
+      const { id } = await UserService.getTokenInfo()
       const {
         data: { data },
-      } = await api.get(`/stores?franchiseeId=${franchisee}`)
+      } = await api.get(`/user_store/${id}`)
       const formatedStores = data.map((store) => ({
-        id: store.id,
-        name: store.company_name,
+        id: store.store_id,
+        name: store.store,
       }))
       return formatedStores
     } else {

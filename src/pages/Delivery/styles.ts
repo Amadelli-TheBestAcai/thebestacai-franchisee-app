@@ -1,7 +1,181 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
+
+import { Radio as RadioAnt } from 'antd'
+
+import MonetaryInput from '../../components/MonetaryInput'
+
+import {
+  TelephoneFill,
+  WhatsappSquare,
+  Ubereats,
+  Ifood,
+  AttachMoney,
+  CreditCard2Back,
+  CreditCard,
+  CheckCircleFill,
+} from '../../styles/Icons'
 
 export const Container = styled.div`
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   background: #fff;
+`
+
+export const PlatformContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 10vh;
+  background: #f3f3f3;
+  border: 1px solid #dbdbdb;
+  box-sizing: border-box;
+  .ant-radio-group {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+  }
+`
+
+export const PlatformItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const Radio = styled(RadioAnt)``
+
+export const MainContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 35%;
+  border-bottom: 1px solid #818080;
+  margin: 0 20px;
+`
+
+export const PaymentItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+`
+
+export const PaymentContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 90%;
+  width: 35%;
+  color: #999595;
+  .ant-radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+    width: 50%;
+    border: 1px solid #dbdbdb;
+  }
+`
+
+export const RegisterContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 90%;
+  width: 65%;
+  border: 1px solid #dbdbdb;
+`
+
+export const InputGroup = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 55%;
+  width: 60%;
+  input {
+    display: flex;
+    flex-grow: 1;
+    background: white;
+    padding-right: 10px;
+    border-radius: 2px;
+    font-size: 32px;
+    text-align: end;
+    border: 1px solid #b0afae;
+  }
+`
+export const InputDescription = styled.label`
+  color: #999595;
+`
+
+export const InputPrice = styled(MonetaryInput)``
+
+export const RegisterButton = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 25px;
+  width: 25%;
+  height: 45%;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  line-height: 41.02px;
+  background: #ffb13d;
+  cursor: pointer;
+`
+
+export const AppIcon = styled.img`
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+`
+
+const PlatformIconCss = css`
+  width: 35px;
+  height: 35px;
+`
+
+export const IFoodIcon = styled(Ifood)`
+  ${PlatformIconCss}
+`
+
+export const WhatsAppIcon = styled(WhatsappSquare)`
+  ${PlatformIconCss}
+`
+
+export const UberEatsIcon = styled(Ubereats)`
+  ${PlatformIconCss}
+`
+
+export const TelefoneIcon = styled(TelephoneFill)`
+  ${PlatformIconCss}
+`
+
+const PaymentIconCss = css`
+  width: 20px;
+  height: 20px;
+`
+
+export const MoneyIcon = styled(AttachMoney)`
+  color: #007c05;
+  ${PaymentIconCss};
+`
+
+export const CreditIcon = styled(CreditCard2Back)`
+  color: #2b40fd;
+  ${PaymentIconCss};
+`
+
+export const DebitIcon = styled(CreditCard)`
+  color: #f97700;
+  ${PaymentIconCss};
+`
+
+export const CheckOnline = styled(CheckCircleFill)`
+  color: #009a7e;
+  ${PaymentIconCss};
 `
