@@ -2,6 +2,15 @@ import { ipcMain } from 'electron'
 import SalesService from '../services/SalesService'
 import CashierService from '../services/CashierService'
 
+ipcMain.on('sale:create', async (event) => {
+  try {
+    const sale = await SalesService.create()
+    event.reply('sale:create:response', sale)
+  } catch (err) {
+    console.error(err)
+  }
+})
+
 ipcMain.on('sale:getCurrent', async (event) => {
   try {
     const { sale, items, payments } = await SalesService.getCurrentSale()

@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import { HotKeys } from 'react-hotkeys'
 
-import { CashRegister } from '../../styles/Icons'
-
 export const Container = styled(HotKeys)`
   display: flex;
   width: 100%;
@@ -70,23 +68,4 @@ export const FinishContainer = styled.div`
   display: flex;
   width: 40%;
   height: 100%;
-`
-
-export const NotFoundContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  width: 100%;
-`
-
-export const NotFoundDescription = styled.label`
-  font-size: 22px;
-  margin-top: 10px;
-`
-
-export const NotFoundIcon = styled(CashRegister)`
-  width: 45px;
-  height: 45px;
 `

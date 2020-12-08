@@ -41,7 +41,7 @@ class SalesRepository {
   }
 
   async getById(id: string): Promise<Sale> {
-    return await knex('sales').where({ id })
+    return await knex('sales').where({ id })[0]
   }
 }
 

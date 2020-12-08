@@ -53,11 +53,16 @@ class SalesService {
   }
 
   async finishSale(sale: CreateSaleDTO): Promise<void> {
-    await SalesRepository.update(sale.id, {
-      ...sale,
-      is_current: false,
-      to_integrate: true,
-    })
+    const currentSale = await SalesRepository.getById(sale.id)
+    if (currentSale) {
+      await SalesRepository.update(sale.id, {
+        ...sale,
+        is_current: false,
+        to_integrate: true,
+      })
+    } else {
+      await SalesRepository.create(sale)
+    }
   }
 
   async delete(sale: string): Promise<void> {

@@ -8,6 +8,8 @@ import { Item } from '../../models/saleItem'
 import { Payment } from '../../models/payment'
 import { PaymentType } from '../../models/enums/paymentType'
 
+import CashNotFound from '../../components/CashNotFound'
+
 import Products from '../../containers/Products'
 import Items from '../../containers/Items'
 import Actions from '../../containers/Actions'
@@ -30,9 +32,6 @@ import {
   PaymentsTypesContainer,
   FinishContainer,
   ActionsContainer,
-  NotFoundContainer,
-  NotFoundIcon,
-  NotFoundDescription,
 } from './styles'
 
 const Home: React.FC = () => {
@@ -223,10 +222,7 @@ const Home: React.FC = () => {
       ) : (
         <>
           {!cashier || !cashier.is_opened ? (
-            <NotFoundContainer>
-              <NotFoundIcon />
-              <NotFoundDescription>Nenhum caixa aberto</NotFoundDescription>
-            </NotFoundContainer>
+            <CashNotFound />
           ) : (
             <>
               <LeftSide>
