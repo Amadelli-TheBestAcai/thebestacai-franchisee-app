@@ -42,7 +42,7 @@ const Delivery: React.FC = () => {
   const [sale, setSale] = useState<Sale | null>(null)
   const [cashier, setCashier] = useState<Cashier>()
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [paymentType, setPaymentType] = useState<string>('MONEY')
+  const [paymentType, setPaymentType] = useState<number>(0)
   const [amount, setAmount] = useState<number>()
 
   useEffect(() => {
@@ -52,10 +52,10 @@ const Delivery: React.FC = () => {
       setSale((oldValues) => ({
         ...oldValues,
         id: uuidv4(),
-        store_id: cashier.store_id,
-        cash_id: cashier.cash_id,
-        cash_code: cashier.code,
-        cash_history_id: cashier.history_id,
+        store_id: cashier?.store_id,
+        cash_id: cashier?.cash_id,
+        cash_code: cashier?.code,
+        cash_history_id: cashier?.history_id,
         change_amount: 0,
         type: 'APP',
         discount: 0,
@@ -80,6 +80,7 @@ const Delivery: React.FC = () => {
     if (!amount) {
       return message.warning('Pagamento inválido')
     }
+    console.log(sale)
     setLoading(true)
     ipcRenderer.send('payment:add', {
       sale: sale.id,
@@ -87,13 +88,32 @@ const Delivery: React.FC = () => {
       amount,
     })
     ipcRenderer.once('payment:add:response', () => {
-      ipcRenderer.send('sale:finish', { ...sale, total: amount })
+      ipcRenderer.send('sale:add', { ...sale, quantity: 1, total: amount })
     })
-    ipcRenderer.once('sale:finish:response', (event, newSale) => {
-      message.success('Venda salva com sucesso')
+    ipcRenderer.once('sale:add:response', (event, status) => {
+      if (status) {
+        message.success('Venda salva com sucesso')
+        setSale((oldValues) => ({
+          ...oldValues,
+          id: uuidv4(),
+          store_id: cashier?.store_id,
+          cash_id: cashier?.cash_id,
+          cash_code: cashier?.code,
+          cash_history_id: cashier?.history_id,
+          change_amount: 0,
+          type: 'APP',
+          discount: 0,
+          to_integrate: true,
+          is_current: false,
+          created_at: moment(new Date())
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YYYYTHH:mm:ss'),
+        }))
+      } else {
+        message.error('Falha ao salvar venda')
+      }
       setLoading(false)
       setAmount(0)
-      setSale({ ...newSale, type: 'APP' })
     })
   }
 
@@ -137,19 +157,19 @@ const Delivery: React.FC = () => {
                 value={paymentType}
               >
                 <PaymentItem>
-                  <Radio value="MONEY">Dinheiro</Radio>
+                  <Radio value={0}>Dinheiro</Radio>
                   <MoneyIcon />
                 </PaymentItem>
                 <PaymentItem>
-                  <Radio value="CREDIT_CARD">Crédito</Radio>
+                  <Radio value={1}>Crédito</Radio>
                   <CreditIcon />
                 </PaymentItem>
                 <PaymentItem>
-                  <Radio value="DEBIT_CARD">Débito</Radio>
+                  <Radio value={2}>Débito</Radio>
                   <DebitIcon />
                 </PaymentItem>
                 <PaymentItem>
-                  <Radio value="ONLINE">Online</Radio>
+                  <Radio value={4}>Online</Radio>
                   <CheckOnline />
                 </PaymentItem>
               </Radio.Group>

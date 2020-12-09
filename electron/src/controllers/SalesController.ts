@@ -11,6 +11,16 @@ ipcMain.on('sale:create', async (event) => {
   }
 })
 
+ipcMain.on('sale:add', async (event, sale) => {
+  try {
+    await SalesService.finishSale(sale)
+    event.reply('sale:add:response', true)
+  } catch (err) {
+    event.reply('sale:add:response', false)
+    console.error(err)
+  }
+})
+
 ipcMain.on('sale:getCurrent', async (event) => {
   try {
     const { sale, items, payments } = await SalesService.getCurrentSale()

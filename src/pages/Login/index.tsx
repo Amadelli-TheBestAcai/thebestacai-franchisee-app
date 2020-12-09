@@ -175,8 +175,6 @@ const Login: React.FC<IProps> = ({ history }) => {
                 {stores.map((store) => (
                   <Option key={store.id}>{store.name}</Option>
                 ))}
-                <Option key="2">JK</Option>
-                <Option key="3">HG</Option>
               </Select>
             </FormItem>
 

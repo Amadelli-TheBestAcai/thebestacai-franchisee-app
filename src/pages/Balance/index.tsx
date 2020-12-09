@@ -82,7 +82,7 @@ const Balance: React.FC = () => {
                 <CheckOnline />
                 <CardContent>
                   R$ {balance.delivery.online.toFixed(2).replace('.', ',')}
-                  <Description>Ticket</Description>
+                  <Description>Online</Description>
                 </CardContent>
               </CardRow>
             </CardBody>
@@ -121,7 +121,7 @@ const Balance: React.FC = () => {
                 <TicketIcon />
                 <CardContent>
                   R$ {balance.store.ticket.toFixed(2).replace('.', ',')}
-                  <Description>Online</Description>
+                  <Description>Ticket</Description>
                 </CardContent>
               </CardRow>
             </CardBody>
