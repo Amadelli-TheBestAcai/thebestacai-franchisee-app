@@ -189,7 +189,9 @@ const Home: React.FC = () => {
     if (paymentType === PaymentType.DINHEIRO) {
       return 0
     }
-    return +((sale.total || 0) - (getTotalPaid() || 0)).toFixed(2)
+    const valueToPay = +((sale.total || 0) - (getTotalPaid() || 0)).toFixed(2)
+    if (valueToPay < 0) return 0
+    return valueToPay
   }
 
   const keyMap = {

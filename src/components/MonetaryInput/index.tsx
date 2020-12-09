@@ -27,7 +27,7 @@ const MonetaryInput: React.FC<IProps> = ({
   getValue,
   onEnterPress,
   defaultValue,
-  id
+  id,
 }) => {
   const [amount, setAmount] = useState<number>(defaultValue || 0)
 
@@ -61,6 +61,9 @@ const MonetaryInput: React.FC<IProps> = ({
       config={currencyConfig}
       onChange={handleChange}
       onKeyPress={handleKeyPress}
+      onClick={({ target }) => {
+        target.selectionStart = 10000
+      }}
     />
   )
 }

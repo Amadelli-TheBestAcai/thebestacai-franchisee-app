@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import MonetaryInput from '../../components/MonetaryInput'
+
 import {
   Button as ButtonAnt,
   Input as InputAnt,
@@ -118,7 +120,8 @@ export const AmountRow = styled(RowAnt)`
 export const Column = styled(ColAnt)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  margin: 5px;
 `
 
 export const AmountLabel = styled.label`
@@ -132,3 +135,17 @@ export const AmountInput = styled(InputAnt)`
   border-radius: 10px;
   text-align: center;
 `
+
+export const FullAmountColumn = styled(ColAnt)`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 5px;
+  input {
+    border-radius: 10px;
+    text-align: center;
+    width: 47%;
+  }
+`
+
+export const InputPrice = styled(MonetaryInput)``
