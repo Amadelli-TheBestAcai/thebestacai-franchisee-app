@@ -169,7 +169,9 @@ class SalesService {
     await CashierService.closeLocalCashier(cashId)
   }
 
-  async getFromApi(): Promise<{ isConnected: boolean; data: any[] }> {
+  async getFromApi(
+    withClosedCash = false
+  ): Promise<{ isConnected: boolean; data: any[] }> {
     const isConnected = await checkInternet()
     if (!isConnected) {
       return {
@@ -178,7 +180,15 @@ class SalesService {
       }
     }
     const currentCash = await CashierService.getCurrentCashier()
-    if (!currentCash || currentCash?.is_opened !== 1) {
+
+    if (!currentCash) {
+      return {
+        isConnected,
+        data: [],
+      }
+    }
+
+    if (!withClosedCash && currentCash?.is_opened !== 1) {
       return {
         isConnected,
         data: [],
