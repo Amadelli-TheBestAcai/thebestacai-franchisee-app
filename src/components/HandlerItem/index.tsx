@@ -7,9 +7,14 @@ import { Handler as HandlerModel } from '../../models/handler'
 type IProps = {
   handler: HandlerModel
   onDelete: (id: number) => void
+  hasPermission: boolean
 }
 
-const HandlerItem: React.FC<IProps> = ({ handler, onDelete }) => {
+const HandlerItem: React.FC<IProps> = ({
+  handler,
+  onDelete,
+  hasPermission,
+}) => {
   const { id, type, amount, created_at, reason } = handler
   const time = created_at.split(' ')[1]
   return (
@@ -29,9 +34,11 @@ const HandlerItem: React.FC<IProps> = ({ handler, onDelete }) => {
       <Column span={4}>
         <Description>{reason}</Description>
       </Column>
-      <Column span={4}>
-        <RemoveIcon onClick={() => onDelete(id)} />
-      </Column>
+      {hasPermission && (
+        <Column span={4}>
+          <RemoveIcon onClick={() => onDelete(id)} />
+        </Column>
+      )}
     </Container>
   )
 }

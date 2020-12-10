@@ -6,7 +6,8 @@ import { Row, Col } from 'antd'
 
 export const Container = styled(Row)`
   background: white;
-  margin: 5px 0;
+  margin: 1px;
+  height: 48px;
   border-bottom: 1px solid #00000021;
   border-right: 1px solid #00000021;
   border-left: 1px solid #00000021;

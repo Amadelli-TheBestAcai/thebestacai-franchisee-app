@@ -28,7 +28,7 @@ import {
   InputDescription,
 } from './styles'
 
-import { message, Spin } from 'antd'
+import { message, Modal, Spin } from 'antd'
 
 import { Sale } from '../../models/sale'
 import { Cashier } from '../../models/cashier'
@@ -37,6 +37,8 @@ import moment from 'moment-timezone'
 import { v4 as uuidv4 } from 'uuid'
 
 import ImageLogo from '../../assets/img/logo-login.png'
+
+const { confirm } = Modal
 
 const Delivery: React.FC = () => {
   const [sale, setSale] = useState<Sale | null>(null)
@@ -78,42 +80,49 @@ const Delivery: React.FC = () => {
       return
     }
     if (!amount) {
-      return message.warning('Pagamento inválido')
+      return
     }
-    console.log(sale)
-    setLoading(true)
-    ipcRenderer.send('payment:add', {
-      sale: sale.id,
-      type: paymentType,
-      amount,
-    })
-    ipcRenderer.once('payment:add:response', () => {
-      ipcRenderer.send('sale:add', { ...sale, quantity: 1, total: amount })
-    })
-    ipcRenderer.once('sale:add:response', (event, status) => {
-      if (status) {
-        message.success('Venda salva com sucesso')
-        setSale((oldValues) => ({
-          ...oldValues,
-          id: uuidv4(),
-          store_id: cashier?.store_id,
-          cash_id: cashier?.cash_id,
-          cash_code: cashier?.code,
-          cash_history_id: cashier?.history_id,
-          change_amount: 0,
-          type: 'APP',
-          discount: 0,
-          to_integrate: true,
-          is_current: false,
-          created_at: moment(new Date())
-            .tz('America/Sao_Paulo')
-            .format('DD/MM/YYYYTHH:mm:ss'),
-        }))
-      } else {
-        message.error('Falha ao salvar venda')
-      }
-      setLoading(false)
-      setAmount(0)
+    confirm({
+      content: 'Tem certeza que gostaria de prosseguir?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      onOk() {
+        setLoading(true)
+        ipcRenderer.send('payment:add', {
+          sale: sale.id,
+          type: paymentType,
+          amount,
+        })
+        ipcRenderer.once('payment:add:response', () => {
+          ipcRenderer.send('sale:add', { ...sale, quantity: 1, total: amount })
+        })
+        ipcRenderer.once('sale:add:response', (event, status) => {
+          if (status) {
+            message.success('Venda salva com sucesso')
+            setSale((oldValues) => ({
+              ...oldValues,
+              id: uuidv4(),
+              store_id: cashier?.store_id,
+              cash_id: cashier?.cash_id,
+              cash_code: cashier?.code,
+              cash_history_id: cashier?.history_id,
+              change_amount: 0,
+              type: 'APP',
+              discount: 0,
+              to_integrate: true,
+              is_current: false,
+              created_at: moment(new Date())
+                .tz('America/Sao_Paulo')
+                .format('DD/MM/YYYYTHH:mm:ss'),
+            }))
+          } else {
+            message.error('Falha ao salvar venda')
+          }
+          setLoading(false)
+          setAmount(0)
+        })
+      },
     })
   }
 

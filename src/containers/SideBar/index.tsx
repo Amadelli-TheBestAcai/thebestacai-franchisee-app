@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
+import { ipcRenderer } from 'electron'
+import { UserRoles } from '../../models/enums/userRole'
 
 import {
   Container,
@@ -16,8 +18,7 @@ import {
 type IProps = RouteComponentProps
 
 const SideBar: React.FC<IProps> = ({ history, location }) => {
-  const [page, setPage] = useState<number>()
-
+  const [hasPermission, setPermission] = useState(false)
   const handleClick = (route: string): void => {
     history.push(route)
   }
@@ -25,6 +26,21 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
   const isRoute = (route: string): boolean => {
     return location.pathname === route
   }
+
+  useEffect(() => {
+    ipcRenderer.send('user:get')
+    ipcRenderer.once('user:get:response', (event, user) => {
+      const { role } = user
+      setPermission(
+        [
+          UserRoles.Master,
+          UserRoles.Administrador,
+          UserRoles.Franqueado,
+          UserRoles.Gerente,
+        ].some((elem) => elem === role)
+      )
+    })
+  }, [])
 
   return (
     <Container>
@@ -68,14 +84,16 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
           onClick={() => handleClick('/handler')}
         />
       </IconContainer>
-      <IconContainer
-        style={{ background: isRoute('/balance') ? '#FF9D0A' : 'black' }}
-      >
-        <Graph
-          style={{ color: isRoute('/balance') ? 'black' : '#FF9D0A' }}
-          onClick={() => handleClick('/balance')}
-        />
-      </IconContainer>
+      {hasPermission && (
+        <IconContainer
+          style={{ background: isRoute('/balance') ? '#FF9D0A' : 'black' }}
+        >
+          <Graph
+            style={{ color: isRoute('/balance') ? 'black' : '#FF9D0A' }}
+            onClick={() => handleClick('/balance')}
+          />
+        </IconContainer>
+      )}
       <IconContainer
         style={{ background: isRoute('/sale') ? '#FF9D0A' : 'black' }}
       >

@@ -16,9 +16,10 @@ import {
 type IProps = {
   sale: SalesHistory
   onDelete: (id: number) => void
+  hasPermission: boolean
 }
 
-const Sale: React.FC<IProps> = ({ sale, onDelete }) => {
+const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
   const {
     id,
     type,
@@ -53,9 +54,11 @@ const Sale: React.FC<IProps> = ({ sale, onDelete }) => {
             <ColHeader span={4}>{quantity}</ColHeader>
             <ColHeader span={4}>{time}</ColHeader>
             <ColHeader span={4}>{getType(type)}</ColHeader>
-            <ColHeader span={4}>
-              <RemoveIcon onClick={() => onDelete(id)} />
-            </ColHeader>
+            {hasPermission && (
+              <ColHeader span={4}>
+                <RemoveIcon onClick={() => onDelete(id)} />
+              </ColHeader>
+            )}
           </Row>
         }
         key={id}
@@ -72,19 +75,23 @@ const Sale: React.FC<IProps> = ({ sale, onDelete }) => {
             R$
           </Col>
         </Row>
-        <Container>
-          <Panel header="Itens" key="itens">
-            {item.map(({ id, product_id: { name: ProductName }, quantity }) => (
-              <Row key={id}>
-                <Col span={12}>{ProductName}</Col>
-                <Col span={12}>
-                  <Description>Quantidade: </Description>{' '}
-                  {quantity.replace('.', ',')}
-                </Col>
-              </Row>
-            ))}
-          </Panel>
-        </Container>
+        {item.length > 0 && (
+          <Container>
+            <Panel header="Itens" key="itens">
+              {item.map(
+                ({ id, product_id: { name: ProductName }, quantity }) => (
+                  <Row key={id}>
+                    <Col span={12}>{ProductName}</Col>
+                    <Col span={12}>
+                      <Description>Quantidade: </Description>{' '}
+                      {quantity.replace('.', ',')}
+                    </Col>
+                  </Row>
+                )
+              )}
+            </Panel>
+          </Container>
+        )}
         <Container>
           <Panel header="Pagamentos" key="payments">
             {payments.map(({ id, amount, type }) => (

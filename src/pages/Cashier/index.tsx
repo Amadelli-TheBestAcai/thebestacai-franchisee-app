@@ -68,7 +68,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
 
   useEffect(() => {
     ipcRenderer.send('cashier:get')
-    ipcRenderer.on(
+    ipcRenderer.once(
       'cashier:get:response',
       (event, { cashes, current, is_connected, has_pending }) => {
         setIsConnected(is_connected)

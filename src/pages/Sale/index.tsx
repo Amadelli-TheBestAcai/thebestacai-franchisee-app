@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 
+import { UserRoles } from '../../models/enums/userRole'
+
 import DisconectedForm from '../../containers/DisconectedForm'
 import Centralizer from '../../containers/Centralizer'
 
@@ -25,6 +27,7 @@ const { confirm } = Modal
 
 const Sale: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const [hasPermission, setPermission] = useState(false)
   const [sales, setSales] = useState<SalesHistory[]>([])
   const [isConected, setIsConected] = useState<boolean>(true)
 
@@ -36,8 +39,21 @@ const Sale: React.FC = () => {
         setIsLoading(false)
         setIsConected(isConnected)
         setSales(data)
+        ipcRenderer.send('user:get')
       }
     )
+    ipcRenderer.once('user:get:response', (event, user) => {
+      const { role } = user
+      setPermission(
+        [
+          UserRoles.Master,
+          UserRoles.Administrador,
+          UserRoles.Franqueado,
+          UserRoles.Gerente,
+        ].some((elem) => elem === role)
+      )
+      setIsLoading(false)
+    })
   }, [])
 
   const onDelete = (id: number): void => {
@@ -89,12 +105,17 @@ const Sale: React.FC = () => {
                 <Title>Tipo</Title>
               </Column>
               <Column span={4}>
-                <Title>Ação</Title>
+                <Title>Ações</Title>
               </Column>
             </SalesHeader>
             <SalesList>
               {sales.map((sale) => (
-                <SaleItem key={sale.id} sale={sale} onDelete={onDelete} />
+                <SaleItem
+                  key={sale.id}
+                  sale={sale}
+                  onDelete={onDelete}
+                  hasPermission={hasPermission}
+                />
               ))}
             </SalesList>
           </SalesContainer>

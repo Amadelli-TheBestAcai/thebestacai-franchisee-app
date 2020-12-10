@@ -7,7 +7,7 @@ import { Row as RowAnt, Col as ColAnt, Collapse } from 'antd'
 const { Panel: PanelAnt } = Collapse
 
 export const Container = styled(Collapse)`
-  margin: 5px;
+  margin: 1px;
 `
 
 export const Panel = styled(PanelAnt)``

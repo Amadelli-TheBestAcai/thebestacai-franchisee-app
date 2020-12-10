@@ -10,3 +10,13 @@ ipcMain.on('user:login', async (event, user) => {
     event.reply('user:login', false)
   }
 })
+
+ipcMain.on('user:get', async (event) => {
+  try {
+    const user = await UserService.getTokenInfo()
+    event.reply('user:get:response', user)
+  } catch (err) {
+    console.error(err)
+    event.reply('user:get:response', null)
+  }
+})

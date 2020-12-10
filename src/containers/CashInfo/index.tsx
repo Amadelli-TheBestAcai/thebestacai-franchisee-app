@@ -89,7 +89,16 @@ const CashInfo: React.FC = () => {
               <InfoContainer>
                 <Description>Balanço:</Description>
                 <ValueContainer style={{ background: '#2E2E2E' }}>
-                  <Value style={{ color: 'white' }}>
+                  <Value
+                    style={{
+                      color:
+                        +cashHistory.result_cash >= 0
+                          ? +cashHistory.result_cash === 0
+                            ? 'white'
+                            : 'green'
+                          : 'red',
+                    }}
+                  >
                     R$ {valueFormater(cashHistory.result_cash)}
                   </Value>
                 </ValueContainer>

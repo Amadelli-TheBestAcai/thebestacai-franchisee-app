@@ -10,7 +10,9 @@ import HandlerItem from '../../components/HandlerItem'
 
 import { Handler as HandlerModel } from '../../models/handler'
 
-import { Empty, message } from 'antd'
+import { Empty, message, Modal } from 'antd'
+
+import { UserRoles } from '../../models/enums/userRole'
 
 import {
   Container,
@@ -21,33 +23,60 @@ import {
   HandlersList,
 } from './styles'
 
+const { confirm } = Modal
+
 const Handler: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const [hasPermission, setPermission] = useState(false)
   const [handlers, setHandlers] = useState<HandlerModel[]>([])
   const [isConected, setIsConected] = useState(true)
 
   useEffect(() => {
     ipcRenderer.send('handler:api:get')
-    ipcRenderer.on(
+    ipcRenderer.once(
       'handler:api:get:response',
       (event, { isConnected, data }) => {
-        setIsLoading(false)
         setIsConected(isConnected)
         setHandlers(data || [])
+        ipcRenderer.send('user:get')
       }
     )
+    ipcRenderer.once('user:get:response', (event, user) => {
+      const { role } = user
+      setPermission(
+        [
+          UserRoles.Master,
+          UserRoles.Administrador,
+          UserRoles.Franqueado,
+          UserRoles.Gerente,
+        ].some((elem) => elem === role)
+      )
+      setIsLoading(false)
+    })
   }, [])
 
   const onDelete = (id: number): void => {
-    setIsLoading(true)
-    ipcRenderer.send('handler:delete', id)
-    ipcRenderer.on('handler:delete:response', (event, { success, data }) => {
-      setIsLoading(false)
-      if (!success) {
-        message.warning('Falha ao remover movimentação')
-      }
-      setHandlers(data)
-      message.success('Movimentação removida com sucesso')
+    confirm({
+      title: 'Remoção de Movimentação',
+      content: 'Tem certeza que gostaria de prosseguir?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      onOk() {
+        setIsLoading(true)
+        ipcRenderer.send('handler:delete', id)
+        ipcRenderer.on(
+          'handler:delete:response',
+          (event, { success, data }) => {
+            setIsLoading(false)
+            if (!success) {
+              message.warning('Falha ao remover movimentação')
+            }
+            setHandlers(data)
+            message.success('Movimentação removida com sucesso')
+          }
+        )
+      },
     })
   }
 
@@ -76,7 +105,7 @@ const Handler: React.FC = () => {
                 <Title>Razão</Title>
               </Column>
               <Column span={4}>
-                <Title>Remover</Title>
+                <Title>Ações</Title>
               </Column>
             </HandlersHeader>
             <HandlersList>
@@ -84,6 +113,7 @@ const Handler: React.FC = () => {
                 <HandlerItem
                   key={handler.id}
                   handler={handler}
+                  hasPermission={hasPermission}
                   onDelete={onDelete}
                 />
               ))}
