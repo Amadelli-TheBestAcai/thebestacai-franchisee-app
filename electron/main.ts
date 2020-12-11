@@ -14,7 +14,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width,
     height,
-    resizable: true,
+    resizable: false,
     backgroundColor: '#191622',
     webPreferences: {
       nodeIntegration: true,
@@ -33,8 +33,14 @@ function createWindow() {
     )
   }
 
+  mainWindow.setTitle('Gestor de Vendas')
+
   mainWindow.on('closed', () => {
     mainWindow = null
+  })
+
+  mainWindow.on('page-title-updated', function (e) {
+    e.preventDefault()
   })
 }
 
