@@ -15,6 +15,7 @@
     "build:react": "webpack --config webpack/react.webpack.js",
     "package": "npm-run-all build package:dist",
     "package:dist": "electron-builder --dir",
+    "deploy": "electron-builder build --win --publish always",
     "test": "jest",
     "database": "npx knex migrate:latest"
   },
@@ -51,6 +52,7 @@
     "electron": "^8.2.2",
     "electron-builder": "^22.7.0",
     "electron-devtools-installer": "^3.1.1",
+    "electron-updater": "^4.3.5",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",
@@ -99,9 +101,9 @@
     "yarn": "^1.22.5"
   },
   "build": {
-    "appId": "your.id",
+    "appId": "thebestacai-franchisee-app",
     "productName": "GestorDeVendas",
-    "win":{
+    "win": {
       "icon": "amadelli_logo.ico"
     },
     "directories": {
@@ -122,5 +124,9 @@
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix"
     ]
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/Amadelli-TheBestAcai/thebestacai-franchisee-app"
   }
 }

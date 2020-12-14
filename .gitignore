@@ -3,3 +3,5 @@ dist
 packages
 db.sqlite
 package-lock
+electron-builder.yml
+.bashrc

@@ -1,4 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+
+import { ipcRenderer } from 'electron'
+
 import Header from '../../components/Header'
 import SideBar from '../SideBar'
 
@@ -9,10 +12,18 @@ import {
   SideBarContainer,
   Content,
   Footer,
-  TextFooter
+  TextFooter,
 } from './styles'
 
 const Layout: React.FC = ({ children }) => {
+  const [version, setVersion] = useState('')
+  useEffect(() => {
+    ipcRenderer.send('app_version')
+    ipcRenderer.once('app_version', (event, { version }) => {
+      setVersion(version)
+    })
+  }, [])
+
   return (
     <Container>
       <HeaderContainer>
@@ -25,7 +36,7 @@ const Layout: React.FC = ({ children }) => {
         <Content>{children}</Content>
       </MainContainer>
       <Footer>
-        <TextFooter>DEVELOPED BY THE BEST AÇAI COMPANY</TextFooter>
+        <TextFooter>{`DEVELOPED BY THE BEST AÇAI COMPANY v${version}`}</TextFooter>
       </Footer>
     </Container>
   )

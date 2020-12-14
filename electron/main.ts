@@ -1,4 +1,5 @@
-import { app, BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow, screen, ipcMain } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
 import installExtension, {
@@ -39,10 +40,29 @@ function createWindow() {
     mainWindow = null
   })
 
-  mainWindow.on('page-title-updated', function (e) {
-    e.preventDefault()
+  mainWindow.on('page-title-updated', function (event) {
+    event.preventDefault()
+  })
+
+  mainWindow.once('ready-to-show', () => {
+    autoUpdater.checkForUpdatesAndNotify()
   })
 }
+
+ipcMain.on('app_version', (event) => {
+  event.sender.send('app_version', { version: app.getVersion() })
+})
+
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall()
+})
+
+autoUpdater.on('update-available', () => {
+  mainWindow.webContents.send('update_available')
+})
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update_downloaded')
+})
 
 app
   .on('ready', createWindow)
@@ -58,4 +78,5 @@ app
         .catch((err) => console.log('An error occurred: ', err))
     }
   })
+
 app.allowRendererProcessReuse = true

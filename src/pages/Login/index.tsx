@@ -40,6 +40,14 @@ const Login: React.FC<IProps> = ({ history }) => {
       }
       setLoading(false)
     })
+    ipcRenderer.once('update_available', () => {
+      console.log('A new update is available. Downloading now...')
+    })
+    ipcRenderer.once('update_downloaded', () => {
+      console.log(
+        'Update Downloaded. It will be installed on restart. Restart now?'
+      )
+    })
   }, [])
 
   const handleState = ({ target: { name, value } }) =>
@@ -69,6 +77,10 @@ const Login: React.FC<IProps> = ({ history }) => {
         message.error('Credenciais inválidas')
       }
     })
+  }
+
+  const restartApp = (): void => {
+    ipcRenderer.send('restart_app')
   }
 
   const createStore = async () => {
