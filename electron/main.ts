@@ -50,8 +50,9 @@ function createWindow() {
   mainWindow.on('page-title-updated', function (event) {
     event.preventDefault()
   })
-
-  autoUpdater.checkForUpdatesAndNotify()
+  setInterval(function () {
+    autoUpdater.checkForUpdates()
+  }, 1000 * 60 * 60)
 }
 
 ipcMain.on('app_version', (event) => {
@@ -60,15 +61,6 @@ ipcMain.on('app_version', (event) => {
 
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall()
-})
-
-autoUpdater.on('update-available', () => {
-  console.log('Atualizacao disponivel')
-  mainWindow.webContents.send('update_available')
-})
-
-autoUpdater.on('update-not-available', (info) => {
-  console.log('Ultima versao ja instalada')
 })
 
 autoUpdater.on('update-downloaded', () => {

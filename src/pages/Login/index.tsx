@@ -44,14 +44,14 @@ const Login: React.FC<IProps> = ({ history }) => {
       }
       setLoading(false)
     })
-    ipcRenderer.once('update_available', () => {
+    ipcRenderer.once('update_downloaded', () => {
       confirm({
         title: 'Há uma nova versão do APP',
         content:
           'Aguarde o download para prosseguir. Apos a confirmação, o APP será reiniciado.',
         okText: 'Sim',
         okType: 'default',
-        okButtonProps: { loading: !alreadyDownloaded },
+        maskClosable: false,
         onOk() {
           ipcRenderer.send('restart_app')
         },
@@ -89,10 +89,6 @@ const Login: React.FC<IProps> = ({ history }) => {
         message.error('Credenciais inválidas')
       }
     })
-  }
-
-  const restartApp = (): void => {
-    ipcRenderer.send('restart_app')
   }
 
   const createStore = async () => {

@@ -1,6 +1,6 @@
 {
   "name": "gestor-de-vendas",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "main": "./dist/main.js",
   "description": "Gestor de Vendas",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "build:react": "webpack --config webpack/react.webpack.js",
     "package": "npm-run-all build package:dist",
     "package:dist": "electron-builder --dir",
+    "predeploy": "yarn build",
     "deploy": "electron-builder build --win --publish always",
     "test": "jest",
     "database": "npx knex migrate:latest"
