@@ -8,6 +8,7 @@ import installExtension, {
 } from 'electron-devtools-installer'
 
 import { inicializeControllers } from './src'
+
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow() {
@@ -20,6 +21,12 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
     },
+  })
+  autoUpdater.setFeedURL({
+    provider: 'github',
+    repo: 'thebestacai-franchisee-app',
+    owner: 'Amadelli-TheBestAcai',
+    private: false,
   })
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:4000')
@@ -44,9 +51,7 @@ function createWindow() {
     event.preventDefault()
   })
 
-  mainWindow.once('ready-to-show', () => {
-    autoUpdater.checkForUpdatesAndNotify()
-  })
+  autoUpdater.checkForUpdatesAndNotify()
 }
 
 ipcMain.on('app_version', (event) => {
@@ -58,8 +63,14 @@ ipcMain.on('restart_app', () => {
 })
 
 autoUpdater.on('update-available', () => {
+  console.log('Atualizacao disponivel')
   mainWindow.webContents.send('update_available')
 })
+
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Ultima versao ja instalada')
+})
+
 autoUpdater.on('update-downloaded', () => {
   mainWindow.webContents.send('update_downloaded')
 })

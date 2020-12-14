@@ -36,7 +36,7 @@ const Layout: React.FC = ({ children }) => {
         <Content>{children}</Content>
       </MainContainer>
       <Footer>
-        <TextFooter>{'DEVELOPED BY THE BEST AÇAI COMPANY vTESTE'}</TextFooter>
+        <TextFooter>{`DEVELOPED BY THE BEST AÇAI COMPANY v${version}`}</TextFooter>
       </Footer>
     </Container>
   )
