@@ -1,6 +1,6 @@
 {
   "name": "gestor-de-vendas",
-  "version": "1.1.2",
+  "version": "1.1.5",
   "main": "./dist/main.js",
   "description": "Gestor de Vendas",
   "license": "MIT",
@@ -10,6 +10,7 @@
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config webpack/react.webpack.js --mode development",
     "electron:serve": "wait-on http-get://localhost:4000/ && npm run dev:electron",
     "start:electron": "electron .",
+    "prebuild": "rimraf dist && rimraf packages",
     "build": "npm-run-all build:electron build:react",
     "build:run": "npm-run-all build start:electron",
     "build:electron": "webpack --config webpack/electron.webpack.js",
@@ -70,6 +71,7 @@
     "lint-staged": "^10.2.11",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.5",
+    "rimraf": "^3.0.2",
     "style-loader": "^1.2.1",
     "ts-jest": "^26.1.1",
     "typescript": "^3.9.5",
@@ -137,7 +139,7 @@
     ]
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/Amadelli-TheBestAcai/thebestacai-franchisee-app"
+    "type": "git",
+    "url": "https://github.com/Amadelli-TheBestAcai/thebestacai-franchisee-app"
   }
 }
