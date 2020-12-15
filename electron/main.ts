@@ -26,6 +26,7 @@ function createWindow() {
     provider: 'github',
     repo: 'thebestacai-franchisee-app',
     owner: 'Amadelli-TheBestAcai',
+    releaseType: 'release',
     private: false,
   })
   if (process.env.NODE_ENV === 'development') {
@@ -47,9 +48,6 @@ function createWindow() {
     mainWindow = null
   })
 
-  mainWindow.on('page-title-updated', function (event) {
-    event.preventDefault()
-  })
   setInterval(function () {
     autoUpdater.checkForUpdates()
   }, 1000 * 60 * 60)
