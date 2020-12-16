@@ -34,7 +34,6 @@ const Login: React.FC<IProps> = ({ history }) => {
   const [haveStore, setHaveStore] = useState<boolean>()
   const [stores, setStores] = useState<{ id: number; name: string }[]>([])
   const [store, setStore] = useState<number>(1)
-  const [alreadyDownloaded, setDownloaded] = useState(false)
 
   useEffect(() => {
     ipcRenderer.send('store:get', user)
@@ -43,23 +42,6 @@ const Login: React.FC<IProps> = ({ history }) => {
         setHaveStore(true)
       }
       setLoading(false)
-    })
-    ipcRenderer.once('update_downloaded', () => {
-      confirm({
-        title: 'Há uma nova versão do APP',
-        content:
-          'Aguarde o download para prosseguir. Apos a confirmação, o APP será reiniciado.',
-        okText: 'Sim',
-        okType: 'default',
-        okButtonProps: { loading: alreadyDownloaded },
-        maskClosable: false,
-        onOk() {
-          ipcRenderer.send('update-app')
-        },
-      })
-    })
-    ipcRenderer.once('update_downloaded', () => {
-      setDownloaded(true)
     })
   }, [])
 

@@ -19,7 +19,7 @@ import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import {
   Container,
   Content,
@@ -34,6 +34,8 @@ import {
   ActionsContainer,
 } from './styles'
 
+const { confirm } = Modal
+
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [sale, setSale] = useState<Sale>()
@@ -43,9 +45,12 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
+  const [hasNewVersion, setHasNewVersion] = useState(false)
+  const [shouldUpdateApp, setShouldUpdateApp] = useState(false)
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
+    ipcRenderer.send('integrate:shouldUpdateApp')
     ipcRenderer.once(
       'sale:getCurrent:response',
       (event, { sale, items, payments, cashier }) => {
@@ -56,7 +61,28 @@ const Home: React.FC = () => {
         setLoading(false)
       }
     )
+    ipcRenderer.once('update_downloaded', () => {
+      setHasNewVersion(true)
+    })
+    ipcRenderer.once('integrate:shouldUpdateApp:response', (event, status) => {
+      setShouldUpdateApp(status)
+    })
   }, [])
+
+  useEffect(() => {
+    if (hasNewVersion && shouldUpdateApp) {
+      confirm({
+        title: 'Há uma nova versão do APP',
+        content: 'Ao escolher "instalar" o APP será reiniciado.',
+        okText: 'instalar',
+        okType: 'default',
+        cancelText: 'Mais Tarde',
+        onOk() {
+          ipcRenderer.send('app_install_new_version-app')
+        },
+      })
+    }
+  }, [hasNewVersion, shouldUpdateApp])
 
   const addItem = (
     { product_id, price_unit, name }: Product,

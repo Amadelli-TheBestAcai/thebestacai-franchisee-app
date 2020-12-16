@@ -4,6 +4,7 @@ import CashierService from '../services/CashierService'
 import StoreService from '../services/StoreService'
 import SalesService from '../services/SalesService'
 import HandlersService from '../services/HandlersService'
+import UserService from '../services/UserService'
 
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
@@ -171,6 +172,22 @@ class IntegrateService {
       }
       await sleep(5000)
     }
+  }
+
+  async shouldUpdateApp(): Promise<boolean> {
+    const currentCash = await CashierService.getCurrentCashier()
+    if (currentCash && currentCash.is_opened) {
+      return false
+    }
+    const sales = await IntegrateRepository.getOnlineSales()
+    if (sales.length) {
+      return false
+    }
+    const user = await UserService.getTokenInfo()
+    if (user.role > 3) {
+      return false
+    }
+    return true
   }
 }
 

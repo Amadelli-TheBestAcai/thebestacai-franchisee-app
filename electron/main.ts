@@ -57,20 +57,8 @@ ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() })
 })
 
-autoUpdater.on('checking-for-update', () => {
-  console.log('Checking for update...')
-})
-
-autoUpdater.on('update-available', () => {
-  console.log('Update available.')
-})
-
-autoUpdater.on('update-not-available', () => {
-  console.log('Update not available.')
-})
-
-autoUpdater.on('error', (err) => {
-  console.log('Error in auto-updater. ' + err)
+ipcMain.on('app_install_new_version', (event) => {
+  autoUpdater.quitAndInstall()
 })
 
 autoUpdater.on('download-progress', (progressObj) => {
@@ -81,12 +69,8 @@ autoUpdater.on('download-progress', (progressObj) => {
   console.log(log_message)
 })
 
-autoUpdater.on('update-downloaded', () => {
-  console.log('Update downloaded')
-})
-
 app.on('ready', function () {
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.checkForUpdates()
 })
 
 app
