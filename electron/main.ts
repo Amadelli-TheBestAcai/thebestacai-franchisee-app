@@ -66,8 +66,11 @@ autoUpdater.on('download-progress', (progressObj) => {
 })
 
 autoUpdater.on('update-available', () => {
-  console.log('is available')
   mainWindow.webContents.send('update-available')
+})
+
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update-downloaded')
 })
 
 ipcMain.on('install_update', () => {

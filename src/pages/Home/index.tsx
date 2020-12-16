@@ -45,7 +45,7 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
-  const [downloadUpdate, setDownloadUpdate] = useState(false)
+  const [downloadUpdate, setDownloadUpdate] = useState(true)
   const [hasNewVersion, setHasNewVersion] = useState(false)
   const [shouldUpdateApp, setShouldUpdateApp] = useState(false)
 
@@ -68,6 +68,9 @@ const Home: React.FC = () => {
     ipcRenderer.once('integrate:shouldUpdateApp:response', (event, status) => {
       setShouldUpdateApp(status)
     })
+    ipcRenderer.once('update-downloaded', (event, status) => {
+      setDownloadUpdate(false)
+    })
   }, [])
 
   useEffect(() => {
@@ -77,17 +80,24 @@ const Home: React.FC = () => {
     if (hasNewVersion && shouldUpdateApp) {
       info({
         title: 'Há uma nova versão do APP',
-        content:
-          'Ao selecionar "instalar", iniciará o download e em seguida o APP será reiniciado.',
-        okText: 'Instalar',
+        content: 'Ao selecionar "instalar", iniciará o download.',
+        okText: 'Download',
         okType: 'default',
-        okButtonProps: {
-          loading: downloadUpdate,
-          disabled: downloadUpdate,
-        },
         onOk() {
-          setDownloadUpdate(true)
-          ipcRenderer.send('install_update')
+          info({
+            title: 'Baixando nova versão do APP',
+            content:
+              'Ao término do download, o botão Instalar estará habilitado para aplicar as modificações.',
+            okText: 'Instalar',
+            okType: 'default',
+            okButtonProps: {
+              loading: downloadUpdate,
+              disabled: downloadUpdate,
+            },
+            onOk() {
+              ipcRenderer.send('install_update')
+            },
+          })
         },
       })
     }
