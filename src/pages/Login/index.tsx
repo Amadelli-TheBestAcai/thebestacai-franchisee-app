@@ -51,9 +51,10 @@ const Login: React.FC<IProps> = ({ history }) => {
           'Aguarde o download para prosseguir. Apos a confirmação, o APP será reiniciado.',
         okText: 'Sim',
         okType: 'default',
+        okButtonProps: { loading: alreadyDownloaded },
         maskClosable: false,
         onOk() {
-          ipcRenderer.send('restart_app')
+          ipcRenderer.send('update-app')
         },
       })
     })
