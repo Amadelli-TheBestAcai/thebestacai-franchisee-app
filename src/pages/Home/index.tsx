@@ -34,7 +34,7 @@ import {
   ActionsContainer,
 } from './styles'
 
-const { confirm } = Modal
+const { info } = Modal
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
@@ -45,6 +45,7 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
+  const [downloadUpdate, setDownloadUpdate] = useState(false)
   const [hasNewVersion, setHasNewVersion] = useState(false)
   const [shouldUpdateApp, setShouldUpdateApp] = useState(false)
 
@@ -61,7 +62,7 @@ const Home: React.FC = () => {
         setLoading(false)
       }
     )
-    ipcRenderer.once('update_downloaded', () => {
+    ipcRenderer.once('update-available', () => {
       setHasNewVersion(true)
     })
     ipcRenderer.once('integrate:shouldUpdateApp:response', (event, status) => {
@@ -70,15 +71,23 @@ const Home: React.FC = () => {
   }, [])
 
   useEffect(() => {
+    if (shouldUpdateApp) {
+      ipcRenderer.send('check_for_update')
+    }
     if (hasNewVersion && shouldUpdateApp) {
-      confirm({
+      info({
         title: 'Há uma nova versão do APP',
-        content: 'Ao escolher "instalar" o APP será reiniciado.',
-        okText: 'instalar',
+        content:
+          'Ao selecionar "instalar", iniciará o download e em seguida o APP será reiniciado.',
+        okText: 'Instalar',
         okType: 'default',
-        cancelText: 'Mais Tarde',
+        okButtonProps: {
+          loading: downloadUpdate,
+          disabled: downloadUpdate,
+        },
         onOk() {
-          ipcRenderer.send('app_install_new_version-app')
+          setDownloadUpdate(true)
+          ipcRenderer.send('install_update')
         },
       })
     }

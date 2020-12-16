@@ -23,9 +23,9 @@ ipcMain.on('integrate:online', async () => {
 ipcMain.on('integrate:shouldUpdateApp', async (event) => {
   try {
     const response = await IntegrateService.shouldUpdateApp()
-    event.reply('integrate:status:response', response)
+    event.reply('integrate:shouldUpdateApp:response', response)
   } catch (err) {
     console.error(err)
-    event.reply('integrate:status:response', false)
+    event.reply('integrate:shouldUpdateApp:response', false)
   }
 })

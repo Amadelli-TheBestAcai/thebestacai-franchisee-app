@@ -32,7 +32,7 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:4000')
   } else {
-    mainWindow.removeMenu()
+    // mainWindow.removeMenu()
     mainWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, 'renderer/index.html'),
@@ -57,10 +57,6 @@ ipcMain.on('app_version', (event) => {
   event.sender.send('app_version', { version: app.getVersion() })
 })
 
-ipcMain.on('app_install_new_version', (event) => {
-  autoUpdater.quitAndInstall()
-})
-
 autoUpdater.on('download-progress', (progressObj) => {
   let log_message = 'Download speed: ' + progressObj.bytesPerSecond
   log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
@@ -69,7 +65,16 @@ autoUpdater.on('download-progress', (progressObj) => {
   console.log(log_message)
 })
 
-app.on('ready', function () {
+autoUpdater.on('update-available', () => {
+  console.log('is available')
+  mainWindow.webContents.send('update-available')
+})
+
+ipcMain.on('install_update', () => {
+  autoUpdater.quitAndInstall()
+})
+
+ipcMain.on('check_for_update', function () {
   autoUpdater.checkForUpdates()
 })
 
