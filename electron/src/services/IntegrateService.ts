@@ -178,15 +178,11 @@ class IntegrateService {
 
   async shouldUpdateApp(): Promise<boolean> {
     const currentCash = await CashierService.getCurrentCashier()
-    if (currentCash && currentCash.is_opened) {
+    if (currentCash && currentCash.is_opened === 1) {
       return false
     }
     const sales = await IntegrateRepository.getOnlineSales()
-    if (sales.length) {
-      return false
-    }
-    const user = await UserService.getTokenInfo()
-    if (user.role > 3) {
+    if (sales.length > 0) {
       return false
     }
     return true

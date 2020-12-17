@@ -62,7 +62,6 @@ const Login: React.FC<IProps> = ({ history }) => {
         ipcRenderer.once(
           'integrate:checkAppVersion:response',
           (event, alreadyUpdated) => {
-            console.log({ alreadyUpdated })
             if (!alreadyUpdated) {
               ipcRenderer.send('integrate:shouldUpdateApp')
               ipcRenderer.once(
