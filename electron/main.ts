@@ -62,7 +62,10 @@ autoUpdater.on('download-progress', (progressObj) => {
   log_message = log_message + ' - Downloaded ' + progressObj.percent + '%'
   log_message =
     log_message + ' (' + progressObj.transferred + '/' + progressObj.total + ')'
-  console.log(log_message)
+  mainWindow.webContents.send(
+    'download-progress',
+    progressObj.transferred.toString()
+  )
 })
 
 autoUpdater.on('update-available', () => {
@@ -70,10 +73,6 @@ autoUpdater.on('update-available', () => {
 })
 
 autoUpdater.on('update-downloaded', () => {
-  mainWindow.webContents.send('update-downloaded')
-})
-
-ipcMain.on('install_update', () => {
   autoUpdater.quitAndInstall()
 })
 

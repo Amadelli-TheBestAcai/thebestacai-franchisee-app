@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
-import { message, Form, Modal } from 'antd'
+import { message, Form, Modal, Row, Progress } from 'antd'
 import { ipcRenderer } from 'electron'
 
 import {
@@ -19,8 +19,6 @@ import {
 
 import ImageLogo from '../../assets/img/logo-login.png'
 
-const { confirm } = Modal
-
 type IProps = RouteComponentProps
 
 const Login: React.FC<IProps> = ({ history }) => {
@@ -34,6 +32,8 @@ const Login: React.FC<IProps> = ({ history }) => {
   const [haveStore, setHaveStore] = useState<boolean>()
   const [stores, setStores] = useState<{ id: number; name: string }[]>([])
   const [store, setStore] = useState<number>(1)
+  const [shouldApplyNewVersion, setShouldApplyNewVersion] = useState(false)
+  const [percentDownloaded, setPercentDownloaded] = useState<number>(0)
 
   useEffect(() => {
     ipcRenderer.send('store:get', user)
@@ -58,6 +58,49 @@ const Login: React.FC<IProps> = ({ history }) => {
     ipcRenderer.once('user:login', (event, isValid) => {
       setLoading(false)
       if (isValid) {
+        ipcRenderer.send('integrate:checkAppVersion')
+        ipcRenderer.once(
+          'integrate:checkAppVersion:response',
+          (event, alreadyUpdated) => {
+            console.log({ alreadyUpdated })
+            if (!alreadyUpdated) {
+              ipcRenderer.send('integrate:shouldUpdateApp')
+              ipcRenderer.once(
+                'integrate:shouldUpdateApp:response',
+                (event, havePermissionToUpdate) => {
+                  console.log({ havePermissionToUpdate })
+                  if (havePermissionToUpdate) {
+                    Modal.confirm({
+                      title: 'Há uma nova versão do APP',
+                      content:
+                        'Selecione Instalar para iniciar o download da nova versão.',
+                      okText: 'Instalar',
+                      cancelText: 'Mais Tarde',
+                      onOk() {
+                        ipcRenderer.send('check_for_update')
+                        ipcRenderer.once('update-available', () => {
+                          setShouldApplyNewVersion(true)
+                          ipcRenderer.on(
+                            'download-progress',
+                            (event, percent) => {
+                              setPercentDownloaded(+percent.slice(0, 2))
+                            }
+                          )
+                        })
+                      },
+                    })
+                  } else {
+                    Modal.info({
+                      title: 'Há uma nova versão do APP',
+                      content:
+                        'É necessário permissão para aplicar a atualização.',
+                    })
+                  }
+                }
+              )
+            }
+          }
+        )
         if (haveStore) {
           initializeApp()
         } else {
@@ -203,6 +246,20 @@ const Login: React.FC<IProps> = ({ history }) => {
           </Form>
         </FormContainer>
       )}
+      <Modal
+        title="Atualização do APP"
+        footer={null}
+        visible={shouldApplyNewVersion}
+        closable={false}
+      >
+        <Row>
+          Instalando nova versão do APP, ao finalizar, o APP será
+          automaticamente reiniciado.
+        </Row>
+        <Row justify="center">
+          <Progress percent={+percentDownloaded} />
+        </Row>
+      </Modal>
     </Container>
   )
 }

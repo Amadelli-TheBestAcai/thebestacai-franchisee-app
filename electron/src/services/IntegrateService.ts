@@ -24,6 +24,9 @@ import {
   getAmountOnCash,
 } from '../utils/IntegrateFormater'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../../../package.json')
+
 class IntegrateService {
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
     const { id: store } = await StoreService.getOne()
@@ -187,6 +190,18 @@ class IntegrateService {
       return false
     }
     return true
+  }
+
+  async appAlreadyUpdated(): Promise<boolean> {
+    const {
+      data: {
+        data: { version },
+      },
+    } = await api.get('/version')
+    if (pkg.version === version) {
+      return true
+    }
+    return false
   }
 }
 

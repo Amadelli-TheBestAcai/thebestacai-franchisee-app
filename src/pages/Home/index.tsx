@@ -19,7 +19,7 @@ import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
-import { message, Modal } from 'antd'
+import { message, Modal, Row, Progress } from 'antd'
 import {
   Container,
   Content,
@@ -34,8 +34,6 @@ import {
   ActionsContainer,
 } from './styles'
 
-const { info } = Modal
-
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [sale, setSale] = useState<Sale>()
@@ -45,13 +43,9 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
-  const [downloadUpdate, setDownloadUpdate] = useState(true)
-  const [hasNewVersion, setHasNewVersion] = useState(false)
-  const [shouldUpdateApp, setShouldUpdateApp] = useState(false)
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
-    ipcRenderer.send('integrate:shouldUpdateApp')
     ipcRenderer.once(
       'sale:getCurrent:response',
       (event, { sale, items, payments, cashier }) => {
@@ -62,46 +56,7 @@ const Home: React.FC = () => {
         setLoading(false)
       }
     )
-    ipcRenderer.once('update-available', () => {
-      setHasNewVersion(true)
-    })
-    ipcRenderer.once('integrate:shouldUpdateApp:response', (event, status) => {
-      setShouldUpdateApp(status)
-    })
-    ipcRenderer.once('update-downloaded', (event, status) => {
-      setDownloadUpdate(false)
-    })
   }, [])
-
-  useEffect(() => {
-    if (shouldUpdateApp) {
-      ipcRenderer.send('check_for_update')
-    }
-    if (hasNewVersion && shouldUpdateApp) {
-      info({
-        title: 'Há uma nova versão do APP',
-        content: 'Ao selecionar "instalar", iniciará o download.',
-        okText: 'Download',
-        okType: 'default',
-        onOk() {
-          info({
-            title: 'Baixando nova versão do APP',
-            content:
-              'Ao término do download, o botão Instalar estará habilitado para aplicar as modificações.',
-            okText: 'Instalar',
-            okType: 'default',
-            okButtonProps: {
-              loading: downloadUpdate,
-              disabled: downloadUpdate,
-            },
-            onOk() {
-              ipcRenderer.send('install_update')
-            },
-          })
-        },
-      })
-    }
-  }, [hasNewVersion, shouldUpdateApp])
 
   const addItem = (
     { product_id, price_unit, name }: Product,
