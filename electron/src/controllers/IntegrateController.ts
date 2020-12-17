@@ -33,7 +33,6 @@ ipcMain.on('integrate:shouldUpdateApp', async (event) => {
 ipcMain.on('integrate:checkAppVersion', async (event) => {
   try {
     const response = await IntegrateService.appAlreadyUpdated()
-    console.log(response)
     event.reply('integrate:checkAppVersion:response', response)
   } catch (err) {
     console.error(err)

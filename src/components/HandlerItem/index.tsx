@@ -23,7 +23,7 @@ const HandlerItem: React.FC<IProps> = ({
         <Description>{id}</Description>
       </Column>
       <Column span={4}>
-        <Description>{type === 1 ? 'Entrada' : 'Saída'}</Description>
+        <Description>{type === 0 ? 'Entrada' : 'Saída'}</Description>
       </Column>
       <Column span={4}>
         <Description>{(+amount).toFixed(2).replace('.', ',')}R$</Description>
