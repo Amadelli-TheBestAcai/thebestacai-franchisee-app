@@ -139,17 +139,6 @@ const Home: React.FC = () => {
     })
   }
 
-  const addChangeAmount = (amount: number): void => {
-    if (sale.change_amount) {
-      setSale((oldValues) => ({
-        ...oldValues,
-        change_amount: +amount + +oldValues.change_amount,
-      }))
-    } else {
-      setSale((oldValues) => ({ ...oldValues, change_amount: amount }))
-    }
-  }
-
   const sendFocusToBalance = () => {
     document.getElementById('balanceInput').focus()
   }
@@ -161,7 +150,10 @@ const Home: React.FC = () => {
     if (!items.length) {
       return message.warning('Nenhum item cadastrado para a venda')
     }
-    ipcRenderer.send('sale:finish', sale)
+    ipcRenderer.send('sale:finish', {
+      ...sale,
+      change_amount: getChangeAmount(),
+    })
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
       message.success('Venda salva com sucesso')
       setItems([])
@@ -242,7 +234,6 @@ const Home: React.FC = () => {
                       haveItensOnSale={!!items.length}
                       addToQueue={addToQueue}
                       addDiscount={addDiscount}
-                      addChangeAmount={addChangeAmount}
                     />
                   </ActionsContainer>
                   <ItemsContainer>

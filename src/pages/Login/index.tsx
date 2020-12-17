@@ -55,7 +55,7 @@ const Login: React.FC<IProps> = ({ history }) => {
   const onLogin = async () => {
     setLoading(true)
     ipcRenderer.send('user:login', user)
-    ipcRenderer.once('user:login', (event, isValid) => {
+    ipcRenderer.once('user:login', (event, { isValid, user }) => {
       setLoading(false)
       if (isValid) {
         ipcRenderer.send('integrate:checkAppVersion')
@@ -67,33 +67,40 @@ const Login: React.FC<IProps> = ({ history }) => {
               ipcRenderer.send('integrate:shouldUpdateApp')
               ipcRenderer.once(
                 'integrate:shouldUpdateApp:response',
-                (event, havePermissionToUpdate) => {
-                  console.log({ havePermissionToUpdate })
-                  if (havePermissionToUpdate) {
-                    Modal.confirm({
-                      title: 'Há uma nova versão do APP',
-                      content:
-                        'Selecione Instalar para iniciar o download da nova versão.',
-                      okText: 'Instalar',
-                      cancelText: 'Mais Tarde',
-                      onOk() {
-                        ipcRenderer.send('check_for_update')
-                        ipcRenderer.once('update-available', () => {
-                          setShouldApplyNewVersion(true)
-                          ipcRenderer.on(
-                            'download-progress',
-                            (event, percent) => {
-                              setPercentDownloaded(+percent.slice(0, 2))
-                            }
-                          )
-                        })
-                      },
-                    })
+                (event, shouldUpdateApp) => {
+                  if (shouldUpdateApp) {
+                    if (user.role < 4) {
+                      Modal.confirm({
+                        title: 'Há uma nova versão do APP',
+                        content:
+                          'Selecione Instalar para iniciar o download da nova versão.',
+                        okText: 'Instalar',
+                        cancelText: 'Mais Tarde',
+                        onOk() {
+                          ipcRenderer.send('check_for_update')
+                          ipcRenderer.once('update-available', () => {
+                            setShouldApplyNewVersion(true)
+                            ipcRenderer.on(
+                              'download-progress',
+                              (event, percent) => {
+                                setPercentDownloaded(+percent.slice(0, 2))
+                              }
+                            )
+                          })
+                        },
+                      })
+                    } else {
+                      Modal.info({
+                        title: 'Há uma nova versão do APP',
+                        content:
+                          'É necessário permissão para aplicar a atualização.',
+                      })
+                    }
                   } else {
                     Modal.info({
                       title: 'Há uma nova versão do APP',
                       content:
-                        'É necessário permissão para aplicar a atualização.',
+                        'Para aplica-la feche o caixa atual e faça o login novamente.',
                     })
                   }
                 }

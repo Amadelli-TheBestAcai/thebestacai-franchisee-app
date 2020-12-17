@@ -4,7 +4,8 @@ import UserService from '../services/UserService'
 ipcMain.on('user:login', async (event, user) => {
   try {
     const response = await UserService.login(user)
-    event.reply('user:login', response)
+    const currentUser = await UserService.getTokenInfo()
+    event.reply('user:login', { isValid: response, user: currentUser })
   } catch (err) {
     console.error(err)
     event.reply('user:login', false)

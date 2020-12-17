@@ -22,14 +22,12 @@ type IProps = {
   haveItensOnSale: boolean
   addToQueue: (name: string) => void
   addDiscount: (value: number) => void
-  addChangeAmount: (amount: number) => void
 }
 
 const Actions: React.FC<IProps> = ({
   haveItensOnSale,
   addToQueue,
   addDiscount,
-  addChangeAmount,
 }) => {
   const [commandState, setCommandState] = useState(false)
   const [discountState, setDiscountState] = useState(false)
@@ -79,7 +77,6 @@ const Actions: React.FC<IProps> = ({
       />
       <InOutForm
         type="saida"
-        addChangeAmount={addChangeAmount}
         modalState={handlerOutState}
         setModalState={setHandlerOutState}
       />
