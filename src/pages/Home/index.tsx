@@ -19,7 +19,7 @@ import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import {
   Container,
   Content,
@@ -157,9 +157,17 @@ const Home: React.FC = () => {
   }
   const getWeightByBalance = (): void => {
     ipcRenderer.send('balance:get')
-    ipcRenderer.once('balance:get:response', (event, weight) => {
-      const amount = +weight * +selfService.price_unit
-      setBalanceAmount(amount)
+    ipcRenderer.once('balance:get:response', (event, { weight, error }) => {
+      if (error) {
+        Modal.info({
+          title: 'Falha de Leitura',
+          content:
+            'Erro ao obter dados da balança. Reconecte o cabo de dados na balança e no computador, feche o APP, reinicie a balança e abra o APP novamente',
+        })
+      } else {
+        const amount = +weight * +selfService.price_unit
+        setBalanceAmount(amount)
+      }
     })
   }
 

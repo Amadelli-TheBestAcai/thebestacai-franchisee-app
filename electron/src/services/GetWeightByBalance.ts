@@ -4,7 +4,7 @@ export function getWeigthByBalance(): Promise<number> {
   return new Promise<number>(function (resolve, reject) {
     SerialPort.list().then((ports) => {
       if (ports.length === 0) {
-        console.log('No ports discovered')
+        reject(new Error('No ports discovered'))
       }
 
       ports.forEach((portInfo) => {
@@ -20,6 +20,10 @@ export function getWeigthByBalance(): Promise<number> {
           },
           console.log
         )
+
+        if (port.isOpen) {
+          port.close()
+        }
 
         port.open()
 
