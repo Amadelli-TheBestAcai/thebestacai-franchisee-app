@@ -7,6 +7,7 @@ import {
   UserName,
   LogOutCircleIcon,
   ActionsContent,
+  SettingsIcon,
 } from './styles'
 import { Menu } from 'antd'
 
@@ -31,6 +32,14 @@ const MenuAvatar = (history: any, name?: string, role?: string) => {
         >
           <LogOutCircleIcon />
           <Actions>Log out</Actions>
+        </ActionsContent>
+        <ActionsContent
+          onClick={() => {
+            redirect(history, 'settings')
+          }}
+        >
+          <SettingsIcon />
+          <Actions>Configurações</Actions>
         </ActionsContent>
       </Menu.Item>
     </Menu>

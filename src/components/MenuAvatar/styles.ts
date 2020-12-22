@@ -1,9 +1,10 @@
 import styled, { css } from 'styled-components'
 
-import { LogOutCircle } from '../../styles/Icons'
+import { LogOutCircle, SettingsOutline } from '../../styles/Icons'
 
 export const Actions = styled.label`
   font-size: 14px;
+  cursor: pointer;
 `
 
 export const UserName = styled.label`
@@ -46,5 +47,9 @@ const iconCss = css`
 `
 
 export const LogOutCircleIcon = styled(LogOutCircle)`
+  ${iconCss}
+`
+
+export const SettingsIcon = styled(SettingsOutline)`
   ${iconCss}
 `
