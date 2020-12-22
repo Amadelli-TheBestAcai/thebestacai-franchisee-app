@@ -1,4 +1,4 @@
 export interface Settings {
-  id: number
+  id: string
   disabled_balance: boolean
 }

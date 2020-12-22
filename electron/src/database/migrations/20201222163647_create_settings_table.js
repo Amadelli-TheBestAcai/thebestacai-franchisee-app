@@ -1,6 +1,6 @@
 exports.up = async (knex) =>
   knex.schema.createTable('settings', (table) => {
-    table.increments('id')
+    table.string('id')
     table.boolean('disabled_balance')
   })
 

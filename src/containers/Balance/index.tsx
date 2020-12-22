@@ -59,6 +59,12 @@ const BalanceContainer: React.FC<IProps> = ({
           <TopContainer>
             <Text>Preço indicado na balança</Text>
             {shouldUseBalance ? (
+              <InputPrice
+                id="balanceInput"
+                getValue={(value) => setAmount(value)}
+                onEnterPress={handleEnterToSubmit}
+              />
+            ) : (
               <DisabledInput
                 id="balanceInput"
                 value={amount?.toFixed(2).replace('.', ',') || '0,00'}
@@ -73,12 +79,6 @@ const BalanceContainer: React.FC<IProps> = ({
                   }
                 }}
                 readOnly
-              />
-            ) : (
-              <InputPrice
-                id="balanceInput"
-                getValue={(value) => setAmount(value)}
-                onEnterPress={handleEnterToSubmit}
               />
             )}
           </TopContainer>

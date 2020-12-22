@@ -70,6 +70,16 @@ const Home: React.FC = () => {
     })
   }, [])
 
+  useEffect(() => {
+    ipcRenderer.send('configuration:get')
+    ipcRenderer.once(
+      'configuration:get:response',
+      (event, { disabled_balance }) => {
+        setShouldUseBalance(disabled_balance)
+      }
+    )
+  }, [])
+
   const addItem = (
     { product_id, price_unit, name }: Product,
     quantity: number,
