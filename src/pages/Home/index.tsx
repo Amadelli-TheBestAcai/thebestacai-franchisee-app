@@ -19,7 +19,7 @@ import Register from '../../containers/Register'
 
 import Spinner from '../../components/Spinner'
 
-import { message, Modal, Row, Progress } from 'antd'
+import { message } from 'antd'
 import {
   Container,
   Content,
@@ -43,6 +43,10 @@ const Home: React.FC = () => {
   const [currentPayment, setCurrentPayment] = useState<number>()
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
+  const [balanceAmount, setBalanceAmount] = useState<number>()
+  const [fechtingSelfService, setFechtingSelfService] = useState(true)
+  const [shouldUseBalance, setShouldUseBalance] = useState(true)
+  const [selfService, setSelfService] = useState<Product>()
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
@@ -56,6 +60,14 @@ const Home: React.FC = () => {
         setLoading(false)
       }
     )
+  }, [])
+
+  useEffect(() => {
+    ipcRenderer.send('products:get:selfService')
+    ipcRenderer.once('products:get:selfService:response', (event, item) => {
+      setSelfService(item)
+      setFechtingSelfService(false)
+    })
   }, [])
 
   const addItem = (
@@ -141,6 +153,14 @@ const Home: React.FC = () => {
 
   const sendFocusToBalance = () => {
     document.getElementById('balanceInput').focus()
+    getWeightByBalance()
+  }
+  const getWeightByBalance = (): void => {
+    ipcRenderer.send('balance:get')
+    ipcRenderer.once('balance:get:response', (event, weight) => {
+      const amount = +weight * +selfService.price_unit
+      setBalanceAmount(amount)
+    })
   }
 
   const registerSale = () => {
@@ -159,7 +179,7 @@ const Home: React.FC = () => {
       setItems([])
       setPayments([])
       setSale(newSale)
-      sendFocusToBalance()
+      document.getElementById('balanceInput').focus()
     })
   }
 
@@ -221,7 +241,15 @@ const Home: React.FC = () => {
             <>
               <LeftSide>
                 <BalanceContainer>
-                  <Balance addItem={addItem} />
+                  <Balance
+                    addItem={addItem}
+                    amount={balanceAmount}
+                    setAmount={setBalanceAmount}
+                    getWeightByBalance={getWeightByBalance}
+                    selfService={selfService}
+                    isLoading={fechtingSelfService}
+                    shouldUseBalance={shouldUseBalance}
+                  />
                 </BalanceContainer>
                 <ProductsContainer>
                   <Products handleItem={addItem} />

@@ -10,6 +10,7 @@ module.exports = {
   entry: path.resolve(rootPath, 'electron', 'main.ts'),
   target: 'electron-main',
   externals: {
+    serialport: 'commonjs serialport',
     knex: 'commonjs knex',
     bcrypt: 'commonjs bcrypt',
   },
