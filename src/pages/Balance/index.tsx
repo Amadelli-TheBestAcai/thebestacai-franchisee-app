@@ -44,7 +44,7 @@ const Balance: React.FC = () => {
   }, [])
   return (
     <Container>
-      <RouterDescription description="Vendas" />
+      <RouterDescription description="Balanço" />
       {isLoading ? (
         <Spinner />
       ) : isConected ? (
