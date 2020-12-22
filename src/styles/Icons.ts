@@ -18,7 +18,7 @@ export {
   LogOutCircle,
   ListOl,
 } from '@styled-icons/boxicons-regular'
-export { CloseOutline } from '@styled-icons/evaicons-outline'
+export { CloseOutline, SettingsOutline } from '@styled-icons/evaicons-outline'
 export { Repeat } from '@styled-icons/evaicons-solid/Repeat'
 export { Receipt } from '@styled-icons/ionicons-solid/Receipt'
 export { StatusOffline } from '@styled-icons/heroicons-solid/StatusOffline'
