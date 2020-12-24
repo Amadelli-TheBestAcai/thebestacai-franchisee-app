@@ -34,9 +34,11 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
   }, [])
 
   const handleSubmit = () => {
-    document.getElementById('mainContainer').focus()
-    addItem(selfService, getQuantity(), amount)
-    setAmount(undefined)
+    if (amount) {
+      document.getElementById('mainContainer').focus()
+      addItem(selfService, getQuantity(), amount)
+      setAmount(undefined)
+    }
   }
 
   const getQuantity = (): number => {

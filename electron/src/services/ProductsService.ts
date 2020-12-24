@@ -4,15 +4,17 @@ import ProductsRepository from '../repositories/ProductsRepository'
 import { formaterToCategory } from '../utils/ProductFormater'
 class ProductsService {
   async updateAllProducts(products) {
-    const formatedProducts = products.map((product) => ({
-      product_id: product.product_id,
-      name: product.name,
-      price_unit: product.price_unit,
-      category_id: product.category.id,
-      category_name: product.category.name,
-    }))
-    await ProductsRepository.deleteAll()
-    await ProductsRepository.create(formatedProducts)
+    if (products) {
+      const formatedProducts = products.map((product) => ({
+        product_id: product.product_id,
+        name: product.name,
+        price_unit: product.price_unit,
+        category_id: product.category.id,
+        category_name: product.category.name,
+      }))
+      await ProductsRepository.deleteAll()
+      await ProductsRepository.create(formatedProducts)
+    }
   }
 
   async getOnlineProducts() {
