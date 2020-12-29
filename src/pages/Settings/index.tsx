@@ -53,9 +53,9 @@ const Settings: React.FC = () => {
       ) : (
         <CardContainer>
           <InfoGroup>
-            <p>Desabilitar Balança</p>
+            <p>Habilitar Balança</p>
             <Check
-              checked={settings?.disabled_balance}
+              checked={!settings?.disabled_balance}
               onChange={() => handleCheckBalance()}
             />
           </InfoGroup>

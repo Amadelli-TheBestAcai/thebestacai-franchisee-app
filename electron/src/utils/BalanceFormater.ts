@@ -34,15 +34,15 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
   sales.forEach((sale) => {
     if (sale.type === 0) {
       const { total, money, credit, debit, ticket } = getPayments(sale.payments)
-      balance.store.total += +total
-      balance.store.money += +money
+      balance.store.total += +total - +sale.change_amount
+      balance.store.money += +money - +sale.change_amount
       balance.store.credit += +credit
       balance.store.debit += +debit
       balance.store.ticket += +ticket
       balance.billing.store_sales += 1
     } else {
       const { total, money, credit, debit, online } = getPayments(sale.payments)
-      balance.delivery.total += +total
+      balance.delivery.total += +total - +sale.change_amount
       balance.delivery.money += +money
       balance.delivery.credit += +credit
       balance.delivery.debit += +debit

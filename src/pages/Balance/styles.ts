@@ -24,7 +24,8 @@ export const Title = styled.label`
 
 export const CardContainer = styled.div`
   display: flex;
-  flex-grow: 1;
+  height: 95%;
+  overflow-y: scroll;
   justify-content: center;
   align-items: center;
 `

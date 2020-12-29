@@ -38,6 +38,9 @@ const BalanceContainer: React.FC<IProps> = ({
   shouldUseBalance,
 }) => {
   const handleEnterToSubmit = () => {
+    if (!amount) {
+      return
+    }
     document.getElementById('mainContainer').focus()
     addItem(selfService, getQuantity(), amount)
     setAmount(undefined)

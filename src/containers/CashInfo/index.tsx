@@ -142,8 +142,8 @@ const CashInfo: React.FC = () => {
             onOk={() => handleObservation()}
           >
             <p>
-              Informe uma observação para o fechamento do caixa anterior com um
-              valor nevativo.
+              Informe uma justificativa para o fechamento do caixa anterior com
+              um valor nevativo.
             </p>
             <Input
               value={observation}
