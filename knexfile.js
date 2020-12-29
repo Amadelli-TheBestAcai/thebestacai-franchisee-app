@@ -10,4 +10,5 @@ module.exports = {
   seeds: {
     directory: `${__dirname}/electron/src/database/seeds`,
   },
+  useNullAsDefault: true
 }

@@ -70,3 +70,13 @@ ipcMain.on('cashier:balance:get', async (event) => {
     console.error(err)
   }
 })
+
+ipcMain.on('cashier:update:observation', async (event, observation) => {
+  try {
+    await CashierService.updateObservation(observation)
+    event.reply('cashier:update:observation:response', true)
+  } catch (err) {
+    event.reply('cashier:update:observation:response', false)
+    console.error(err)
+  }
+})

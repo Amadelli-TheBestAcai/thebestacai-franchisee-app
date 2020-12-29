@@ -36,7 +36,7 @@ const Actions: React.FC<IProps> = ({
 
   const handleCommand = () => {
     if (!haveItensOnSale) {
-      return message.warning('A lista de items está vazia')
+      return message.warning('A lista de itens está vazia')
     }
     setCommandState(true)
   }

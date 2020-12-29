@@ -86,7 +86,7 @@ const BalanceContainer: React.FC<IProps> = ({
             <PriceContainer>
               <Text>Preço do KG</Text>
               <Price>
-                R$ {selfService.price_unit.toFixed(2).replace('.', ',')}
+                R$ {selfService?.price_unit?.toFixed(2).replace('.', ',')}
               </Price>
             </PriceContainer>
             <WeightContainer>

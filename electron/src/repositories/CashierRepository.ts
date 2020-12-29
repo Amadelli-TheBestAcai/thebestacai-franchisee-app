@@ -9,11 +9,11 @@ class CashierRepository {
   }
 
   async delete(): Promise<void> {
-    return await knex('cashier').del()
+    await knex('cashier').del()
   }
 
   async findAndUpdate(id: number, payload: UpdateCashierDTO): Promise<void> {
-    return await knex('cashier').where({ id }).update(payload)
+    await knex('cashier').where({ id }).update(payload)
   }
 
   async get(): Promise<Cashier> {

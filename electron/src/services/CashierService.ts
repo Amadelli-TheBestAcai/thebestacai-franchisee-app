@@ -1,6 +1,5 @@
 import api from '../utils/Api'
 
-import UserService from './UserService'
 import StoreService from './StoreService'
 import SalesService from './SalesService'
 
@@ -13,6 +12,7 @@ import { Cashier } from '../models/Cashier'
 import { OpenCashierDTO } from '../models/dtos/Cashier/OpenCashierDTO'
 import { CloseCashierDTO } from '../models/dtos/Cashier/CloseCashierDTO'
 import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
+import { UpdateCashierDTO } from '../models/dtos/Cashier/UpdateCashierDTO'
 class CashierService {
   async getOnlineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
     const { id: store } = await StoreService.getOne()
@@ -99,19 +99,17 @@ class CashierService {
   }
 
   async getCurrentCashHistory(): Promise<{
-    cash: string
-    is_opened: boolean | number
+    cashier: Cashier
     history: any
   } | null> {
     const cashier = await this.getCurrentCashier()
     if (cashier && cashier.history_id) {
-      const { code, store_id, is_opened } = cashier
+      const { code, store_id } = cashier
       const {
         data: { history },
       } = await api.get(`/current_cash_history/${store_id}-${code}`)
       return {
-        cash: code,
-        is_opened,
+        cashier,
         history,
       }
     } else {
@@ -126,6 +124,12 @@ class CashierService {
       isConnected,
       balance,
     }
+  }
+
+  async updateObservation(observation: string): Promise<void> {
+    const { history_id } = await CashierRepository.get()
+
+    await api.put(`/cash_history/${history_id}`, { observation })
   }
 }
 

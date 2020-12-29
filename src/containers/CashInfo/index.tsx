@@ -4,9 +4,8 @@ import { ipcRenderer } from 'electron'
 import Spinner from '../../components/Spinner'
 
 import { CashHistory } from '../../models/cashHistory'
-import { Cashier } from '../../models/cashier'
 
-import { isOnline } from '../../helpers/InternetConnection'
+import { message } from 'antd'
 
 import {
   Container,
@@ -14,20 +13,27 @@ import {
   Description,
   ValueContainer,
   Value,
+  Modal,
+  Input,
 } from './styles'
 
 const CashInfo: React.FC = () => {
   const [loading, setLoading] = useState(true)
-  const [cash, setCash] = useState<CashHistory>()
+  const [sendingObservation, setSendingObservation] = useState(false)
+  const [observation, setObservation] = useState<string | null>(null)
+  const [shouldOpenModal, setShouldOpenModal] = useState(false)
   const [cashHistory, setCashHistory] = useState<CashHistory>()
 
   useEffect(() => {
     ipcRenderer.send('cashier:history:get')
     ipcRenderer.once('cashier:history:get:response', (event, response) => {
       if (response) {
-        const { history, cash } = response
+        const { history } = response
+        console.log({ response })
         setCashHistory(history)
-        setCash(cash)
+        if (+history.result_cash < 0 && !history.observation) {
+          setShouldOpenModal(true)
+        }
       }
       setLoading(false)
     })
@@ -38,6 +44,27 @@ const CashInfo: React.FC = () => {
       return '0,00'
     }
     return Number.parseFloat(value).toFixed(2).replace('.', ',')
+  }
+
+  const handleObservation = (): void => {
+    if (!observation) {
+      message.warning('Informe uma observação válida.')
+    } else {
+      setSendingObservation(true)
+      ipcRenderer.send('cashier:update:observation', observation)
+      ipcRenderer.once(
+        'cashier:update:observation:response',
+        (event, status) => {
+          setSendingObservation(false)
+          if (status) {
+            message.success('Observação registrada com sucesso.')
+            setShouldOpenModal(false)
+          } else {
+            message.error('Falha ao enviar observação')
+          }
+        }
+      )
+    }
   }
 
   return (
@@ -105,9 +132,25 @@ const CashInfo: React.FC = () => {
               </InfoContainer>
             </>
           ) : (
-            // TODO: MELHORAR EXIBIÇÃO
             <Value>Nenhum histórico localizado</Value>
           )}
+          <Modal
+            visible={shouldOpenModal}
+            title="Caixa com Fechamento Negativo"
+            onCancel={() => setShouldOpenModal(false)}
+            confirmLoading={sendingObservation}
+            onOk={() => handleObservation()}
+          >
+            <p>
+              Informe uma observação para o fechamento do caixa anterior com um
+              valor nevativo.
+            </p>
+            <Input
+              value={observation}
+              onPressEnter={handleObservation}
+              onChange={({ target: { value } }) => setObservation(value)}
+            />
+          </Modal>
         </>
       )}
     </Container>

@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { Modal as ModalAnt, Input as InputAnt } from 'antd'
+
 export const Container = styled.div`
   display: flex;
   justify-content: space-around;
@@ -39,3 +41,7 @@ export const Value = styled.label`
   font-weight: bold;
   font-size: 26px;
 `
+
+export const Modal = styled(ModalAnt)``
+
+export const Input = styled(InputAnt.TextArea)``
