@@ -163,7 +163,6 @@ const Home: React.FC = () => {
 
   const sendFocusToBalance = () => {
     document.getElementById('balanceInput').focus()
-    getWeightByBalance()
   }
   const getWeightByBalance = (): void => {
     ipcRenderer.send('balance:get')
@@ -260,6 +259,8 @@ const Home: React.FC = () => {
               <LeftSide>
                 <BalanceContainer>
                   <Balance
+                    handleOpenPayment={handleOpenPayment}
+                    registerSale={registerSale}
                     addItem={addItem}
                     amount={balanceAmount}
                     setAmount={setBalanceAmount}

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
-import { ipcRenderer } from 'electron'
+import React, { Dispatch, SetStateAction } from 'react'
 
 import Spinner from '../../components/Spinner'
 
 import { Product } from '../../models/product'
+import { PaymentType } from '../../models/enums/paymentType'
 
 import {
   Container,
@@ -26,6 +26,8 @@ type IProps = {
   shouldUseBalance: boolean
   selfService: Product
   getWeightByBalance: () => void
+  registerSale: () => void
+  handleOpenPayment: (type: number) => void
 }
 
 const BalanceContainer: React.FC<IProps> = ({
@@ -36,6 +38,8 @@ const BalanceContainer: React.FC<IProps> = ({
   isLoading,
   selfService,
   shouldUseBalance,
+  handleOpenPayment,
+  registerSale,
 }) => {
   const handleEnterToSubmit = () => {
     if (!amount) {
@@ -51,6 +55,30 @@ const BalanceContainer: React.FC<IProps> = ({
       return 0
     }
     return +(+amount / +selfService.price_unit).toFixed(4)
+  }
+
+  const handlerEventKey = (key: string): void => {
+    if (key === 'a') {
+      handleOpenPayment(PaymentType.DINHEIRO)
+    }
+    if (key === 's') {
+      handleOpenPayment(PaymentType.CREDITO)
+    }
+    if (key === 'd') {
+      handleOpenPayment(PaymentType.DEBITO)
+    }
+    if (key === 't') {
+      handleOpenPayment(PaymentType.TICKET)
+    }
+    if (key === 'Enter') {
+      handleEnterToSubmit()
+    }
+    if (key === 'f1') {
+      registerSale()
+    }
+    if (key === 'b') {
+      getWeightByBalance()
+    }
   }
 
   return (
@@ -73,14 +101,7 @@ const BalanceContainer: React.FC<IProps> = ({
                 value={amount?.toFixed(2).replace('.', ',') || '0,00'}
                 autoFocus={true}
                 className="ant-input"
-                onKeyPress={(event) => {
-                  if (event.key === 'Enter') {
-                    handleEnterToSubmit()
-                  }
-                  if (event.key === 'b') {
-                    getWeightByBalance()
-                  }
-                }}
+                onKeyPress={(event) => handlerEventKey(event.key)}
                 readOnly
               />
             )}
