@@ -4,13 +4,13 @@ import ProductsRepository from '../repositories/ProductsRepository'
 import { replaceSpecialChars } from '../utils/replaceSpecialChars'
 import { formaterToCategory } from '../utils/ProductFormater'
 class ProductsService {
-  async updateAllProducts(storeProducts) {
-    const formatedProducts = storeProducts?.map((storeProduct) => ({
-      product_id: storeProduct.product_id,
-      name: storeProduct.product.name,
-      price_unit: storeProduct.price_unit,
-      category_id: storeProduct.product.category.id,
-      category_name: storeProduct.product.category.name,
+  async updateAllProducts(products) {
+    const formatedProducts = products.map((product) => ({
+      product_id: product.product_id,
+      name: product.name,
+      price_unit: product.price_unit,
+      category_id: product.category.id,
+      category_name: product.category.name,
     }))
     await ProductsRepository.deleteAll()
     await ProductsRepository.create(formatedProducts)
