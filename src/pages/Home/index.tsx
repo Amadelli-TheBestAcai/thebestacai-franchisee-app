@@ -267,7 +267,7 @@ const Home: React.FC = () => {
                     getWeightByBalance={getWeightByBalance}
                     selfService={selfService}
                     isLoading={fechtingSelfService}
-                    shouldUseBalance={false}
+                    shouldUseBalance={shouldUseBalance}
                   />
                 </BalanceContainer>
                 <ProductsContainer>

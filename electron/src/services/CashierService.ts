@@ -2,6 +2,7 @@ import api from '../utils/Api'
 
 import StoreService from './StoreService'
 import SalesService from './SalesService'
+import IntegrateService from './IntegrateService'
 
 import CashierRepository from '../repositories/CashierRepository'
 
@@ -83,6 +84,8 @@ class CashierService {
   }: CloseCashierDTO): Promise<void> {
     const isConnected = await checkInternet()
     if (isConnected) {
+      await IntegrateService.integrateOnlineSales()
+      await IntegrateService.integrateOnlineHandlers()
       const { id: store } = await StoreService.getOne()
       await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
     }

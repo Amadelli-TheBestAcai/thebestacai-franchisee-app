@@ -141,7 +141,6 @@ const Login: React.FC<IProps> = ({ history }) => {
     ipcRenderer.send('products:refresh', store)
     ipcRenderer.once('products:refresh:response', (event, { success }) => {
       if (success) {
-        ipcRenderer.send('integrate:online')
         message.success(`Bem vindo ${user.username}`)
         return history.push('/home')
       } else {

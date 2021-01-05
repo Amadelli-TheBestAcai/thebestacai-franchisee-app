@@ -3,6 +3,7 @@ import CashierService from '../services/CashierService'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import StoreService from '../services/StoreService'
+import IntegrateService from '../services/IntegrateService'
 
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
@@ -53,15 +54,14 @@ class SalesService {
   }
 
   async finishSale(sale: CreateSaleDTO): Promise<void> {
-    const currentSale = await SalesRepository.getById(sale.id)
-    if (currentSale) {
-      await SalesRepository.update(sale.id, {
-        ...sale,
-        is_current: false,
-        to_integrate: true,
-      })
-    } else {
-      await SalesRepository.create(sale)
+    await SalesRepository.update(sale.id, {
+      ...sale,
+      is_current: false,
+      to_integrate: true,
+    })
+    const hasInternet = await checkInternet()
+    if (hasInternet) {
+      await IntegrateService.integrateOnlineSales()
     }
   }
 

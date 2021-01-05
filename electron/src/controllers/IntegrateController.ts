@@ -11,15 +11,6 @@ ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
   }
 })
 
-let SHOULD_INTEGRATE = true
-
-ipcMain.on('integrate:online', async () => {
-  if (SHOULD_INTEGRATE) {
-    SHOULD_INTEGRATE = false
-    await IntegrateService.integrateOnline()
-  }
-})
-
 ipcMain.on('integrate:shouldUpdateApp', async (event) => {
   try {
     const response = await IntegrateService.shouldUpdateApp()

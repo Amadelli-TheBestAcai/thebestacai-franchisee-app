@@ -4,6 +4,7 @@ import { ipcRenderer } from 'electron'
 import Spinner from '../../components/Spinner'
 
 import { CashHistory } from '../../models/cashHistory'
+import { Cashier } from '../../models/cashier'
 
 import { message } from 'antd'
 
@@ -23,13 +24,15 @@ const CashInfo: React.FC = () => {
   const [observation, setObservation] = useState<string | null>(null)
   const [shouldOpenModal, setShouldOpenModal] = useState(false)
   const [cashHistory, setCashHistory] = useState<CashHistory>()
+  const [cashier, setCashier] = useState<Cashier>()
 
   useEffect(() => {
     ipcRenderer.send('cashier:history:get')
     ipcRenderer.once('cashier:history:get:response', (event, response) => {
       if (response) {
-        const { history } = response
+        const { history, cashier } = response
         setCashHistory(history)
+        setCashier(cashier)
         if (+history.result_cash !== 0 && !history.observation) {
           setShouldOpenModal(true)
         }
@@ -125,7 +128,9 @@ const CashInfo: React.FC = () => {
                           : 'red',
                     }}
                   >
-                    R$ {valueFormater(cashHistory.result_cash)}
+                    R${' '}
+                    {!cashier.is_opened &&
+                      valueFormater(cashHistory.result_cash)}
                   </Value>
                 </ValueContainer>
               </InfoContainer>

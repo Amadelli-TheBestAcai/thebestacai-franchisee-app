@@ -1,5 +1,6 @@
 import HandlersRepository from '../repositories/HandlersRepository'
 import CashierService from '../services/CashierService'
+import IntegrateService from '../services/IntegrateService'
 
 import { CreateHandlerDTO } from '../models/dtos/handler/CreateHandlerDTO'
 import { UpdateHandlerDTO } from '../models/dtos/handler/UpdateHandlerDTO'
@@ -23,6 +24,10 @@ class HandlersService {
       created_at: getNow(),
     }
     await HandlersRepository.create(handler)
+    const hasInternet = await checkInternet()
+    if (hasInternet) {
+      await IntegrateService.integrateOnlineHandlers()
+    }
   }
 
   async update(id: string, payload: UpdateHandlerDTO): Promise<void> {
