@@ -75,7 +75,7 @@ const Home: React.FC = () => {
     ipcRenderer.once(
       'configuration:get:response',
       (event, { disabled_balance }) => {
-        setShouldUseBalance(disabled_balance)
+        setShouldUseBalance(!disabled_balance)
       }
     )
   }, [])
@@ -181,7 +181,7 @@ const Home: React.FC = () => {
   }
 
   const registerSale = () => {
-    if (getChangeAmount() < 0) {
+    if (+sale.total.toFixed(2) > getTotalPaid() + sale.discount + 0.5) {
       return message.warning('Pagamento inválido')
     }
     if (!items.length) {
@@ -267,7 +267,7 @@ const Home: React.FC = () => {
                     getWeightByBalance={getWeightByBalance}
                     selfService={selfService}
                     isLoading={fechtingSelfService}
-                    shouldUseBalance={shouldUseBalance}
+                    shouldUseBalance={false}
                   />
                 </BalanceContainer>
                 <ProductsContainer>

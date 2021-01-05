@@ -5,6 +5,7 @@ import { Input } from './styles'
 type IProps = {
   getValue
   onEnterPress?
+  onPressKey?: (key: string) => void
   defaultValue?: number
   id?: string
 }
@@ -28,6 +29,7 @@ const MonetaryInput: React.FC<IProps> = ({
   onEnterPress,
   defaultValue,
   id,
+  onPressKey,
 }) => {
   const [amount, setAmount] = useState<number>(defaultValue || 0)
 
@@ -48,6 +50,9 @@ const MonetaryInput: React.FC<IProps> = ({
     if (event.key === 'Enter') {
       onEnterPress()
       setAmount(0)
+    }
+    if (onPressKey) {
+      onPressKey(event.key)
     }
   }
 

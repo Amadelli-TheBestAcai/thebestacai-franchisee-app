@@ -70,13 +70,13 @@ const BalanceContainer: React.FC<IProps> = ({
     if (key === 't') {
       handleOpenPayment(PaymentType.TICKET)
     }
-    if (key === 'Enter') {
+    if (shouldUseBalance && key === 'Enter') {
       handleEnterToSubmit()
     }
     if (key === 'f1') {
       registerSale()
     }
-    if (key === 'b') {
+    if (shouldUseBalance && key === 'b') {
       getWeightByBalance()
     }
   }
@@ -90,12 +90,6 @@ const BalanceContainer: React.FC<IProps> = ({
           <TopContainer>
             <Text>Preço indicado na balança</Text>
             {shouldUseBalance ? (
-              <InputPrice
-                id="balanceInput"
-                getValue={(value) => setAmount(value)}
-                onEnterPress={handleEnterToSubmit}
-              />
-            ) : (
               <DisabledInput
                 id="balanceInput"
                 value={amount?.toFixed(2).replace('.', ',') || '0,00'}
@@ -103,6 +97,13 @@ const BalanceContainer: React.FC<IProps> = ({
                 className="ant-input"
                 onKeyPress={(event) => handlerEventKey(event.key)}
                 readOnly
+              />
+            ) : (
+              <InputPrice
+                id="balanceInput"
+                getValue={(value) => setAmount(value)}
+                onEnterPress={handleEnterToSubmit}
+                onPressKey={handlerEventKey}
               />
             )}
           </TopContainer>

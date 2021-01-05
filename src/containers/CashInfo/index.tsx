@@ -29,9 +29,8 @@ const CashInfo: React.FC = () => {
     ipcRenderer.once('cashier:history:get:response', (event, response) => {
       if (response) {
         const { history } = response
-        console.log({ response })
         setCashHistory(history)
-        if (+history.result_cash < 0 && !history.observation) {
+        if (+history.result_cash !== 0 && !history.observation) {
           setShouldOpenModal(true)
         }
       }
@@ -136,15 +135,12 @@ const CashInfo: React.FC = () => {
           )}
           <Modal
             visible={shouldOpenModal}
-            title="Caixa com Fechamento Negativo"
+            title="Caixa com Fechamento Incorreto"
             onCancel={() => setShouldOpenModal(false)}
             confirmLoading={sendingObservation}
             onOk={() => handleObservation()}
           >
-            <p>
-              Informe uma justificativa para o fechamento do caixa anterior com
-              um valor nevativo.
-            </p>
+            <p>Fechamento de caixa incorreto. Informe uma justificativa.</p>
             <Input
               value={observation}
               onPressEnter={handleObservation}
