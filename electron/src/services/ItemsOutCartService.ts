@@ -3,6 +3,7 @@ import CashierRepository from '../repositories/CashierRepository'
 
 import api from '../utils/Api'
 import { checkInternet } from '../utils/InternetConnection'
+import { sendLog } from '../utils/ApiLog'
 
 class ItemsOutCartService {
   async create(
@@ -44,6 +45,10 @@ class ItemsOutCartService {
           await api.post(`/items_out_cart/${store_id}-${cash_code}`, [payload])
           await ItemsOutCartRepository.deleteById(id)
         } catch (err) {
+          await sendLog({
+            title: 'Erro ao integrar itens removidos do pedido',
+            payload: { err: err.message, params: { item } },
+          })
           console.log(err)
         }
       })

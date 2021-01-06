@@ -1,5 +1,6 @@
 import { ipcMain } from 'electron'
 import ItemsOutCartService from '../services/ItemsOutCartService'
+import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('itemOutCart:create', async (event, { reason, product_id }) => {
   try {
@@ -9,6 +10,10 @@ ipcMain.on('itemOutCart:create', async (event, { reason, product_id }) => {
     )
     event.reply('itemOutCart:create:response', { success, message })
   } catch (err) {
+    await sendLog({
+      title: 'Erro ao remover item do pedido',
+      payload: { err: err.message, item: { reason, product_id } },
+    })
     console.error(err)
   }
 })

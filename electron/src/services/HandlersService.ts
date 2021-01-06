@@ -10,6 +10,7 @@ import { getNow } from '../utils/DateHandler'
 import { v4 as uuidv4 } from 'uuid'
 import api from '../utils/Api'
 import { checkInternet } from '../utils/InternetConnection'
+import { sendLog } from '../utils/ApiLog'
 class HandlersService {
   async create(payload): Promise<void> {
     const currentCash = await CashierService.getCurrentCashier()
@@ -99,6 +100,10 @@ class HandlersService {
         data: data || [],
       }
     } catch (err) {
+      await sendLog({
+        title: 'Erro deletar movimentação pela api',
+        payload: { err: err.message, params: { id } },
+      })
       console.log(err)
       return {
         success: false,

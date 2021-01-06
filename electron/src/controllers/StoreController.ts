@@ -1,11 +1,16 @@
 import { ipcMain } from 'electron'
 import StoreService from '../services/StoreService'
+import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('store:create', async (event, id) => {
   try {
     await StoreService.create(id)
     event.reply('store:create:response', { success: true })
   } catch (err) {
+    await sendLog({
+      title: 'Erro ao criar loja',
+      payload: { err: err.message, params: { id } },
+    })
     event.reply('store:create:response', { success: false })
     console.error(err)
   }
@@ -16,6 +21,10 @@ ipcMain.on('store:get', async (event) => {
     const store = await StoreService.getOne()
     event.reply('store:get:response', { success: true, store })
   } catch (err) {
+    await sendLog({
+      title: 'Erro ao obter loja',
+      payload: err.message,
+    })
     event.reply('store:get:response', { success: false })
     console.error(err)
   }
@@ -26,6 +35,10 @@ ipcMain.on('store:getAll', async (event) => {
     const stores = await StoreService.getStoreByUser()
     event.reply('store:getAll:response', { success: true, stores })
   } catch (err) {
+    await sendLog({
+      title: 'Erro ao obter lojas do franqueado',
+      payload: err.message,
+    })
     event.reply('store:getAll:response', { success: false, stores: [] })
     console.error(err)
   }

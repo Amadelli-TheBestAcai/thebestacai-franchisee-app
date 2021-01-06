@@ -13,7 +13,6 @@ import { Cashier } from '../models/Cashier'
 import { OpenCashierDTO } from '../models/dtos/Cashier/OpenCashierDTO'
 import { CloseCashierDTO } from '../models/dtos/Cashier/CloseCashierDTO'
 import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
-import { UpdateCashierDTO } from '../models/dtos/Cashier/UpdateCashierDTO'
 class CashierService {
   async getOnlineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
     const { id: store } = await StoreService.getOne()
@@ -64,6 +63,7 @@ class CashierService {
     const isConnected = await checkInternet()
     let newCashier: CreateCashierDTO = { code, is_opened: true, amount_on_open }
     if (isConnected) {
+      throw new Error('Nenhuma loja encontrada')
       const { id: store } = await StoreService.getOne()
       const {
         data: {

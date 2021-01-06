@@ -14,6 +14,7 @@ import { Payment } from '../models/Payment'
 import { v4 as uuidv4 } from 'uuid'
 import { checkInternet } from '../utils/InternetConnection'
 import { getNow } from '../utils/DateHandler'
+import { sendLog } from '../utils/ApiLog'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
     const cashier = await CashierService.getCurrentCashier()
@@ -159,6 +160,10 @@ class SalesService {
           await api.post(`/sales/${store}-${code}`, [formatedSale])
           await SalesRepository.update(sale.id, { to_integrate: false })
         } catch (err) {
+          await sendLog({
+            title: 'Erro ao integrar vendas pendentes',
+            payload: { err: err.message, params: { sale } },
+          })
           console.log(err)
         }
       })
@@ -242,6 +247,10 @@ class SalesService {
         data,
       }
     } catch (err) {
+      await sendLog({
+        title: 'Erro ao remover venda pela api',
+        payload: { err: err.message, params: { id } },
+      })
       console.log(err)
       return {
         success: false,
