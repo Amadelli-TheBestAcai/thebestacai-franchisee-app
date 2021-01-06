@@ -128,9 +128,10 @@ const CashInfo: React.FC = () => {
                           : 'red',
                     }}
                   >
-                    R${' '}
-                    {!cashier.is_opened &&
-                      valueFormater(cashHistory.result_cash)}
+                    {!cashier.is_opened
+                      ? `R$
+                      ${valueFormater(cashHistory.result_cash)}`
+                      : 'R$ 0,00'}
                   </Value>
                 </ValueContainer>
               </InfoContainer>
