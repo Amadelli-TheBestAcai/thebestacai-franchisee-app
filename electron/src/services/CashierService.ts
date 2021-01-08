@@ -63,7 +63,6 @@ class CashierService {
     const isConnected = await checkInternet()
     let newCashier: CreateCashierDTO = { code, is_opened: true, amount_on_open }
     if (isConnected) {
-      throw new Error('Nenhuma loja encontrada')
       const { id: store } = await StoreService.getOne()
       const {
         data: {

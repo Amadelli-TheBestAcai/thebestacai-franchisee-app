@@ -25,11 +25,7 @@ export async function sendLog(message: {
   const store = await StoreService.getOne()
 
   const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`
-  console.log({
-    title: message.title,
-    from,
-    payload: JSON.stringify(message.payload),
-  })
+
   await api.post('/sales-manager-logs', {
     title: message.title,
     from,

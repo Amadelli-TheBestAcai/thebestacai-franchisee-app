@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../helpers/InternetConnection'
 import { ProductByCategory } from '../../models/product'
 
 import Product from '../../components/Product'
@@ -24,7 +23,7 @@ const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
   const [products, setProducts] = useState<ProductByCategory[]>([])
 
   useEffect(() => {
-    setProducts(ipcRenderer.sendSync('products:get', isOnline()))
+    setProducts(ipcRenderer.sendSync('products:get'))
   }, [])
 
   return (

@@ -15,10 +15,7 @@ type IProps = {
   registerSale: () => void
 }
 
-const Register: React.FC<IProps> = ({
-  total,
-  registerSale,
-}) => {
+const Register: React.FC<IProps> = ({ total, registerSale }) => {
   const monetaryFormat = (value: number): string => {
     if (!value) {
       return '0,00'

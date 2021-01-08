@@ -20,6 +20,7 @@ import Register from '../../containers/Register'
 import Spinner from '../../components/Spinner'
 
 import { message, Modal } from 'antd'
+
 import {
   Container,
   Content,
@@ -44,6 +45,9 @@ const Home: React.FC = () => {
   const [paymentType, setPaymentType] = useState(0)
   const [paymentModal, setPaymentModal] = useState(false)
   const [balanceAmount, setBalanceAmount] = useState<number>()
+  const [fetchingBalanceWeight, setFetchingBalanceWeight] = useState<boolean>(
+    false
+  )
   const [fechtingSelfService, setFechtingSelfService] = useState(true)
   const [shouldUseBalance, setShouldUseBalance] = useState(true)
   const [selfService, setSelfService] = useState<Product>()
@@ -164,20 +168,24 @@ const Home: React.FC = () => {
   const sendFocusToBalance = () => {
     document.getElementById('balanceInput').focus()
   }
-  const getWeightByBalance = (): void => {
-    ipcRenderer.send('balance:get')
-    ipcRenderer.once('balance:get:response', (event, { weight, error }) => {
-      if (error) {
-        Modal.info({
-          title: 'Falha de Leitura',
-          content:
-            'Erro ao obter dados da balança. Reconecte o cabo de dados na balança e no computador, feche o APP, reinicie a balança e abra o APP novamente',
-        })
-      } else {
-        const amount = +weight * +selfService.price_unit
-        setBalanceAmount(amount)
-      }
-    })
+  const getWeightByBalance = async (): Promise<void> => {
+    if (!fetchingBalanceWeight) {
+      setFetchingBalanceWeight(true)
+      ipcRenderer.send('balance:get')
+      ipcRenderer.once('balance:get:response', (event, { weight, error }) => {
+        setFetchingBalanceWeight(false)
+        if (error) {
+          Modal.info({
+            title: 'Falha de Leitura',
+            content:
+              'Erro ao obter dados da balança. Reconecte o cabo de dados na balança e no computador, feche o APP, reinicie a balança e abra o APP novamente',
+          })
+        } else {
+          const amount = +weight * +selfService.price_unit
+          setBalanceAmount(amount)
+        }
+      })
+    }
   }
 
   const registerSale = () => {
@@ -268,6 +276,7 @@ const Home: React.FC = () => {
                     selfService={selfService}
                     isLoading={fechtingSelfService}
                     shouldUseBalance={shouldUseBalance}
+                    fetchingBalanceWeight={fetchingBalanceWeight}
                   />
                 </BalanceContainer>
                 <ProductsContainer>

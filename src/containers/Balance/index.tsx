@@ -5,6 +5,8 @@ import Spinner from '../../components/Spinner'
 import { Product } from '../../models/product'
 import { PaymentType } from '../../models/enums/paymentType'
 
+import { Spin } from 'antd'
+
 import {
   Container,
   TopContainer,
@@ -24,6 +26,7 @@ type IProps = {
   setAmount: Dispatch<SetStateAction<number>>
   isLoading: boolean
   shouldUseBalance: boolean
+  fetchingBalanceWeight: boolean
   selfService: Product
   getWeightByBalance: () => void
   registerSale: () => void
@@ -40,6 +43,7 @@ const BalanceContainer: React.FC<IProps> = ({
   shouldUseBalance,
   handleOpenPayment,
   registerSale,
+  fetchingBalanceWeight,
 }) => {
   const handleEnterToSubmit = () => {
     if (!amount) {
@@ -57,7 +61,7 @@ const BalanceContainer: React.FC<IProps> = ({
     return +(+amount / +selfService.price_unit).toFixed(4)
   }
 
-  const handlerEventKey = (key: string): void => {
+  const handlerEventKey = async (key: string): Promise<void> => {
     if (key === 'a') {
       handleOpenPayment(PaymentType.DINHEIRO)
     }
@@ -77,7 +81,7 @@ const BalanceContainer: React.FC<IProps> = ({
       registerSale()
     }
     if (shouldUseBalance && key === 'b') {
-      getWeightByBalance()
+      await getWeightByBalance()
     }
   }
 
@@ -88,14 +92,17 @@ const BalanceContainer: React.FC<IProps> = ({
       ) : (
         <Container>
           <TopContainer>
-            <Text>Preço indicado na balança</Text>
+            <Text>
+              Preço indicado na balança{' '}
+              {fetchingBalanceWeight && <Spin size="small" />}
+            </Text>
             {shouldUseBalance ? (
               <DisabledInput
                 id="balanceInput"
                 value={amount?.toFixed(2).replace('.', ',') || '0,00'}
                 autoFocus={true}
                 className="ant-input"
-                onKeyPress={(event) => handlerEventKey(event.key)}
+                onKeyPress={async (event) => await handlerEventKey(event.key)}
                 readOnly
               />
             ) : (
