@@ -8,7 +8,7 @@ ipcMain.on('user:login', async (event, user) => {
     const currentUser = await UserService.getTokenInfo()
     event.reply('user:login', { isValid: response, user: currentUser })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao realizar login',
       payload: { err: err.message, params: { user } },
     })
@@ -22,7 +22,7 @@ ipcMain.on('user:get', async (event) => {
     const user = await UserService.getTokenInfo()
     event.reply('user:get:response', user)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter usuario pelo token',
       payload: err.message,
     })

@@ -7,7 +7,7 @@ ipcMain.on('handler:create', async (event, handler) => {
     await HandlersService.create(handler)
     event.reply('handler:create:response', { success: true })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao criar movimentação',
       payload: { err: err.message, handler },
     })
@@ -21,7 +21,7 @@ ipcMain.on('handler:api:get', async (event) => {
     const { isConnected, data } = await HandlersService.getHandlerByCash()
     event.reply('handler:api:get:response', { isConnected, data })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter movimentações',
       payload: err.message,
     })
@@ -35,7 +35,7 @@ ipcMain.on('handler:delete', async (event, id) => {
     const { success, data } = await HandlersService.delete(id)
     event.reply('handler:delete:response', { success, data })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao remover movimentação',
       payload: { err: err.message, id },
     })

@@ -7,7 +7,7 @@ ipcMain.on('products:get', async (event) => {
     const response = await ProductsService.getProducts()
     event.returnValue = response
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter produtos',
       payload: err.message,
     })
@@ -21,7 +21,7 @@ ipcMain.on('products:refresh', async (event) => {
     await ProductsService.getOnlineProducts()
     event.reply('products:refresh:response', { success: true })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao atualizar base de produtos',
       payload: err.message,
     })
@@ -35,7 +35,7 @@ ipcMain.on('products:get:selfService', async (event) => {
     const item = await ProductsService.getSelfService()
     event.reply('products:get:selfService:response', item)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter produto Self-Service',
       payload: err.message,
     })

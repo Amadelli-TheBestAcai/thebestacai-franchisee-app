@@ -30,7 +30,7 @@ type IProps = {
   selfService: Product
   getWeightByBalance: () => void
   registerSale: () => void
-  handleOpenPayment: (type: number) => void
+  handleOpenPayment: (type: number, title: string) => void
 }
 
 const BalanceContainer: React.FC<IProps> = ({
@@ -63,16 +63,16 @@ const BalanceContainer: React.FC<IProps> = ({
 
   const handlerEventKey = async (key: string): Promise<void> => {
     if (key === 'a') {
-      handleOpenPayment(PaymentType.DINHEIRO)
+      handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro')
     }
     if (key === 's') {
-      handleOpenPayment(PaymentType.CREDITO)
+      handleOpenPayment(PaymentType.CREDITO, 'Crédito')
     }
     if (key === 'd') {
-      handleOpenPayment(PaymentType.DEBITO)
+      handleOpenPayment(PaymentType.DEBITO, 'Débito')
     }
     if (key === 't') {
-      handleOpenPayment(PaymentType.TICKET)
+      handleOpenPayment(PaymentType.TICKET, 'Ticket')
     }
     if (shouldUseBalance && key === 'Enter') {
       handleEnterToSubmit()

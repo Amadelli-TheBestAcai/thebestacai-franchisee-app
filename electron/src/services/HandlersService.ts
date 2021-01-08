@@ -100,7 +100,7 @@ class HandlersService {
         data: data || [],
       }
     } catch (err) {
-      await sendLog({
+      sendLog({
         title: 'Erro deletar movimentação pela api',
         payload: { err: err.message, params: { id } },
       })

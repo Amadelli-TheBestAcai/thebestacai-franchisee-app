@@ -17,7 +17,7 @@ ipcMain.on('cashier:get', async (event) => {
       has_pending: !!sales.length,
     })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter caixas online',
       payload: err.message,
     })
@@ -35,7 +35,7 @@ ipcMain.on('cashier:open', async (event, { ...cashier }) => {
     })
   } catch (err) {
     console.error(err.message)
-    await sendLog({
+    sendLog({
       title: 'Erro ao abrir caixa',
       payload: { err: err.message, cashier },
     })
@@ -55,7 +55,7 @@ ipcMain.on('cashier:close', async (event, { ...cashier }) => {
     })
   } catch (err) {
     console.error(err)
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter fechar caixa',
       payload: { err: err.message, cashier },
     })
@@ -71,7 +71,7 @@ ipcMain.on('cashier:history:get', async (event) => {
     const response = await CashierService.getCurrentCashHistory()
     event.reply('cashier:history:get:response', response)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter histórico do caixa',
       payload: err.message,
     })
@@ -84,7 +84,7 @@ ipcMain.on('cashier:balance:get', async (event) => {
     const response = await CashierService.getBalance()
     event.reply('cashier:balance:get:response', response)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter balanço do caixa',
       payload: err.message,
     })
@@ -97,7 +97,7 @@ ipcMain.on('cashier:update:observation', async (event, observation) => {
     await CashierService.updateObservation(observation)
     event.reply('cashier:update:observation:response', true)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao cadastrar observação de caixa negativo',
       payload: { err: err.message, observation },
     })

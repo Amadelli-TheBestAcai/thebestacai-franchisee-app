@@ -160,7 +160,7 @@ class SalesService {
           await api.post(`/sales/${store}-${code}`, [formatedSale])
           await SalesRepository.update(sale.id, { to_integrate: false })
         } catch (err) {
-          await sendLog({
+          sendLog({
             title: 'Erro ao integrar vendas pendentes',
             payload: { err: err.message, params: { sale } },
           })
@@ -247,7 +247,7 @@ class SalesService {
         data,
       }
     } catch (err) {
-      await sendLog({
+      sendLog({
         title: 'Erro ao remover venda pela api',
         payload: { err: err.message, params: { id } },
       })

@@ -45,7 +45,7 @@ class ItemsOutCartService {
           await api.post(`/items_out_cart/${store_id}-${cash_code}`, [payload])
           await ItemsOutCartRepository.deleteById(id)
         } catch (err) {
-          await sendLog({
+          sendLog({
             title: 'Erro ao integrar itens removidos do pedido',
             payload: { err: err.message, params: { item } },
           })

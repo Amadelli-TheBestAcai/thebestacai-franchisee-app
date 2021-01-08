@@ -26,13 +26,13 @@ import {
 
 interface IProps {
   payments: PaymentModel[]
-  handleOpenPayment: (type: number, defaultValue?: number) => void
+  handleOpenPayment: (type: number, title: string) => void
   addPayment
   removePayment
   setCurrentPayment
   modalState: boolean
   setModalState
-  totalSale
+  modalTitle: string
   quantity: number
   discount: number
   totalPaid: number
@@ -49,7 +49,7 @@ const PaymentsContainer: React.FC<IProps> = ({
   handleOpenPayment,
   addPayment,
   modalState,
-  totalSale,
+  modalTitle,
   removePayment,
   quantity,
   discount,
@@ -68,28 +68,28 @@ const PaymentsContainer: React.FC<IProps> = ({
       <Header>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}
+          onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro')}
         >
           [A] DINHEIRO
           <MoneyIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.CREDITO, 'Crédito')}
         >
           [S] CRÉDITO
           <CreditIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.DEBITO, 'Débito')}
         >
           [D] DÉBITO
           <DebitIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.TICKET, 'Ticket')}
         >
           [T] TICKET
           <TicketIcon />
@@ -129,6 +129,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         </AmountContainer>
       </Footer>
       <Modal
+        title={`Pagamento em ${modalTitle}`}
         width={250}
         visible={modalState}
         onCancel={onModalCancel}

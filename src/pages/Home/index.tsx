@@ -51,6 +51,9 @@ const Home: React.FC = () => {
   const [fechtingSelfService, setFechtingSelfService] = useState(true)
   const [shouldUseBalance, setShouldUseBalance] = useState(true)
   const [selfService, setSelfService] = useState<Product>()
+  const [paymentModalTitle, setPaymentModalTitle] = useState<string | null>(
+    null
+  )
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
@@ -140,9 +143,10 @@ const Home: React.FC = () => {
     })
   }
 
-  const handleOpenPayment = (type: number): void => {
+  const handleOpenPayment = (type: number, title: string): void => {
     setPaymentType(type)
     setPaymentModal(true)
+    setPaymentModalTitle(title)
   }
 
   const addDiscount = (value: number): void => {
@@ -241,10 +245,10 @@ const Home: React.FC = () => {
   }
 
   const handlers = {
-    MONEY: () => handleOpenPayment(PaymentType.DINHEIRO),
-    C_CREDIT: () => handleOpenPayment(PaymentType.CREDITO),
-    C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO),
-    TICKET: () => handleOpenPayment(PaymentType.TICKET),
+    MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro'),
+    C_CREDIT: () => handleOpenPayment(PaymentType.CREDITO, 'Crédito'),
+    C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO, 'Débito'),
+    TICKET: () => handleOpenPayment(PaymentType.TICKET, 'Ticket'),
     REGISTER: () => registerSale(),
     FOCUS_BALANCE: () => sendFocusToBalance(),
   }
@@ -308,7 +312,7 @@ const Home: React.FC = () => {
                         removePayment={removePayment}
                         modalState={paymentModal}
                         setModalState={setPaymentModal}
-                        totalSale={sale.total}
+                        modalTitle={paymentModalTitle}
                         changeAmount={getChangeAmount()}
                         totalPaid={getTotalPaid()}
                       />

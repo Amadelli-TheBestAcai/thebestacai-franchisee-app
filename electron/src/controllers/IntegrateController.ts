@@ -7,7 +7,7 @@ ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
     await IntegrateService.integrateOffline(code, amount_on_close)
     event.reply('integrate:offline:response', true)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao integrar vendas offline',
       payload: { err: err.message, cashToClose: { code, amount_on_close } },
     })
@@ -21,7 +21,7 @@ ipcMain.on('integrate:shouldUpdateApp', async (event) => {
     const response = await IntegrateService.shouldUpdateApp()
     event.reply('integrate:shouldUpdateApp:response', response)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter versão atual do caixa',
       payload: err.message,
     })
@@ -35,7 +35,7 @@ ipcMain.on('integrate:checkAppVersion', async (event) => {
     const response = await IntegrateService.appAlreadyUpdated()
     event.reply('integrate:checkAppVersion:response', response)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao checkar nova versão para o APP',
       payload: err.message,
     })

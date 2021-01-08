@@ -8,7 +8,7 @@ ipcMain.on('sale:create', async (event) => {
     const sale = await SalesService.create()
     event.reply('sale:create:response', sale)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro criar venda',
       payload: err.message,
     })
@@ -21,7 +21,7 @@ ipcMain.on('sale:add', async (event, sale) => {
     await SalesService.finishSale(sale)
     event.reply('sale:add:response', true)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao finalizar venda',
       payload: { err: err.message, sale },
     })
@@ -36,7 +36,7 @@ ipcMain.on('sale:getCurrent', async (event) => {
     const cashier = await CashierService.getCurrentCashier()
     event.reply('sale:getCurrent:response', { sale, items, payments, cashier })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter venda atual',
       payload: err.message,
     })
@@ -49,7 +49,7 @@ ipcMain.on('sale:command:get', async (event) => {
     const sales = await SalesService.getSalesCommands()
     event.reply('sale:command:get:response', sales)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter comandas',
       payload: err.message,
     })
@@ -63,7 +63,7 @@ ipcMain.on('sale:command:create', async (event, { id, name }) => {
     const sale = await SalesService.createCommand(id, name)
     event.reply('sale:command:create:response', sale)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao criar comanda',
       payload: { err: err.message, params: { id, name } },
     })
@@ -77,7 +77,7 @@ ipcMain.on('sale:finish', async (event, sale) => {
     const { sale: newSale } = await SalesService.getCurrentSale()
     event.reply('sale:finish:response', newSale)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao finalizar venda',
       payload: { err: err.message, params: { sale } },
     })
@@ -91,7 +91,7 @@ ipcMain.on('sale:command:transfer', async (event, sale) => {
     const sales = await SalesService.getSalesCommands()
     event.reply('sale:command:transfer:response', sales)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter items da comanda',
       payload: { err: err.message, params: { sale } },
     })
@@ -105,7 +105,7 @@ ipcMain.on('sale:command:remove', async (event, sale) => {
     const sales = await SalesService.getSalesCommands()
     event.reply('sale:command:remove:response', sales)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao remover comanda',
       payload: { err: err.message, params: { sale } },
     })
@@ -119,7 +119,7 @@ ipcMain.on('sale:integrate:pending', async (event, { cash, amount }) => {
     await SalesService.integratePending(amount, cash)
     event.reply('sale:integrate:pending:response', true)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao integrar vendas pendentes',
       payload: { err: err.message, params: { cash, amount } },
     })
@@ -133,7 +133,7 @@ ipcMain.on('sale:api:get', async (event) => {
     const { isConnected, data } = await SalesService.getFromApi()
     event.reply('sale:api:get:response', { isConnected, data })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter vendas da api',
       payload: err.message,
     })
@@ -147,7 +147,7 @@ ipcMain.on('sale:api:delete', async (event, id) => {
     const { success, data } = await SalesService.deleteFromApi(id)
     event.reply('sale:api:delete:response', { success, data })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao remover vendas da api',
       payload: { err: err.message, params: { id } },
     })

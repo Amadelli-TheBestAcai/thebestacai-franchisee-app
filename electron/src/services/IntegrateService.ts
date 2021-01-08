@@ -68,7 +68,7 @@ class IntegrateService {
             await api.post(`/sales/${store}-${code}`, [saleToIntegrate])
             await SalesService.update(id, { to_integrate: false })
           } catch (err) {
-            await sendLog({
+            sendLog({
               title: 'Erro ao ao integrar venda offline',
               payload: {
                 err: err.message,
@@ -93,7 +93,7 @@ class IntegrateService {
             await api.post(`/cash_handler/${store}-${code}`, [payload])
             await HandlersService.update(id, { to_integrate: false })
           } catch (err) {
-            await sendLog({
+            sendLog({
               title: 'Erro ao ao integrar handler offline',
               payload: {
                 err: err.message,
@@ -126,7 +126,7 @@ class IntegrateService {
 
       await CashierService.closeLocalCashier(localCashId)
     } catch (err) {
-      await sendLog({
+      sendLog({
         title: 'Erro ao realizar integração de vendas offline',
         payload: err.message,
       })
@@ -155,7 +155,7 @@ class IntegrateService {
           await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
           await SalesService.update(id, { to_integrate: false })
         } catch (err) {
-          await sendLog({
+          sendLog({
             title: 'Erro ao integrar de venda online',
             payload: {
               err: err.message,
@@ -181,7 +181,7 @@ class IntegrateService {
           await api.post(`/cash_handler/${store_id}-${cash_code}`, [payload])
           await HandlersService.update(id, { to_integrate: false })
         } catch (err) {
-          await sendLog({
+          sendLog({
             title: 'Erro ao integrar de movimentação online',
             payload: {
               err: err.message,

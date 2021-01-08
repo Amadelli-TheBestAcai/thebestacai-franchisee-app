@@ -7,7 +7,7 @@ ipcMain.on('configuration:get', async (event) => {
     const setting = await SettingsService.getOneOrCreate()
     event.reply('configuration:get:response', setting)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter dados das configurações',
       payload: err.message,
     })
@@ -21,7 +21,7 @@ ipcMain.on('configuration:update', async (event, payload) => {
     const setting = await SettingsService.update(payload)
     event.reply('configuration:update:response', { setting, status: true })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao atualizar dados das configurações',
       payload: { err: err.message, params: { payload } },
     })

@@ -7,7 +7,7 @@ ipcMain.on('payment:get', async (event, sale) => {
     const payments = await PaymentsService.getBySale(sale)
     event.returnValue = payments
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter pagamentos do pedido',
       payload: { err: err.message, params: { sale } },
     })
@@ -21,7 +21,7 @@ ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
     const payments = await PaymentsService.getBySale(sale)
     event.reply('payment:add:response', payments)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao adicionar pagamentos ao pedido',
       payload: { err: err.message, params: { sale, payload } },
     })
@@ -35,7 +35,7 @@ ipcMain.on('payment:remove', async (event, { id, sale }) => {
     const payments = await PaymentsService.getBySale(sale)
     event.reply('payment:remove:response', payments)
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao remover pagamentos do pedido',
       payload: { err: err.message, params: { id, sale } },
     })

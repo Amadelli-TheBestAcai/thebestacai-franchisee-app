@@ -10,7 +10,7 @@ ipcMain.on('item:add', async (event, { sale, ...payload }) => {
     const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:add:response', { sale: currentSale, items })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao adicionar item',
       payload: { err: err.message, item: { sale, ...payload } },
     })
@@ -25,7 +25,7 @@ ipcMain.on('item:decress', async (event, { id, sale }) => {
     const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:decress:response', { sale: currentSale, items })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao diminuir item do pedido',
       payload: { err: err.message, params: { id, sale } },
     })
@@ -38,7 +38,7 @@ ipcMain.on('item:get', async (event, sale) => {
     const items = await ItemsService.getBySale(sale)
     event.returnValue = items
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter itens do pedido',
       payload: { err: err.message, params: { sale } },
     })
@@ -51,7 +51,7 @@ ipcMain.on('item:total', async (event, sale) => {
     const total = await ItemsService.getTotalBySale(sale)
     event.returnValue = total
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao obter valor total de itens do pedido',
       payload: { err: err.message, params: { sale } },
     })

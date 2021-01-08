@@ -10,7 +10,7 @@ ipcMain.on('itemOutCart:create', async (event, { reason, product_id }) => {
     )
     event.reply('itemOutCart:create:response', { success, message })
   } catch (err) {
-    await sendLog({
+    sendLog({
       title: 'Erro ao remover item do pedido',
       payload: { err: err.message, item: { reason, product_id } },
     })
