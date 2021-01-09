@@ -1,6 +1,7 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { ipcRenderer } from 'electron'
-import { message } from 'antd'
+
+import { message, Spin } from 'antd'
 
 import {
   Container,
@@ -23,16 +24,21 @@ type IProps = {
   setModalState: Dispatch<SetStateAction<boolean>>
 }
 const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
+  const [loading, setLoading] = useState<boolean>(false)
   const [value, setValue] = useState<number>()
   const [reasson, setReasson] = useState<string>()
   const [reasontype, setReasonType] = useState<string>()
 
   const handleSubmit = () => {
+    if (loading) {
+      return
+    }
     if (!value) {
       return message.warning('Informe um valor')
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
+    setLoading(true)
     ipcRenderer.send('handler:create', {
       type,
       reason: reasontype === 'Outros' ? reasson : reasontype,
@@ -44,6 +50,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
         setReasson(null)
         setReasonType(null)
         message.success('Movimentação cadastrada com sucesso')
+        setLoading(false)
         return setModalState(false)
       }
       message.warning('Erro ao cadastrar movimentação')
@@ -89,7 +96,9 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       }
       footer={
         <ActionContainer>
-          <Register onClick={() => handleSubmit()}>REGISTRAR</Register>
+          <Register onClick={() => handleSubmit()}>
+            {loading ? <Spin /> : 'REGISTRAR'}
+          </Register>
           <Leave onClick={() => handleClose()}>SAIR</Leave>
         </ActionContainer>
       }
