@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron'
+import { app, BrowserWindow, screen, ipcMain, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
@@ -32,7 +32,17 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:4000')
   } else {
-    // mainWindow.removeMenu()
+    const menu = Menu.buildFromTemplate([
+      {
+        label: 'Ajustar Layout',
+        submenu: [
+          { role: 'resetZoom', label: 'Remover Zoom' },
+          { role: 'zoomIn', label: 'Aumentar Zoom' },
+          { role: 'zoomOut', label: 'Diminuir Zoom' },
+        ],
+      },
+    ])
+    mainWindow.setMenu(menu)
     mainWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, 'renderer/index.html'),

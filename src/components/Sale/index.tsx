@@ -49,7 +49,7 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
           <Row>
             <ColHeader span={4}>{id}</ColHeader>
             <ColHeader span={4}>
-              {total_sold.toFixed(2).replace('.', ',')}R$
+              {Math.abs(total_sold).toFixed(2).replace('.', ',')}R$
             </ColHeader>
             <ColHeader span={4}>{quantity}</ColHeader>
             <ColHeader span={4}>{time}</ColHeader>

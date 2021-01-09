@@ -110,14 +110,19 @@ const PaymentsContainer: React.FC<IProps> = ({
       </Content>
       <Footer>
         <AmountContainer span={6}>
-          <AmountDescription>Valor Pago</AmountDescription>
-          <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
-        </AmountContainer>
-        <AmountContainer span={6}>
           <AmountDescription>Troco</AmountDescription>
-          <AmountValue style={{ color: changeAmount < 0 ? 'red' : '#5E5E5E' }}>
+          <AmountValue
+            style={{
+              color: changeAmount < 0 ? 'red' : '#fff',
+              background: '#FF9D0A',
+            }}
+          >
             R$ {changeAmount.toFixed(2).replace('.', ',')}
           </AmountValue>
+        </AmountContainer>
+        <AmountContainer span={6}>
+          <AmountDescription>Valor Pago</AmountDescription>
+          <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
         <AmountContainer span={6}>
           <AmountDescription>Desconto:</AmountDescription>

@@ -2,7 +2,10 @@ import axios from 'axios'
 import UserService from '../services/UserService'
 import StoreService from '../services/StoreService'
 
-const API_URL = 'https://hml-api-logs.herokuapp.com'
+const API_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'https://hml-api-logs.herokuapp.com'
+    : 'https://thebestacai-api-logs.herokuapp.com'
 
 const api = axios.create({
   baseURL: API_URL,
