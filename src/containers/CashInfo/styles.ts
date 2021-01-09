@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Modal as ModalAnt, Input as InputAnt } from 'antd'
+import { Modal as ModalAnt, Input as InputAnt, Row as RowAnt } from 'antd'
 
 export const Container = styled.div`
   display: flex;
@@ -40,6 +40,10 @@ export const ValueContainer = styled.div`
 export const Value = styled.label`
   font-weight: bold;
   font-size: 26px;
+`
+
+export const Row = styled(RowAnt)`
+  width: 100%;
 `
 
 export const Modal = styled(ModalAnt)``

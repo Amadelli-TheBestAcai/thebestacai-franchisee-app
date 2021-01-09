@@ -6,7 +6,7 @@ import Spinner from '../../components/Spinner'
 import { CashHistory } from '../../models/cashHistory'
 import { Cashier } from '../../models/cashier'
 
-import { message } from 'antd'
+import { message, Button } from 'antd'
 
 import {
   Container,
@@ -16,6 +16,7 @@ import {
   Value,
   Modal,
   Input,
+  Row,
 } from './styles'
 
 const CashInfo: React.FC = () => {
@@ -23,6 +24,7 @@ const CashInfo: React.FC = () => {
   const [sendingObservation, setSendingObservation] = useState(false)
   const [observation, setObservation] = useState<string | null>(null)
   const [shouldOpenModal, setShouldOpenModal] = useState(false)
+  const [shouldAskJustification, setShouldAskJustification] = useState(false)
   const [cashHistory, setCashHistory] = useState<CashHistory>()
   const [cashier, setCashier] = useState<Cashier>()
 
@@ -34,7 +36,7 @@ const CashInfo: React.FC = () => {
         setCashHistory(history)
         setCashier(cashier)
         if (+history.result_cash !== 0 && !history.observation) {
-          setShouldOpenModal(true)
+          setShouldAskJustification(true)
         }
       }
       setLoading(false)
@@ -60,6 +62,7 @@ const CashInfo: React.FC = () => {
           setSendingObservation(false)
           if (status) {
             message.success('Observação registrada com sucesso.')
+            setShouldAskJustification(false)
             setShouldOpenModal(false)
           } else {
             message.error('Falha ao enviar observação')
@@ -76,66 +79,86 @@ const CashInfo: React.FC = () => {
       ) : (
         <>
           {cashHistory ? (
-            <>
-              <InfoContainer>
-                <Description>Status:</Description>
-                <ValueContainer
-                  style={{ background: 'white', flexDirection: 'column' }}
-                >
-                  <Value
-                    style={{
-                      color: cashHistory.amount_on_close ? 'red' : '#029E08',
-                    }}
+            <Row>
+              {shouldAskJustification && (
+                <Row justify="center" style={{ margin: 10 }}>
+                  <Description>
+                    Caixa com fechamento incorreto. Clique para justificar
+                  </Description>
+                  <Button
+                    style={{ marginLeft: 10 }}
+                    type="primary"
+                    onClick={() => setShouldOpenModal(true)}
                   >
-                    {cashHistory.amount_on_close ? 'FECHADO' : 'ABERTO'}
-                  </Value>
-                </ValueContainer>
-              </InfoContainer>
-              <InfoContainer>
-                <Description>Abertura:</Description>
-                <ValueContainer>
-                  <Value>R$ {valueFormater(cashHistory.amount_on_open)}</Value>
-                </ValueContainer>
-              </InfoContainer>
-              <InfoContainer>
-                <Description>Entradas:</Description>
-                <ValueContainer>
-                  <Value>R$ {valueFormater(cashHistory.in_result)}</Value>
-                </ValueContainer>
-              </InfoContainer>
-              <InfoContainer>
-                <Description>Saídas:</Description>
-                <ValueContainer>
-                  <Value>R$ {valueFormater(cashHistory.out_result)}</Value>
-                </ValueContainer>
-              </InfoContainer>
-              <InfoContainer>
-                <Description>Fechamento:</Description>
-                <ValueContainer>
-                  <Value>R$ {valueFormater(cashHistory.amount_on_close)}</Value>
-                </ValueContainer>
-              </InfoContainer>
-              <InfoContainer>
-                <Description>Balanço:</Description>
-                <ValueContainer style={{ background: '#2E2E2E' }}>
-                  <Value
-                    style={{
-                      color:
-                        +cashHistory.result_cash >= 0
-                          ? +cashHistory.result_cash === 0
-                            ? 'white'
-                            : 'green'
-                          : 'red',
-                    }}
+                    Justificar
+                  </Button>
+                </Row>
+              )}
+              <Row>
+                <InfoContainer>
+                  <Description>Status:</Description>
+                  <ValueContainer
+                    style={{ background: 'white', flexDirection: 'column' }}
                   >
-                    {!cashier.is_opened
-                      ? `R$
+                    <Value
+                      style={{
+                        color: cashHistory.amount_on_close ? 'red' : '#029E08',
+                      }}
+                    >
+                      {cashHistory.amount_on_close ? 'FECHADO' : 'ABERTO'}
+                    </Value>
+                  </ValueContainer>
+                </InfoContainer>
+                <InfoContainer>
+                  <Description>Abertura:</Description>
+                  <ValueContainer>
+                    <Value>
+                      R$ {valueFormater(cashHistory.amount_on_open)}
+                    </Value>
+                  </ValueContainer>
+                </InfoContainer>
+                <InfoContainer>
+                  <Description>Entradas:</Description>
+                  <ValueContainer>
+                    <Value>R$ {valueFormater(cashHistory.in_result)}</Value>
+                  </ValueContainer>
+                </InfoContainer>
+                <InfoContainer>
+                  <Description>Saídas:</Description>
+                  <ValueContainer>
+                    <Value>R$ {valueFormater(cashHistory.out_result)}</Value>
+                  </ValueContainer>
+                </InfoContainer>
+                <InfoContainer>
+                  <Description>Fechamento:</Description>
+                  <ValueContainer>
+                    <Value>
+                      R$ {valueFormater(cashHistory.amount_on_close)}
+                    </Value>
+                  </ValueContainer>
+                </InfoContainer>
+                <InfoContainer>
+                  <Description>Balanço:</Description>
+                  <ValueContainer style={{ background: '#2E2E2E' }}>
+                    <Value
+                      style={{
+                        color:
+                          +cashHistory.result_cash >= 0
+                            ? +cashHistory.result_cash === 0
+                              ? 'white'
+                              : 'green'
+                            : 'red',
+                      }}
+                    >
+                      {!cashier.is_opened
+                        ? `R$
                       ${valueFormater(cashHistory.result_cash)}`
-                      : 'R$ 0,00'}
-                  </Value>
-                </ValueContainer>
-              </InfoContainer>
-            </>
+                        : 'R$ 0,00'}
+                    </Value>
+                  </ValueContainer>
+                </InfoContainer>
+              </Row>
+            </Row>
           ) : (
             <Value>Nenhum histórico localizado</Value>
           )}
