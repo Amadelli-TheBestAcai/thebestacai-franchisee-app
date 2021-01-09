@@ -54,12 +54,17 @@ class SalesService {
     }
   }
 
-  async finishSale(sale: CreateSaleDTO): Promise<void> {
-    await SalesRepository.update(sale.id, {
-      ...sale,
-      is_current: false,
-      to_integrate: true,
-    })
+  async finishSale(payload: CreateSaleDTO): Promise<void> {
+    const sale = await SalesRepository.getById(payload.id)
+    if (sale) {
+      await SalesRepository.update(payload.id, {
+        ...payload,
+        is_current: false,
+        to_integrate: true,
+      })
+    } else {
+      await SalesRepository.create(payload)
+    }
     const hasInternet = await checkInternet()
     if (hasInternet) {
       await IntegrateService.integrateOnlineSales()
