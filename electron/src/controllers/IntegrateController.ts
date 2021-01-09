@@ -43,3 +43,33 @@ ipcMain.on('integrate:checkAppVersion', async (event) => {
     event.reply('integrate:checkAppVersion:response', false)
   }
 })
+
+ipcMain.on('integrate:status', async (event) => {
+  try {
+    const sales = await IntegrateService.getOnlineSales()
+    const handlers = await IntegrateService.getOnlineHandlers()
+    event.reply('integrate:status:response', { sales, handlers })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas e movimentações feitas no modo online',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('integrate:status:response', { sales: [], handlers: [] })
+  }
+})
+
+ipcMain.on('integrate:integrate', async (event) => {
+  try {
+    await IntegrateService.integrateOnlineSales()
+    await IntegrateService.integrateOnlineHandlers()
+    event.reply('integrate:integrate:response', true)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas e movimentações feitas no modo online',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('integrate:integrate:response', false)
+  }
+})

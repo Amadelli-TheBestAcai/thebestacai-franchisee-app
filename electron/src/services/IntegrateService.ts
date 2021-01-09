@@ -4,7 +4,6 @@ import CashierService from '../services/CashierService'
 import StoreService from '../services/StoreService'
 import SalesService from '../services/SalesService'
 import HandlersService from '../services/HandlersService'
-import UserService from '../services/UserService'
 
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
@@ -13,6 +12,8 @@ import api from '../utils/Api'
 import { sendLog } from '../utils/ApiLog'
 
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
+import { Sale } from '../models/Sale'
+import { Handler } from '../models/Handler'
 import { PaymentType } from '../../../shared/enums/paymentType'
 
 import {
@@ -220,6 +221,14 @@ class IntegrateService {
       return true
     }
     return false
+  }
+
+  async getOnlineSales(): Promise<Sale[]> {
+    return await IntegrateRepository.getOnlineSales()
+  }
+
+  async getOnlineHandlers(): Promise<Handler[]> {
+    return await IntegrateRepository.getOnlineHandlers()
   }
 }
 
