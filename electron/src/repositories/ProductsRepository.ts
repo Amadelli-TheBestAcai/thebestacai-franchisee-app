@@ -10,7 +10,7 @@ class ProductsRepository {
   }
 
   async getSelfService() {
-    const item = await knex('products').where({ category_id: 1 })
+    const item = await knex('products').where({ product_id: 1 })
     return item[0]
   }
 
