@@ -37,6 +37,7 @@ import {
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
+  const [savingSale, setSavingSale] = useState(false)
   const [sale, setSale] = useState<Sale>()
   const [cashier, setCashier] = useState<Cashier>()
   const [items, setItems] = useState<Item[]>([])
@@ -82,7 +83,7 @@ const Home: React.FC = () => {
     ipcRenderer.once(
       'configuration:get:response',
       (event, { disabled_balance }) => {
-        setShouldUseBalance(!disabled_balance)
+        setShouldUseBalance(disabled_balance)
       }
     )
   }, [])
@@ -172,6 +173,7 @@ const Home: React.FC = () => {
   const sendFocusToBalance = () => {
     document.getElementById('balanceInput').focus()
   }
+
   const getWeightByBalance = async (): Promise<void> => {
     if (!fetchingBalanceWeight) {
       setFetchingBalanceWeight(true)
@@ -193,17 +195,22 @@ const Home: React.FC = () => {
   }
 
   const registerSale = () => {
+    if (savingSale) {
+      return
+    }
     if (+sale.total.toFixed(2) > getTotalPaid() + sale.discount + 0.5) {
       return message.warning('Pagamento inválido')
     }
     if (!items.length) {
       return message.warning('Nenhum item cadastrado para a venda')
     }
+    setSavingSale(true)
     ipcRenderer.send('sale:finish', {
       ...sale,
       change_amount: getChangeAmount(),
     })
     ipcRenderer.once('sale:finish:response', (event, newSale) => {
+      setSavingSale(false)
       message.success('Venda salva com sucesso')
       setItems([])
       setPayments([])
@@ -319,9 +326,8 @@ const Home: React.FC = () => {
                     </PaymentsTypesContainer>
                     <FinishContainer>
                       <Register
+                        isSavingSale={savingSale}
                         registerSale={registerSale}
-                        quantity={sale.quantity}
-                        discount={sale.discount}
                         total={sale.total}
                       />
                     </FinishContainer>

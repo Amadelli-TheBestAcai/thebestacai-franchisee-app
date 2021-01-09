@@ -1,4 +1,7 @@
 import React from 'react'
+
+import { Spin } from 'antd'
+
 import {
   Container,
   Content,
@@ -9,13 +12,12 @@ import {
 } from './styles'
 
 type IProps = {
-  quantity: number
-  discount: number
+  isSavingSale: boolean
   total: number
   registerSale: () => void
 }
 
-const Register: React.FC<IProps> = ({ total, registerSale }) => {
+const Register: React.FC<IProps> = ({ total, registerSale, isSavingSale }) => {
   const monetaryFormat = (value: number): string => {
     if (!value) {
       return '0,00'
@@ -32,7 +34,9 @@ const Register: React.FC<IProps> = ({ total, registerSale }) => {
           </AmountValue>
         </AmountContainer>
       </Content>
-      <Footer onClick={() => registerSale()}>[F1] REGISTRAR</Footer>
+      <Footer onClick={() => registerSale()}>
+        {isSavingSale ? <Spin /> : '[F1] REGISTRAR'}
+      </Footer>
     </Container>
   )
 }
