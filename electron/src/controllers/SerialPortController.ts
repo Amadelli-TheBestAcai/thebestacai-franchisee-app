@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import SerialPort from 'serialport'
 import { sendLog } from '../utils/ApiLog'
+import { sleep } from '../utils/Sleep'
 
 let port: SerialPort = null
 
@@ -39,10 +40,14 @@ ipcMain.on('balance:get', async (event) => {
       /(\d)(?=(\d{3})+(?!\d))/g,
       '$1.'
     )
-    event.reply('balance:get:response', { weight: resultFormatedToNumber })
+    return event.reply('balance:get:response', {
+      weight: resultFormatedToNumber,
+    })
   })
 
   port.write('SYST:ADDR?\n', function (err) {
     err && console.log('err: ' + err)
   })
+  await sleep(2000)
+  return event.reply('balance:get:response', { weight: 0 })
 })
