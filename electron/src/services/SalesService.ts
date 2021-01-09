@@ -126,16 +126,16 @@ class SalesService {
     await SalesRepository.deleteById(oldSale)
   }
 
-  async getPending(): Promise<Sale[]> {
-    return await SalesRepository.getPending()
+  async getOffline(): Promise<Sale[]> {
+    return await SalesRepository.getOffline()
   }
 
   async update(id: string, payload: UpdateSaleDTO): Promise<void> {
     return await SalesRepository.update(id, payload)
   }
 
-  async integratePending(amount_on_close: number, code: string): Promise<void> {
-    const sales = await SalesRepository.getPending()
+  async integrateOffline(amount_on_close: number, code: string): Promise<void> {
+    const sales = await SalesRepository.getOffline()
     const { id: store } = await StoreService.getOne()
     const {
       amount_on_open,
@@ -262,6 +262,10 @@ class SalesService {
         data: [],
       }
     }
+  }
+
+  async getToIntegrate(): Promise<Sale[]> {
+    return await SalesRepository.getToIntegrate()
   }
 }
 

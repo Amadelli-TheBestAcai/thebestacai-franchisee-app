@@ -9,7 +9,7 @@ ipcMain.on('cashier:get', async (event) => {
     const cashes = await CashierService.getCashes()
     const current = await CashierService.getCurrentCashier()
     const is_connected = await checkInternet()
-    const sales = await SalesService.getPending()
+    const sales = await SalesService.getOffline()
     event.reply('cashier:get:response', {
       cashes,
       current,

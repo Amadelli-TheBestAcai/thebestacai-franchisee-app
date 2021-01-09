@@ -22,7 +22,7 @@ class SalesRepository {
       .whereNotNull('cash_history_id')
   }
 
-  async getPending(): Promise<Sale[]> {
+  async getOffline(): Promise<Sale[]> {
     return await knex('sales')
       .where({ to_integrate: true })
       .whereNull('cash_history_id')

@@ -113,21 +113,6 @@ ipcMain.on('sale:command:remove', async (event, sale) => {
   }
 })
 
-ipcMain.on('sale:integrate:pending', async (event, { cash, amount }) => {
-  try {
-    // TODO: VERIFICAR
-    await SalesService.integratePending(amount, cash)
-    event.reply('sale:integrate:pending:response', true)
-  } catch (err) {
-    sendLog({
-      title: 'Erro ao integrar vendas pendentes',
-      payload: { err: err.message, params: { cash, amount } },
-    })
-    event.reply('sale:integrate:pending:response', false)
-    console.error(err)
-  }
-})
-
 ipcMain.on('sale:api:get', async (event) => {
   try {
     const { isConnected, data } = await SalesService.getFromApi()
