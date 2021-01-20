@@ -249,20 +249,30 @@ const Home: React.FC = () => {
   }
 
   const keyMap = {
-    MONEY: 'a',
-    C_CREDIT: 's',
-    C_DEBIT: 'd',
-    TICKET: 't',
+    money: 'a',
+    MONEY: 'A',
+    c_credit: 's',
+    C_CREDIT: 'S',
+    c_debit: 'd',
+    C_DEBIT: 'D',
+    ticket: 't',
+    TICKET: 'T',
     REGISTER: 'f1',
-    FOCUS_BALANCE: 'b',
+    focus_balance: 'b',
+    FOCUS_BALANCE: 'B',
   }
 
   const handlers = {
+    money: () => handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro'),
     MONEY: () => handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro'),
+    c_credit: () => handleOpenPayment(PaymentType.CREDITO, 'Crédito'),
     C_CREDIT: () => handleOpenPayment(PaymentType.CREDITO, 'Crédito'),
+    c_debit: () => handleOpenPayment(PaymentType.DEBITO, 'Débito'),
     C_DEBIT: () => handleOpenPayment(PaymentType.DEBITO, 'Débito'),
+    ticket: () => handleOpenPayment(PaymentType.TICKET, 'Ticket'),
     TICKET: () => handleOpenPayment(PaymentType.TICKET, 'Ticket'),
     REGISTER: () => registerSale(),
+    focus_balance: () => sendFocusToBalance(),
     FOCUS_BALANCE: () => sendFocusToBalance(),
   }
 

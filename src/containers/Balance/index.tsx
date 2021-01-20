@@ -62,25 +62,26 @@ const BalanceContainer: React.FC<IProps> = ({
   }
 
   const handlerEventKey = async (key: string): Promise<void> => {
-    if (key === 'a') {
+    const lowerKey = key.toLowerCase()
+    if (lowerKey === 'a') {
       handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro')
     }
-    if (key === 's') {
+    if (lowerKey === 's') {
       handleOpenPayment(PaymentType.CREDITO, 'Crédito')
     }
-    if (key === 'd') {
+    if (lowerKey === 'd') {
       handleOpenPayment(PaymentType.DEBITO, 'Débito')
     }
-    if (key === 't') {
+    if (lowerKey === 't') {
       handleOpenPayment(PaymentType.TICKET, 'Ticket')
     }
     if (shouldUseBalance && key === 'Enter') {
       handleEnterToSubmit()
     }
-    if (key === 'f1') {
+    if (lowerKey === 'f1') {
       registerSale()
     }
-    if (shouldUseBalance && key === 'b') {
+    if (shouldUseBalance && lowerKey === 'b') {
       await getWeightByBalance()
     }
   }

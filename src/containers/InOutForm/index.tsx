@@ -51,9 +51,11 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
         setReasonType(null)
         message.success('Movimentação cadastrada com sucesso')
         setLoading(false)
-        return setModalState(false)
+        setModalState(false)
+        return document.getElementById('mainContainer').focus()
       }
       message.warning('Erro ao cadastrar movimentação')
+      document.getElementById('mainContainer').focus()
     })
   }
 
