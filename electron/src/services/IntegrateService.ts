@@ -10,6 +10,7 @@ import PaymentsService from '../services/PaymentsService'
 
 import api from '../utils/Api'
 import { sendLog } from '../utils/ApiLog'
+import { checkInternet } from '../utils/InternetConnection'
 
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
 import { Sale } from '../models/Sale'
@@ -212,6 +213,10 @@ class IntegrateService {
   }
 
   async appAlreadyUpdated(): Promise<boolean> {
+    const hasInternet = await checkInternet()
+    if (!hasInternet) {
+      return true
+    }
     const {
       data: {
         data: { version },
