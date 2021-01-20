@@ -1,6 +1,8 @@
 import axios from 'axios'
 import UserService from '../services/UserService'
 import StoreService from '../services/StoreService'
+import { checkInternet } from '../utils/InternetConnection'
+import { Tray } from 'electron'
 
 const API_URL =
   process.env.NODE_ENV === 'development'
@@ -24,16 +26,23 @@ export async function sendLog(message: {
   title: string
   payload: any
 }): Promise<void> {
-  const user = await UserService.getTokenInfo()
-  const store = await StoreService.getOne()
+  const hasInternet = await checkInternet()
+  if (hasInternet) {
+    const user = await UserService.getTokenInfo()
+    const store = await StoreService.getOne()
 
-  const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`
+    const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`
 
-  await api.post('/sales-manager-logs', {
-    title: message.title,
-    from,
-    payload: JSON.stringify(message.payload),
-  })
+    try {
+      await api.post('/sales-manager-logs', {
+        title: message.title,
+        from,
+        payload: JSON.stringify(message.payload),
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  }
 }
 
 export default api
