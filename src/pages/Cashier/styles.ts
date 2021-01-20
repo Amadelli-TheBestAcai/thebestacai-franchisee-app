@@ -20,14 +20,14 @@ export const Container = styled.div`
 export const PrimaryContent = styled.div`
   display: flex;
   flex-grow: 1;
-  flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 `
 
 export const Header = styled.div`
+  display: flex;
   width: 100%;
-  height: 12vh;
+  height: 20%;
 `
 
 export const CashesContainer = styled.div`

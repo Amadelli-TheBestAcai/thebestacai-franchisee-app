@@ -71,7 +71,7 @@ export const Input = styled(MonetaryInput)``
 export const Header = styled(RowAnt)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 25%;
 `

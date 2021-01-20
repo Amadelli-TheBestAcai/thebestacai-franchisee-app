@@ -28,7 +28,6 @@ import {
   Column,
   AmountLabel,
   AmountInput,
-  Title,
   InputPrice,
   FullAmountColumn,
 } from './styles'
@@ -170,37 +169,28 @@ const Cashier: React.FC<IProps> = ({ history }) => {
 
   return (
     <Container>
-      <RouterDescription description="Caixas" />
+      <RouterDescription
+        description={currentCash ? 'Fechamento de Caixa' : 'Abertura de Caixa'}
+      />
       {loadingCashes ? (
         <Spinner />
       ) : (
         <>
           {isConnected && !pendingSale && (
-            <>
-              <Header>
-                <CashInfo />
-              </Header>
-              <Column style={{ height: '8vh', margin: '15px 0' }}>
-                <Title>
-                  {currentCash ? 'Fechamento de Caixa' : 'Abertura de Caixa'}
-                </Title>
-              </Column>
-            </>
+            <Header>
+              <CashInfo />
+            </Header>
           )}
           <>
             {step === 1 && (
               <PrimaryContent>
-                <CashesContainer
-                  style={{ alignItems: isConnected ? 'flex-start' : 'center' }}
-                >
-                  {cashes.map((cash) => (
-                    <Cash
-                      key={cash.cashier}
-                      cash={cash}
-                      handleClick={selectCashier}
-                    />
-                  ))}
-                </CashesContainer>
+                {cashes.map((cash) => (
+                  <Cash
+                    key={cash.cashier}
+                    cash={cash}
+                    handleClick={selectCashier}
+                  />
+                ))}
               </PrimaryContent>
             )}
           </>

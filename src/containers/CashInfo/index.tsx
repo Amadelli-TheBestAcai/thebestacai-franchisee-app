@@ -94,7 +94,7 @@ const CashInfo: React.FC = () => {
                   </Button>
                 </Row>
               )}
-              <Row>
+              <Row justify="space-around">
                 <InfoContainer>
                   <Description>Status:</Description>
                   <ValueContainer

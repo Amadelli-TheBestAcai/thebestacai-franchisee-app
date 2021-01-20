@@ -29,7 +29,7 @@ const Register: React.FC<IProps> = ({ total, registerSale, isSavingSale }) => {
       <Content>
         <AmountContainer style={{ width: '100%' }}>
           <Description>Total</Description>
-          <AmountValue style={{ fontSize: '40px' }}>
+          <AmountValue style={{ fontSize: '35px' }}>
             R$ {monetaryFormat(total)}
           </AmountValue>
         </AmountContainer>
