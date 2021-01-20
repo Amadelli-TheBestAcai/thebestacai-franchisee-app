@@ -3,8 +3,21 @@ import StoreService from '../services/StoreService'
 import ProductsRepository from '../repositories/ProductsRepository'
 import { replaceSpecialChars } from '../utils/replaceSpecialChars'
 import { formaterToCategory } from '../utils/ProductFormater'
+import { checkInternet } from '../utils/InternetConnection'
 class ProductsService {
   async updateAllProducts(products) {
+    const formatedProducts = products.map((productStore) => ({
+      product_id: productStore.product_id,
+      name: productStore.product.name,
+      price_unit: productStore.price_unit,
+      category_id: productStore.product.category_id,
+      category_name: productStore.product.category.name,
+    }))
+    await ProductsRepository.deleteAll()
+    await ProductsRepository.create(formatedProducts)
+  }
+
+  async updateAllProductsOldVersion(products) {
     const formatedProducts = products.map((product) => ({
       product_id: product.product_id,
       name: product.name,
@@ -17,14 +30,27 @@ class ProductsService {
   }
 
   async getOnlineProducts() {
+    const hasInternet = await checkInternet()
+    if (!hasInternet) {
+      return
+    }
     const store = await StoreService.getOne()
     if (!store) {
       return
     }
-    const {
-      data: { data },
-    } = await api.get(`products_store/${store.id}`)
-    this.updateAllProducts(data)
+
+    const isProduction = process.env.NODE_ENV !== 'development'
+    if (isProduction) {
+      const {
+        data: { data },
+      } = await api.get(`products_store/${store.id}`)
+      this.updateAllProductsOldVersion(data)
+    } else {
+      const {
+        data: { content },
+      } = await api.get(`products_store/store/${store.id}`)
+      this.updateAllProducts(content)
+    }
   }
 
   async getProducts() {
