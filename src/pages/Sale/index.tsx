@@ -79,10 +79,10 @@ const Sale: React.FC<IProps> = ({ history }) => {
           (event, { success, data }) => {
             setIsLoading(false)
             if (!success) {
-              message.warning('Falha ao remover movimentação')
+              message.warning('Falha ao remover venda')
             }
             setSales(data)
-            message.success('Movimentação removida com sucesso')
+            message.success('Venda removida com sucesso')
           }
         )
       },
