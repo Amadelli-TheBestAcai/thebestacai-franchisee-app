@@ -24,11 +24,8 @@ class UserService {
     if (!user) {
       return false
     }
-    const isValidUser = compare(password, user.password)
-    if (!isValidUser) {
-      return false
-    }
-    return true
+
+    return await compare(password, user.password)
   }
 
   async onlineLogin({ username, password }): Promise<null | string> {
