@@ -151,6 +151,10 @@ const Home: React.FC = () => {
   }
 
   const addDiscount = (value: number): void => {
+    if (value > sale.total) {
+      message.warning('Desconto maior que o valor da venda.')
+      return
+    }
     setSale((oldValues) => ({ ...oldValues, discount: value }))
   }
 
