@@ -39,17 +39,17 @@ class ProductsService {
       return
     }
 
-    const isProduction = process.env.NODE_ENV !== 'development'
-    if (isProduction) {
-      const {
-        data: { data },
-      } = await api.get(`products_store/${store.id}`)
-      this.updateAllProductsOldVersion(data)
-    } else {
+    const isDev = process.env.NODE_ENV === 'development'
+    if (isDev) {
       const {
         data: { content },
       } = await api.get(`products_store/store/${store.id}`)
       this.updateAllProducts(content)
+    } else {
+      const {
+        data: { data },
+      } = await api.get(`products_store/${store.id}`)
+      this.updateAllProductsOldVersion(data)
     }
   }
 
