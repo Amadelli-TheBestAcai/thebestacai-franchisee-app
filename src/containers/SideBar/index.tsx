@@ -13,6 +13,7 @@ import {
   Money,
   Home,
   IconContainer,
+  BoxIcon,
 } from './styles'
 
 type IProps = RouteComponentProps
@@ -82,6 +83,14 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
         <ArrowIcon
           style={{ color: isRoute('/handler') ? 'black' : '#FF9D0A' }}
           onClick={() => handleClick('/handler')}
+        />
+      </IconContainer>
+      <IconContainer
+        style={{ background: isRoute('/stock') ? '#FF9D0A' : 'black' }}
+      >
+        <BoxIcon
+          style={{ color: isRoute('/stock') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/stock')}
         />
       </IconContainer>
       {hasPermission && (

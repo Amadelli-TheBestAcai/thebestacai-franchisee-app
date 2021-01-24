@@ -5,6 +5,7 @@ import StoreRepository from '../repositories/StoreRepository'
 
 import { CreateStoreDTO } from '../../../shared/dtos/store/CreateStoreDTO'
 import { Store } from '../../../shared/models/store'
+import { ProductStore } from '../../../shared/models/productStore'
 
 import { checkInternet } from '../utils/InternetConnection'
 
@@ -42,6 +43,19 @@ class StoreService {
         name: store.store,
       }))
       return formatedStores
+    } else {
+      return []
+    }
+  }
+
+  async getAllProducts(): Promise<ProductStore[]> {
+    const isOnline = await checkInternet()
+    if (isOnline) {
+      const { id } = await this.getOne()
+      const {
+        data: { content },
+      } = await api.get(`/products_store/store/${id}`)
+      return content
     } else {
       return []
     }

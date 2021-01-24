@@ -43,3 +43,17 @@ ipcMain.on('store:getAll', async (event) => {
     console.error(err)
   }
 })
+
+ipcMain.on('store:products:get', async (event) => {
+  try {
+    const products = await StoreService.getAllProducts()
+    event.reply('store:products:get:response', products)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter todos os produtos da loja',
+      payload: err.message,
+    })
+    event.reply('store:products:get:response', [])
+    console.error(err)
+  }
+})

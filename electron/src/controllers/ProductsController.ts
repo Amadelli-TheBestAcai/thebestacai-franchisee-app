@@ -42,3 +42,43 @@ ipcMain.on('products:get:selfService', async (event) => {
     console.error(err)
   }
 })
+
+ipcMain.on('products:stock:update', async (event, { id, quantity }) => {
+  try {
+    await ProductsService.updateStock(id, quantity)
+    event.reply('products:stock:update:response', true)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao atualizar estoque',
+      payload: err.message,
+    })
+    event.reply('products:stock:update:response', false)
+    console.error(err)
+  }
+})
+
+ipcMain.on('products:audit:get', async (event, { id, page, size }) => {
+  try {
+    const { audits, totalElements } = await ProductsService.getAudit(
+      id,
+      page,
+      size
+    )
+    event.reply('products:audit:get:response', {
+      audits,
+      totalElements,
+      status: true,
+    })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter histórico de auditoria do produto',
+      payload: err.message,
+    })
+    event.reply('products:audit:get:response', {
+      audits: [],
+      totalElements: 0,
+      status: false,
+    })
+    console.error(err)
+  }
+})
