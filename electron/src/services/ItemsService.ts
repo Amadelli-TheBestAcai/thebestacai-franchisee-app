@@ -15,7 +15,7 @@ class ItemsService {
       item.product_id,
       sale_id
     )
-    if (oldItem && oldItem.product_id !== 1) {
+    if (oldItem && oldItem.category_id !== 1) {
       const payload: CreateItemDTO = {
         ...oldItem,
         total: +oldItem.total + +item.total,
@@ -51,7 +51,9 @@ class ItemsService {
     const items = await ItemsRepository.getBySale(sale_id)
     return items.map((item) => ({
       product_id: item.product_id,
+      product_store_id: item.product_store_id,
       quantity: item.quantity,
+      update_stock: item.category_id !== 1,
     }))
   }
 

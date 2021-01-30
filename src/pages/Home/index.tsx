@@ -89,17 +89,25 @@ const Home: React.FC = () => {
   }, [])
 
   const addItem = (
-    { product_id, price_unit, name }: Product,
+    {
+      product_id,
+      price_unit,
+      name,
+      category: { id },
+      product_store_id,
+    }: Product,
     quantity: number,
     total?: number
   ): void => {
     ipcRenderer.send('item:add', {
       sale: sale.id,
       name,
+      product_store_id,
       price_unit,
       product_id,
       total: total || price_unit,
       quantity,
+      category_id: id,
     })
     ipcRenderer.once('item:add:response', (event, { sale, items }) => {
       setItems(items)
@@ -202,7 +210,10 @@ const Home: React.FC = () => {
     if (savingSale) {
       return
     }
-    if (+sale.total.toFixed(2) > getTotalPaid() + sale.discount + 0.5) {
+    if (
+      +(sale.total.toFixed(2) || 0) >
+      getTotalPaid() + (sale.discount || 0) + 0.5
+    ) {
       return message.warning('Pagamento inválido')
     }
     if (!items.length) {
@@ -232,8 +243,9 @@ const Home: React.FC = () => {
   }
 
   const getChangeAmount = (): number => {
-    const totalPaid = getTotalPaid()
-    const changeAmount = totalPaid - (+sale.total?.toFixed(2) - +sale.discount)
+    const totalPaid = +getTotalPaid().toFixed(2)
+    const changeAmount =
+      totalPaid - (+sale.total?.toFixed(2) - +sale.discount.toFixed(2))
     return changeAmount || 0
   }
 

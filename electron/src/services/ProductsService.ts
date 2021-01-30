@@ -12,23 +12,12 @@ import { Audit as AuditModel } from '../../../shared/models/audit'
 class ProductsService {
   async updateAllProducts(products) {
     const formatedProducts = products.map((productStore) => ({
+      product_store_id: productStore.id,
       product_id: productStore.product_id,
       name: productStore.product.name,
       price_unit: productStore.price_unit,
       category_id: productStore.product.category_id,
       category_name: productStore.product.category.name,
-    }))
-    await ProductsRepository.deleteAll()
-    await ProductsRepository.create(formatedProducts)
-  }
-
-  async updateAllProductsOldVersion(products) {
-    const formatedProducts = products.map((product) => ({
-      product_id: product.product_id,
-      name: product.name,
-      price_unit: product.price_unit,
-      category_id: product.category.id,
-      category_name: product.category.name,
     }))
     await ProductsRepository.deleteAll()
     await ProductsRepository.create(formatedProducts)
@@ -44,18 +33,10 @@ class ProductsService {
       return
     }
 
-    const isDev = process.env.NODE_ENV === 'development'
-    if (isDev) {
-      const {
-        data: { content },
-      } = await api.get(`products_store/store/${store.id}`)
-      this.updateAllProducts(content)
-    } else {
-      const {
-        data: { data },
-      } = await api.get(`products_store/${store.id}`)
-      this.updateAllProductsOldVersion(data)
-    }
+    const {
+      data: { content },
+    } = await api.get(`products_store/store/${store.id}`)
+    this.updateAllProducts(content)
   }
 
   async getProducts() {
@@ -63,6 +44,7 @@ class ProductsService {
     const formatedProducts = products
       .map((product) => ({
         product_id: product.product_id,
+        product_store_id: product.product_store_id,
         name: product.name,
         price_unit: product.price_unit,
         category: { id: product.category_id, name: product.category_name },
@@ -83,6 +65,7 @@ class ProductsService {
     const serfService = await ProductsRepository.getSelfService()
     return {
       product_id: serfService?.product_id,
+      product_store_id: serfService?.product_store_id,
       name: serfService?.name,
       price_unit: serfService?.price_unit,
       category: {

@@ -4,6 +4,8 @@ exports.up = async (knex) =>
     table.string('sale_id')
     table.string('name')
     table.integer('product_id')
+    table.integer('category_id')
+    table.integer('product_store_id')
     table.decimal('price_unit', 8, 2)
     table.decimal('quantity', 8, 2)
     table.decimal('total', 8, 2)

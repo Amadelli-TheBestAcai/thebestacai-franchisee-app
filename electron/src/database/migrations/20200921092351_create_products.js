@@ -1,6 +1,7 @@
 exports.up = async (knex) =>
   knex.schema.createTable('products', (table) => {
     table.integer('product_id')
+    table.integer('product_store_id')
     table.integer('category_id')
     table.string('name')
     table.string('category_name')

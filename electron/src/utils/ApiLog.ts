@@ -2,7 +2,6 @@ import axios from 'axios'
 import UserService from '../services/UserService'
 import StoreService from '../services/StoreService'
 import { checkInternet } from '../utils/InternetConnection'
-import { Tray } from 'electron'
 
 const API_URL =
   process.env.NODE_ENV === 'development'

@@ -1,5 +1,6 @@
 import { Handler } from '../models/Handler'
 import { Sale } from '../models/Sale'
+import { SalesTypes } from '../models/enums/SalesTypes'
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
 
 type FormatedSale = {
@@ -21,7 +22,7 @@ export const formatSalesToIntegrate = (
   const formatedSales = sales.map((sale) => ({
     id: sale.id,
     change_amount: sale.change_amount,
-    type: sale.type,
+    type: SalesTypes[sale.type],
     discount: sale.discount,
     cash_id: cash_id || sale.cash_id,
     cash_code: sale.cash_code,

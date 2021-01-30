@@ -142,11 +142,7 @@ class IntegrateService {
       formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
         const items = await ItemsService.getItemsToIntegrate(id)
         const quantity = getQuantityItems(items)
-        let payments = await PaymentsService.getPaymentsToIntegrate(id)
-        payments = payments.map((payment) => ({
-          ...payment,
-          type: PaymentType[payment.type],
-        }))
+        const payments = await PaymentsService.getPaymentsToIntegrate(id)
         const saleToIntegrate = {
           ...payload,
           quantity,

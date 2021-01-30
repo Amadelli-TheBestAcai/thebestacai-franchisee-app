@@ -28,7 +28,7 @@ class PaymentsService {
     const payments = await PaymentsRepository.getBySale(sale_id)
     return payments.map((payment) => ({
       amount: payment.amount,
-      type: payment.type,
+      type: +payment.type,
     }))
   }
 }
