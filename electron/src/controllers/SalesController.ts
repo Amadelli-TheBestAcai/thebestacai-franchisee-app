@@ -115,8 +115,8 @@ ipcMain.on('sale:command:remove', async (event, sale) => {
 
 ipcMain.on('sale:api:get', async (event) => {
   try {
-    const { isConnected, data } = await SalesService.getFromApi()
-    event.reply('sale:api:get:response', { isConnected, data })
+    const { isConnected, sales } = await SalesService.getFromApi()
+    event.reply('sale:api:get:response', { isConnected, data: sales })
   } catch (err) {
     sendLog({
       title: 'Erro ao obter vendas da api',
@@ -137,6 +137,34 @@ ipcMain.on('sale:api:delete', async (event, id) => {
       payload: { err: err.message, params: { id } },
     })
     event.reply('sale:api:delete:response', { success: false, data: [] })
+    console.error(err)
+  }
+})
+
+ipcMain.on('appSale:get', async (event) => {
+  try {
+    const { hasInternet, sales } = await SalesService.getAppSalesToIntegrate()
+    event.reply('appSale:get:response', { hasInternet, sales })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas do APP',
+      payload: { err: err.message },
+    })
+    event.reply('appSale:get:response', { hasInternet: false, sales: [] })
+    console.error(err)
+  }
+})
+
+ipcMain.on('appSale:integrate', async (event, payload) => {
+  try {
+    await SalesService.integrateAppSales(payload)
+    event.reply('appSale:integrate:response', true)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao integrar vendas do app',
+      payload: { err: err.message },
+    })
+    event.reply('appSale:integrate:response', false)
     console.error(err)
   }
 })

@@ -3,9 +3,13 @@ import {
   PaymentResponse,
 } from '../../../shared/httpResponses/salesHistoryResponse'
 import { Balance } from '../../../shared/models/balance'
+import { AppSale } from '../../../shared/models/appSales'
 import { PaymentType } from '../../../shared/enums/paymentType'
 
-export const getBalance = (sales: SalesHistory[]): Balance => {
+export const getBalance = (
+  sales: SalesHistory[],
+  appSales: AppSale[]
+): Balance => {
   const balance: Balance = {
     store: {
       total: 0,
@@ -50,7 +54,28 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
       balance.billing.delivery_sales += 1
     }
   })
-  balance.billing.sales = sales.length
+
+  const salesResult = {
+    sales_in_delivery: appSales.length,
+    total: appSales.reduce((total, sale) => total + +sale.valor_pedido, 0),
+    money: appSales
+      .filter((sale) => +sale.tipo_pagamento === PaymentType.MONEY)
+      .reduce((total, sale) => total + +sale.valor_pedido, 0),
+    debit_card: appSales
+      .filter((sale) => +sale.tipo_pagamento === PaymentType.CREDIT_CARD)
+      .reduce((total, sale) => total + +sale.valor_pedido, 0),
+    credit_card: appSales
+      .filter((sale) => +sale.tipo_pagamento === PaymentType.DEBIT_CARD)
+      .reduce((total, sale) => total + +sale.valor_pedido, 0),
+  }
+
+  balance.delivery.total += salesResult.total
+  balance.delivery.money += salesResult.money
+  balance.delivery.credit += salesResult.credit_card
+  balance.delivery.debit += salesResult.debit_card
+  balance.billing.delivery_sales += salesResult.sales_in_delivery
+
+  balance.billing.sales = sales.length + salesResult.sales_in_delivery
   balance.billing.total = +(
     balance.store.total + balance.delivery.total
   ).toFixed(2)
@@ -60,6 +85,7 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
   balance.billing.store_ticket = +(
     balance.store.total / (balance.billing.store_sales || 1)
   ).toFixed(2)
+
   return balance
 }
 

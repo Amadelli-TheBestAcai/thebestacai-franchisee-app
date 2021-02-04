@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { ipcRenderer } from 'electron'
 
+import DisconectedForm from '../../containers/DisconectedForm'
+import Centralizer from '../../containers/Centralizer'
 import RouterDescription from '../../components/RouterDescription'
 import CashNotFound from '../../components/CashNotFound'
+import AppSale from '../../components/AppSale'
+
+import { AppSale as AppSaleModel } from '../../../shared/models/appSales'
+import { IntegrateAppSalesDTO } from '../../../shared/dtos/appSales/IntegrateAppSalesDTO'
+import { PaymentType } from '../../../shared/enums/paymentType'
+
+import { currencyFormater } from '../../helpers/currencyFormater'
 
 import {
   Container,
@@ -26,9 +36,16 @@ import {
   RegisterButton,
   InputGroup,
   InputDescription,
+  SalesContainer,
+  SalesList,
+  SalesDescription,
+  SalesListHeader,
+  Column,
+  Title,
+  SalesTable,
 } from './styles'
 
-import { message, Modal, Spin } from 'antd'
+import { message, Modal, Spin, Button, Empty } from 'antd'
 
 import { Sale } from '../../models/sale'
 import { Cashier } from '../../models/cashier'
@@ -40,9 +57,18 @@ import ImageLogo from '../../assets/img/logo-login.png'
 
 const { confirm } = Modal
 
-const Delivery: React.FC = () => {
+type ComponentProps = RouteComponentProps
+
+const Delivery: React.FC<ComponentProps> = ({ history }) => {
   const [sale, setSale] = useState<Sale | null>(null)
   const [cashier, setCashier] = useState<Cashier>()
+  const [sales, setSales] = useState<AppSaleModel[]>([])
+  const [hasConnection, setHasConnection] = useState<AppSaleModel[]>([])
+  const [
+    appSalesResult,
+    setAppSalesResult,
+  ] = useState<IntegrateAppSalesDTO | null>(null)
+  const [loadingSales, setLoadingSales] = useState(false)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [paymentType, setPaymentType] = useState<number>(0)
   const [amount, setAmount] = useState<number>()
@@ -69,6 +95,34 @@ const Delivery: React.FC = () => {
       }))
       setLoading(false)
     })
+  }, [])
+
+  useEffect(() => {
+    setLoadingSales(true)
+    ipcRenderer.send('appSale:get')
+    ipcRenderer.once(
+      'appSale:get:response',
+      (event, { sales, hasInternet }) => {
+        setHasConnection(hasInternet)
+        setSales(sales)
+        setLoadingSales(false)
+        const salesResult: IntegrateAppSalesDTO = {
+          sales_in_delivery: sales.length,
+          total: sales.reduce((total, sale) => total + +sale.valor_pedido, 0),
+          money: sales
+            .filter((sale) => +sale.tipo_pagamento === PaymentType.MONEY)
+            .reduce((total, sale) => total + +sale.valor_pedido, 0),
+          debit_card: sales
+            .filter((sale) => +sale.tipo_pagamento === PaymentType.CREDIT_CARD)
+            .reduce((total, sale) => total + +sale.valor_pedido, 0),
+          credit_card: sales
+            .filter((sale) => +sale.tipo_pagamento === PaymentType.DEBIT_CARD)
+            .reduce((total, sale) => total + +sale.valor_pedido, 0),
+          salesIds: sales.map((sale) => sale.id),
+        }
+        setAppSalesResult(salesResult)
+      }
+    )
   }, [])
 
   const handlePlatform = (value: string) => {
@@ -121,6 +175,30 @@ const Delivery: React.FC = () => {
           }
           setLoading(false)
           setAmount(0)
+        })
+      },
+    })
+  }
+
+  const handleUpdateProduct = async () => {
+    confirm({
+      title: 'Integrar Vendas',
+      content:
+        'Gostaria de prosseguir com a integração das vendas ao caixa atual?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      async onOk() {
+        setLoadingSales(true)
+        ipcRenderer.send('appSale:integrate', appSalesResult)
+        ipcRenderer.once('appSale:integrate:response', (event, status) => {
+          if (status) {
+            message.success('Vendas integradas com sucesso.')
+            history.push('/home')
+          } else {
+            message.error('Erro ao integrar vendas')
+          }
+          setLoadingSales(false)
         })
       },
     })
@@ -183,29 +261,95 @@ const Delivery: React.FC = () => {
                 </PaymentItem>
               </Radio.Group>
             </PaymentContainer>
-            {isLoading ? (
-              <Spin />
-            ) : (
-              <RegisterContainer>
-                <InputGroup>
-                  <InputDescription>Valor do Delivery</InputDescription>
-                  <InputPrice
-                    getValue={(value) => setAmount(value)}
-                    onEnterPress={handleCreateSale}
-                  />
-                </InputGroup>
-                <RegisterButton onClick={() => handleCreateSale()}>
-                  Registrar
-                </RegisterButton>
-              </RegisterContainer>
-            )}
+
+            <RegisterContainer>
+              <InputGroup>
+                <InputDescription>Valor do Delivery</InputDescription>
+                <InputPrice
+                  getValue={(value) => setAmount(value)}
+                  onEnterPress={handleCreateSale}
+                />
+              </InputGroup>
+
+              <RegisterButton onClick={() => handleCreateSale()}>
+                {isLoading ? <Spin /> : 'Registrar'}
+              </RegisterButton>
+            </RegisterContainer>
           </MainContainer>
         </>
       ) : (
         <CashNotFound />
       )}
+      <SalesContainer>
+        {loadingSales ? (
+          <Centralizer>
+            <Spin />
+          </Centralizer>
+        ) : (
+          <>
+            {hasConnection ? (
+              <>
+                {sales.length ? (
+                  <>
+                    <SalesTable>
+                      <SalesListHeader>
+                        <Column sm={2}>
+                          <Title>Código</Title>
+                        </Column>
+                        <Column sm={4}>
+                          <Title>Valor Pedido</Title>
+                        </Column>
+                        <Column sm={4}>
+                          <Title>Valor Produtos</Title>
+                        </Column>
+                        <Column sm={4}>
+                          <Title>Valor Entrega</Title>
+                        </Column>
+                        <Column sm={5}>
+                          <Title>Data Pedido</Title>
+                        </Column>
+                        <Column sm={5}>
+                          <Title>Data Conclusão</Title>
+                        </Column>
+                      </SalesListHeader>
+                      <SalesList>
+                        {sales.map((sale) => (
+                          <AppSale key={sale.id} {...sale} />
+                        ))}
+                      </SalesList>
+                    </SalesTable>
+
+                    <SalesDescription>
+                      <span>Total em Dinheiro</span>
+                      <p>{currencyFormater(appSalesResult?.money)}R$</p>
+                      <span>Total em Débito</span>
+                      <p>{currencyFormater(appSalesResult?.debit_card)}R$</p>
+                      <span>Total em Crédito</span>
+                      <p>{currencyFormater(appSalesResult?.credit_card)}R$</p>
+                      <span>Total:</span>
+                      <p>{currencyFormater(appSalesResult?.total)}R$</p>
+                      <Button
+                        type="primary"
+                        onClick={() => handleUpdateProduct()}
+                      >
+                        Integrar
+                      </Button>
+                    </SalesDescription>
+                  </>
+                ) : (
+                  <Centralizer>
+                    <Empty description="Nenhuma venda localizada" />
+                  </Centralizer>
+                )}
+              </>
+            ) : (
+              <DisconectedForm />
+            )}
+          </>
+        )}
+      </SalesContainer>
     </Container>
   )
 }
 
-export default Delivery
+export default withRouter(Delivery)

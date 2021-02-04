@@ -15,6 +15,9 @@ import { v4 as uuidv4 } from 'uuid'
 import { checkInternet } from '../utils/InternetConnection'
 import { getNow } from '../utils/DateHandler'
 import { sendLog } from '../utils/ApiLog'
+
+import { AppSale } from '../../../shared/models/appSales'
+import { IntegrateAppSalesDTO } from '../../../shared/dtos/appSales/IntegrateAppSalesDTO'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
     const cashier = await CashierService.getCurrentCashier()
@@ -26,7 +29,6 @@ class SalesService {
       store_id: cashier.store_id,
       cash_id: cashier.cash_id,
       cash_code: cashier.code,
-      cash_history_id: cashier.history_id,
       change_amount: 0,
       type: 'STORE',
       discount: 0,
@@ -55,12 +57,14 @@ class SalesService {
   }
 
   async finishSale(payload: CreateSaleDTO): Promise<void> {
+    const cashier = await CashierService.getCurrentCashier()
     const sale = await SalesRepository.getById(payload.id)
     if (sale) {
       await SalesRepository.update(payload.id, {
         ...payload,
         is_current: false,
         to_integrate: true,
+        cash_history_id: cashier.history_id,
       })
     } else {
       await SalesRepository.create(payload)
@@ -181,12 +185,13 @@ class SalesService {
 
   async getFromApi(
     withClosedCash = false
-  ): Promise<{ isConnected: boolean; data: any[] }> {
+  ): Promise<{ isConnected: boolean; sales: any[]; appSales: any[] }> {
     const isConnected = await checkInternet()
     if (!isConnected) {
       return {
         isConnected,
-        data: [],
+        sales: [],
+        appSales: [],
       }
     }
     const currentCash = await CashierService.getCurrentCashier()
@@ -194,29 +199,35 @@ class SalesService {
     if (!currentCash) {
       return {
         isConnected,
-        data: [],
+        sales: [],
+        appSales: [],
       }
     }
 
     if (!withClosedCash && currentCash?.is_opened !== 1) {
       return {
         isConnected,
-        data: [],
+        sales: [],
+        appSales: [],
       }
     }
     const { store_id, code } = currentCash
     if (!store_id || !code) {
       return {
         isConnected,
-        data: [],
+        sales: [],
+        appSales: [],
       }
     }
     const {
-      data: { data },
+      data: {
+        data: { sales, appSales },
+      },
     } = await api.get(`/current_sales_history/${store_id}-${code}`)
     return {
       isConnected,
-      data: data || [],
+      sales,
+      appSales,
     }
   }
 
@@ -246,10 +257,10 @@ class SalesService {
 
     try {
       await api.delete(`/sales/${id}`)
-      const { data } = await this.getFromApi()
+      const { sales } = await this.getFromApi()
       return {
         success: true,
-        data,
+        data: sales,
       }
     } catch (err) {
       sendLog({
@@ -262,6 +273,47 @@ class SalesService {
         data: [],
       }
     }
+  }
+
+  async getAppSalesToIntegrate(): Promise<{
+    hasInternet: boolean
+    sales: AppSale[]
+  }> {
+    const isConnected = await checkInternet()
+    if (!isConnected) {
+      return {
+        hasInternet: false,
+        sales: [],
+      }
+    }
+
+    const currentCash = await CashierService.getCurrentCashier()
+    if (!currentCash || currentCash?.is_opened !== 1) {
+      throw new Error('Caixa fechado')
+    }
+
+    const { store_id } = currentCash
+    if (!store_id) {
+      throw new Error('Id da loja não encontrado')
+    }
+
+    const {
+      data: { content },
+    } = await api.get(`/app_sale/${store_id}/toIntegrate`)
+
+    return {
+      hasInternet: true,
+      sales: content,
+    }
+  }
+
+  async integrateAppSales(payload: IntegrateAppSalesDTO): Promise<void> {
+    const { history_id } = await CashierService.getCurrentCashier()
+    if (!history_id) {
+      throw new Error('Histórico do caixa não encontrado')
+    }
+
+    await api.post('/app_sale/integrate', { historyId: history_id, payload })
   }
 
   async getToIntegrate(): Promise<Sale[]> {

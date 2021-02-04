@@ -120,8 +120,8 @@ class CashierService {
   }
 
   async getBalance(): Promise<{ isConnected: boolean; balance: any }> {
-    const { isConnected, data } = await SalesService.getFromApi(true)
-    const balance = getBalance(data)
+    const { isConnected, sales, appSales } = await SalesService.getFromApi(true)
+    const balance = getBalance(sales, appSales)
     return {
       isConnected,
       balance,
