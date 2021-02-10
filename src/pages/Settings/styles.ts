@@ -9,20 +9,29 @@ export const Container = styled.div`
   background: #fff;
 `
 
-export const CardContainer = styled.div`
+export const Content = styled.div`
   display: flex;
-  width: 45%;
-  height: 75%;
+  flex-direction: column;
+  width: 100%;
+  height: 85%;
   justify-content: flex-start;
   align-items: flex-start;
+  padding: 25px;
+`
+
+export const Footer = styled.div`
+  display: flex;
+  width: 100%;
+  flex-grow: 1;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 25px;
 `
 
 export const InfoGroup = styled.div`
   display: flex;
   flex-direction: column;
   height: min-content;
-  margin-left: 25px;
-  margin-top: 25px;
 
   p {
     font-size: 16px;

@@ -11,7 +11,11 @@ class SettingsService {
   async getOneOrCreate(): Promise<Settings> {
     const setting = await SettingsRepository.getOne()
     if (!setting) {
-      const newSetting: Settings = { id: uuidv4(), disabled_balance: false }
+      const newSetting: Settings = {
+        id: uuidv4(),
+        disabled_balance: false,
+        balance_port: 'COM1',
+      }
       await SettingsRepository.create(newSetting)
       return newSetting
     }

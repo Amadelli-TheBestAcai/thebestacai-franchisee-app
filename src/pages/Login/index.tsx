@@ -58,6 +58,7 @@ const Login: React.FC<IProps> = ({ history }) => {
     ipcRenderer.once('user:login', (event, { isValid, user }) => {
       setLoading(false)
       if (isValid) {
+        ipcRenderer.send('balance:connect')
         ipcRenderer.send('integrate:checkAppVersion')
         ipcRenderer.once(
           'integrate:checkAppVersion:response',
