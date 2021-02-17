@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import SettingsService from '../services/SettingsService'
 import { sendLog } from '../utils/ApiLog'
+import Printer from 'printer'
 
 ipcMain.on('configuration:get', async (event) => {
   try {
@@ -28,4 +29,8 @@ ipcMain.on('configuration:update', async (event, payload) => {
     console.log(err)
     event.reply('configuration:update:response', { status: false })
   }
+})
+
+ipcMain.on('configuration:printers:get', async (event) => {
+  event.reply('configuration:printers:get:response', Printer.getPrinters().map(printer => printer.name))
 })

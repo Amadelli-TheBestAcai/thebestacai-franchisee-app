@@ -15,14 +15,21 @@ const { Option } = Select
 
 const Settings: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
+  const [printers, setPrinters] = useState<string[]>([])
   const [settings, setSettings] = useState<SettingsModel | null>(null)
 
   useEffect(() => {
     ipcRenderer.send('configuration:get')
     ipcRenderer.once('configuration:get:response', (event, settings) => {
-      console.log(settings)
       setSettings(settings)
-      setIsLoading(false)
+      ipcRenderer.send('configuration:printers:get')
+      ipcRenderer.once(
+        'configuration:printers:get:response',
+        (event, printers) => {
+          setPrinters(printers)
+          setIsLoading(false)
+        }
+      )
     })
   }, [])
 
@@ -89,12 +96,21 @@ const Settings: React.FC = () => {
             )}
             <InfoGroup>
               <p>Impressora</p>
-              <Input
-                value={settings.printer}
-                onChange={({ target: { value } }) =>
-                  setSettings((oldValues) => ({ ...oldValues, printer: value }))
+              <Select
+                defaultValue={settings.printer}
+                onChange={(value) =>
+                  setSettings((oldValues) => ({
+                    ...oldValues,
+                    printer: value.toString(),
+                  }))
                 }
-              />
+              >
+                {printers.map((printer) => (
+                  <Option key={printer} value={printer}>
+                    {printer}
+                  </Option>
+                ))}
+              </Select>
             </InfoGroup>
           </Content>
           <Footer>
