@@ -7,7 +7,7 @@ import Spinner from '../../components/Spinner'
 import Centralizer from '../../containers/Centralizer'
 
 import { Container, Content, InfoGroup, Check, Footer } from './styles'
-import { message, Select, Button } from 'antd'
+import { message, Select, Button, Input } from 'antd'
 
 import { Settings as SettingsModel } from '../../../shared/models/settings'
 
@@ -20,6 +20,7 @@ const Settings: React.FC = () => {
   useEffect(() => {
     ipcRenderer.send('configuration:get')
     ipcRenderer.once('configuration:get:response', (event, settings) => {
+      console.log(settings)
       setSettings(settings)
       setIsLoading(false)
     })
@@ -70,7 +71,7 @@ const Settings: React.FC = () => {
               <InfoGroup>
                 <p>Porta da Balança</p>
                 <Select
-                  value={settings.balance_port}
+                  defaultValue={settings.balance_port}
                   onChange={(value) =>
                     setSettings((oldValues) => ({
                       ...oldValues,
@@ -86,6 +87,15 @@ const Settings: React.FC = () => {
                 </Select>
               </InfoGroup>
             )}
+            <InfoGroup>
+              <p>Impressora</p>
+              <Input
+                value={settings.printer}
+                onChange={({ target: { value } }) =>
+                  setSettings((oldValues) => ({ ...oldValues, printer: value }))
+                }
+              />
+            </InfoGroup>
           </Content>
           <Footer>
             <Button onClick={() => handleSubmit()}>Salvar</Button>

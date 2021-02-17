@@ -15,6 +15,7 @@ class SettingsService {
         id: uuidv4(),
         disabled_balance: false,
         balance_port: 'COM1',
+        printer: 'EPSON TM-T20X Receipt'
       }
       await SettingsRepository.create(newSetting)
       return newSetting

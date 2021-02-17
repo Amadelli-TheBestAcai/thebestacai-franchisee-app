@@ -3,7 +3,7 @@ exports.up = async (knex) =>
     table.string('id')
     table.boolean('disabled_balance')
     table.string('balance_port')
-    table.string('printer_port')
+    table.string('printer')
   })
 
 exports.down = async (knex) => knex.schema.dropTable('settings')

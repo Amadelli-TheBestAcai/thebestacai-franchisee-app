@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 
 import { Sale } from '../../models/sale'
+import { SaleOption } from '../../../shared/models/saleOption'
 import { Cashier } from '../../models/cashier'
 import { Product } from '../../models/product'
 import { Item } from '../../models/saleItem'
@@ -38,6 +39,7 @@ import {
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [savingSale, setSavingSale] = useState(false)
+  const [saleOption, setSaleOption] = useState<SaleOption | null>(null)
   const [sale, setSale] = useState<Sale>()
   const [cashier, setCashier] = useState<Cashier>()
   const [items, setItems] = useState<Item[]>([])
@@ -219,18 +221,52 @@ const Home: React.FC = () => {
     if (!items.length) {
       return message.warning('Nenhum item cadastrado para a venda')
     }
-    setSavingSale(true)
-    ipcRenderer.send('sale:finish', {
-      ...sale,
-      change_amount: getChangeAmount(),
-    })
-    ipcRenderer.once('sale:finish:response', (event, newSale) => {
-      setSavingSale(false)
-      message.success('Venda salva com sucesso')
-      setItems([])
-      setPayments([])
-      setSale(newSale)
-      document.getElementById('balanceInput').focus()
+    Modal.confirm({
+      title: 'Impressão de Cupom',
+      content: 'Gostaria de realizar a impressão do cupom desta venda?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      async onOk() {
+        setSavingSale(true)
+        ipcRenderer.send('sale:finish', {
+          sale: {
+            ...sale,
+            change_amount: getChangeAmount(),
+          },
+          saleOptions: {
+            printer: true,
+          },
+        })
+        ipcRenderer.once('sale:finish:response', (event, newSale) => {
+          setSavingSale(false)
+          message.success('Venda salva com sucesso')
+          setItems([])
+          setPayments([])
+          setSale(newSale)
+          document.getElementById('balanceInput').focus()
+        })
+      },
+      onCancel() {
+        setSavingSale(true)
+        ipcRenderer.send('sale:finish', {
+          sale: {
+            ...sale,
+            change_amount: getChangeAmount(),
+          },
+          saleOptions: {
+            printer: false,
+          },
+        })
+        ipcRenderer.once('sale:finish:response', (event, newSale) => {
+          setSavingSale(false)
+          message.success('Venda salva com sucesso')
+          setItems([])
+          setPayments([])
+          setSale(newSale)
+          document.getElementById('balanceInput').focus()
+        })
+      },
     })
   }
 

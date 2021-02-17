@@ -15,8 +15,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { checkInternet } from '../utils/InternetConnection'
 import { getNow } from '../utils/DateHandler'
 import { sendLog } from '../utils/ApiLog'
+import { printSale } from '../utils/PrintSale'
 
 import { AppSale } from '../../../shared/models/appSales'
+import { SaleOption } from '../../../shared/models/saleOption'
 import { IntegrateAppSalesDTO } from '../../../shared/dtos/appSales/IntegrateAppSalesDTO'
 class SalesService {
   async create(): Promise<CreateSaleDTO> {
@@ -77,7 +79,7 @@ class SalesService {
     } else if (options.emit_nfce && !options.printer) {
       // TODO: emitir nota fiscal e NAO gerar cupom
     } else if (options.printer) {
-      // TODO: printar itens da venda sem incluir nfce no cupom
+      printSale(payload)
     }
     if (hasInternet) {
       await IntegrateService.integrateOnlineSales()
