@@ -11,7 +11,6 @@ module.exports = {
   target: 'electron-main',
   externals: {
     serialport: 'commonjs serialport',
-    serialport: 'commonjs serialport',
     knex: 'commonjs knex',
     bcrypt: 'commonjs bcrypt',
     printer: 'commonjs printer'
