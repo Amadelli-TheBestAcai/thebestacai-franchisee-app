@@ -3,7 +3,6 @@ import { ipcRenderer } from 'electron'
 
 import RouterDescription from '../../components/RouterDescription'
 import StockList from '../../containers/StockList'
-import Centralizer from '../../containers/Centralizer'
 
 import { ProductStore as ProductStoreModel } from '../../../shared/models/productStore'
 import { RestrictedProducts } from '../../../shared/enums/restrictedProducts'

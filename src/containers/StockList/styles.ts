@@ -45,7 +45,7 @@ export const Status = styled.label<IStatus>`
   border-radius: 4px;
 
   ${({ quantity }) => {
-    if (quantity === 0 || !quantity) {
+    if (quantity <= 0 || !quantity) {
       return css`
         background: #f22738;
       `

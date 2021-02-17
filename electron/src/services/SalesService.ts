@@ -56,7 +56,7 @@ class SalesService {
     }
   }
 
-  async finishSale(payload: CreateSaleDTO): Promise<void> {
+  async finishSale(payload: CreateSaleDTO, options?: SaleOption): Promise<void> {
     const cashier = await CashierService.getCurrentCashier()
     const sale = await SalesRepository.getById(payload.id)
     if (sale) {
@@ -70,6 +70,15 @@ class SalesService {
       await SalesRepository.create(payload)
     }
     const hasInternet = await checkInternet()
+    if (options.emit_nfce && !hasInternet) {
+      // TODO: retornar erro avisando indisponibilidade de internet
+    } else if (options.emit_nfce && options.printer) {
+      // TODO: emitir nota fiscal e gerar cupom
+    } else if (options.emit_nfce && !options.printer) {
+      // TODO: emitir nota fiscal e NAO gerar cupom
+    } else if (options.printer) {
+      // TODO: printar itens da venda sem incluir nfce no cupom
+    }
     if (hasInternet) {
       await IntegrateService.integrateOnlineSales()
     }

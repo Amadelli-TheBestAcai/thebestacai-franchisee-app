@@ -80,7 +80,7 @@ const StockList: React.FC<IProps> = ({
   ]
 
   const getQuatity = (quantity?: number): string => {
-    if (quantity === 0 || !quantity) {
+    if (quantity <= 0 || !quantity) {
       return 'Esgotado'
     }
     if (quantity <= 3) {
@@ -101,7 +101,7 @@ const StockList: React.FC<IProps> = ({
         setIsModalVisible(false)
         ipcRenderer.send('products:stock:update', {
           id: selectedProduct?.id,
-          quantity: newQuantity || 0,
+          quantity: (+selectedProduct?.quantity || 0) - (newQuantity || 0),
         })
         ipcRenderer.once('products:stock:update:response', (event, status) => {
           if (status) {
@@ -110,7 +110,8 @@ const StockList: React.FC<IProps> = ({
             )
 
             const newProduct = products
-            newProduct[productIndex].quantity = newQuantity || 0
+            newProduct[productIndex].quantity =
+              (+selectedProduct?.quantity || 0) - (newQuantity || 0)
 
             setProductsStock([...newProduct])
             setSelectedProduct(null)
@@ -193,7 +194,7 @@ const StockList: React.FC<IProps> = ({
             <Input type="number" disabled value={selectedProduct?.quantity} />
           </QtdCurrent>
           <QtdChange>
-            <EditInfo>Alterar para:</EditInfo>
+            <EditInfo>Retirar:</EditInfo>
             <InputChange
               type="number"
               value={newQuantity}
