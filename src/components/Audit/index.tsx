@@ -17,7 +17,7 @@ const Audit: React.FC<AuditModel> = (props) => {
   const [date, time] = created_at.split(' ')
 
   const getAuditType = (): string => {
-    if (!+old_value && +new_value) {
+    if (!+old_value && +new_value > 0) {
       return 'Adicionado'
     }
 
