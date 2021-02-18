@@ -10,6 +10,7 @@ exports.up = async (knex) =>
     table.integer('amount')
     table.string('created_at')
     table.boolean('to_integrate')
+    table.integer('order_id')
   })
 
 exports.down = async (knex) => knex.schema.dropTable('handlers')

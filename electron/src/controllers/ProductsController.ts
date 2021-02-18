@@ -57,6 +57,20 @@ ipcMain.on('products:stock:update', async (event, { id, quantity }) => {
   }
 })
 
+ipcMain.on('products:category:all', async (event) => {
+  try {
+    const response = await ProductsService.getCategoriesWithProducts()
+    event.reply('products:category:all:response', response)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter todas as categorias com produtos',
+      payload: err.message,
+    })
+    event.reply('products:category:all:response', { hasInternet: false, store: null, categoryWithProducts: [] })
+    console.error(err)
+  }
+})
+
 ipcMain.on('products:audit:get', async (event, { id, page, size }) => {
   try {
     const { audits, totalElements } = await ProductsService.getAudit(

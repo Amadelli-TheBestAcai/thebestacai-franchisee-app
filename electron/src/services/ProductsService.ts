@@ -55,8 +55,8 @@ class ProductsService {
           ? 1
           : replaceSpecialChars(secoundProduct.name) >
             replaceSpecialChars(firstProduct.name)
-          ? -1
-          : 0
+            ? -1
+            : 0
       )
     return formaterToCategory(formatedProducts)
   }
@@ -101,6 +101,27 @@ class ProductsService {
     } = await api.get(`/products_store_history/${id}?page=${page}&size=${size}`)
 
     return { audits: content, totalElements: totalElements }
+  }
+
+  async getCategoriesWithProducts() {
+    const hasInternet = await checkInternet()
+    const store = await StoreService.getOne()
+    if (!hasInternet) {
+      return {
+        hasInternet,
+        categoryWithProducts: [],
+        store: null,
+      }
+    }
+    const {
+      data: { content },
+    } = await api.get('/product_categories/products/purchases')
+
+    return {
+      hasInternet: true,
+      store: store.id,
+      categoryWithProducts: content
+    }
   }
 }
 

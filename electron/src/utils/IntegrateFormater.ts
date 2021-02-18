@@ -41,6 +41,7 @@ type FormatedHandler = {
   cash_code: string
   store_id: number
   cash_history_id: number
+  order_id: number
 }
 
 export const formatHandlesToIntegrate = (
@@ -57,6 +58,7 @@ export const formatHandlesToIntegrate = (
     cash_id: cash_id || handler.cash_id,
     cash_code: handler.cash_code,
     cash_history_id: cash_history_id || handler.cash_history_id,
+    order_id: handler.order_id
   }))
   return cleanDuplicatedValues<FormatedHandler>(formatedHandlers, 'id')
 }

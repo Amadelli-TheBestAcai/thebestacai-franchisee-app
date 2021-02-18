@@ -1,7 +1,5 @@
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { ipcRenderer } from 'electron'
-
-import MonetaryInput from '../../components/MonetaryInput'
 
 import { message, Spin, Col, Input as InputAnt } from 'antd'
 
@@ -26,11 +24,41 @@ type IProps = {
   type: string
   setModalState: Dispatch<SetStateAction<boolean>>
 }
+
+type ShopInfo = {
+  category_id?: number
+  product_id?: number
+  unitary_value?: number
+  quantity?: number
+  observation?: string
+}
+
 const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
   const [loading, setLoading] = useState<boolean>(false)
+  const [productsCategory, setProductsCategory] = useState([])
+  const [hasInternet, setHasInternet] = useState(false)
+  const [fetchingProductsCategory, setFetchingProductsCategory] = useState(true)
   const [value, setValue] = useState<number>()
   const [reasson, setReasson] = useState<string>()
   const [reasontype, setReasonType] = useState<string>()
+  const [shopInfo, setShopInfo] = useState<ShopInfo | null>(null)
+  const [store, setStore] = useState<number | null>(null)
+
+  const shopIsValidToFreelancer = (): boolean => {
+    return (
+      !!shopInfo.unitary_value || !!shopInfo.observation || !!shopInfo.quantity
+    )
+  }
+
+  const shopIsValidToProvider = (): boolean => {
+    return (
+      !!shopInfo.category_id ||
+      !!shopInfo.product_id ||
+      !!shopInfo.unitary_value ||
+      !!shopInfo.observation ||
+      !!shopInfo.quantity
+    )
+  }
 
   const handleSubmit = () => {
     if (loading) {
@@ -41,11 +69,69 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
+
+    const sendToShop =
+      type !== 'entrada' &&
+      hasInternet &&
+      (reasontype === 'Pagamento fornecedor' ||
+        reasontype === 'Pagamento freelance')
+
+    let shopOrder = null
+
+    if (type !== 'entrada') {
+      if (reasontype === 'Pagamento fornecedor') {
+        if (!shopIsValidToProvider()) {
+          return message.warning('Preencha todos os dados corretamente.')
+        }
+        shopOrder = {
+          store_id: store,
+          due_date: new Date(),
+          pay_date: new Date(),
+          payment_method: 0,
+          total: +shopInfo.quantity * +shopInfo.unitary_value,
+          observation: shopInfo.observation,
+          purchasesItems: [
+            {
+              product_id: +shopInfo.product_id,
+              quantity: +shopInfo.quantity,
+              unitary_value: +shopInfo.unitary_value,
+              category_id: +shopInfo.category_id,
+            },
+          ],
+        }
+      }
+      if (reasontype === 'Pagamento freelance') {
+        if (!shopIsValidToFreelancer()) {
+          return message.warning('Preencha todos os dados corretamente.')
+        }
+        shopOrder = {
+          store_id: store,
+          due_date: new Date(),
+          pay_date: new Date(),
+          payment_method: 0,
+          total: +shopInfo.quantity * +shopInfo.unitary_value,
+          purchasesItems: [
+            {
+              product_id: +shopInfo.product_id,
+              quantity: +shopInfo.quantity,
+              unitary_value: +shopInfo.unitary_value,
+              category_id: +shopInfo.category_id,
+              observation: shopInfo.observation,
+            },
+          ],
+        }
+      }
+    }
+
     setLoading(true)
     ipcRenderer.send('handler:create', {
-      type,
-      reason: reasontype === 'Outros' ? reasson : reasontype,
-      amount: value,
+      handler: {
+        type,
+        reason: reasontype === 'Outros' ? reasson : reasontype,
+        amount: value,
+      },
+      shopOrder,
+      sendToShop,
     })
     ipcRenderer.once('handler:create:response', (event, { success }) => {
       if (success) {
@@ -64,6 +150,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
 
   const handleSelect = (value: string) => {
     setReasonType(value)
+    setShopInfo(null)
   }
 
   const handleClose = (): void => {
@@ -89,6 +176,26 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     { id: 'Troco', value: 'Troco' },
     { id: 'Outros', value: 'Outros' },
   ]
+
+  useEffect(() => {
+    if (modalState) {
+      ipcRenderer.send('products:category:all')
+      ipcRenderer.once(
+        'products:category:all:response',
+        (event, { hasInternet, store, categoryWithProducts }) => {
+          setStore(store)
+          console.log(categoryWithProducts)
+          setProductsCategory(categoryWithProducts || [])
+          setHasInternet(hasInternet)
+          setFetchingProductsCategory(false)
+        }
+      )
+    }
+  }, [modalState])
+
+  const handleShopInfo = (name: string, value: string | number): void => {
+    setShopInfo((oldValues) => ({ ...oldValues, [name]: value }))
+  }
 
   return (
     <Container
@@ -140,24 +247,59 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
         )}
         {type !== 'entrada' && (
           <Row>
-            {reasontype === 'Pagamento fornecedor' && (
+            {reasontype === 'Pagamento fornecedor' && hasInternet && (
               <Row>
                 <Col sm={24}>
                   <GroupContainer>
                     <Description>Categoria</Description>
-                    <InputAnt placeholder="Categoria" />
+                    <Select
+                      placeholder="Escolha a opção"
+                      loading={fetchingProductsCategory}
+                      onChange={(value) =>
+                        handleShopInfo('category_id', +value)
+                      }
+                    >
+                      {productsCategory?.map((productCategory) => (
+                        <Option
+                          value={productCategory.id}
+                          key={productCategory.id}
+                        >
+                          {productCategory.name}
+                        </Option>
+                      ))}
+                    </Select>
                   </GroupContainer>
                 </Col>
                 <Col sm={24}>
                   <GroupContainer>
                     <Description>Produto</Description>
-                    <InputAnt placeholder="Produto" />
+                    <Select
+                      placeholder="Escolha a opção"
+                      disabled={!shopInfo?.category_id}
+                      onChange={(value) => handleShopInfo('product_id', +value)}
+                    >
+                      {productsCategory?.map(
+                        (productCategory) =>
+                          productCategory.id === shopInfo?.category_id &&
+                          productCategory.products.map((product) => (
+                            <Option value={product.id} key={product.id}>
+                              {product.name}
+                            </Option>
+                          ))
+                      )}
+                    </Select>
                   </GroupContainer>
                 </Col>
                 <Col sm={12}>
                   <GroupContainer>
                     <Description>Quantidade</Description>
-                    <InputAnt placeholder="Quantidade" />
+                    <InputAnt
+                      placeholder="Quantidade"
+                      type="number"
+                      onChange={({ target: { value } }) =>
+                        handleShopInfo('quantity', value)
+                      }
+                    />
                   </GroupContainer>
                 </Col>
                 <Col sm={12}>
@@ -165,24 +307,37 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                     <Description>Valor Unitário</Description>
                     <Input
                       autoFocus={false}
-                      getValue={(value) => console.log(value)}
+                      getValue={(value) =>
+                        handleShopInfo('unitary_value', value)
+                      }
                     />
                   </GroupContainer>
                 </Col>
                 <Col sm={24}>
                   <GroupContainer>
                     <Description>Observação</Description>
-                    <InputAnt placeholder="Observação" />
+                    <InputAnt
+                      placeholder="Observação"
+                      onChange={({ target: { value } }) =>
+                        handleShopInfo('observation', value)
+                      }
+                    />
                   </GroupContainer>
                 </Col>
               </Row>
             )}
-            {reasontype === 'Pagamento freelance' && (
+            {reasontype === 'Pagamento freelance' && hasInternet && (
               <Row>
                 <Col sm={12}>
                   <GroupContainer>
                     <Description>Quantidade</Description>
-                    <InputAnt placeholder="Quantidade" />
+                    <InputAnt
+                      type="number"
+                      placeholder="Quantidade"
+                      onChange={({ target: { value } }) =>
+                        handleShopInfo('quantity', value)
+                      }
+                    />
                   </GroupContainer>
                 </Col>
                 <Col sm={12}>
@@ -190,18 +345,35 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                     <Description>Valor Unitário</Description>
                     <Input
                       autoFocus={false}
-                      getValue={(value) => console.log(value)}
+                      getValue={(value) =>
+                        handleShopInfo('unitary_value', value)
+                      }
                     />
                   </GroupContainer>
                 </Col>
                 <Col sm={24}>
                   <GroupContainer>
                     <Description>Nome Freelancer</Description>
-                    <InputAnt placeholder="Nome Freelancer" />
+                    <InputAnt
+                      placeholder="Nome Freelancer"
+                      onChange={({ target: { value } }) =>
+                        handleShopInfo('observation', value)
+                      }
+                    />
                   </GroupContainer>
                 </Col>
               </Row>
             )}
+            <>
+              {(reasontype === 'Pagamento fornecedor' ||
+                reasontype === 'Pagamento freelance') &&
+                !hasInternet && (
+                  <Row style={{ textAlign: 'center', color: 'red' }}>
+                    Sem conexão. Para lançar a saída como compra, utilize o
+                    Dashboard.
+                  </Row>
+                )}
+            </>
           </Row>
         )}
       </GroupContainer>

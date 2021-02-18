@@ -54,9 +54,9 @@ class IntegrateService {
         formatedSales.map(async ({ id, cash_code, store_id, ...payload }) => {
           const items = await ItemsService.getItemsToIntegrate(id)
           const quantity = getQuantityItems(items)
-          let payments = await PaymentsService.getPaymentsToIntegrate(id)
+          const payments = await PaymentsService.getPaymentsToIntegrate(id)
           allPayments = [...payments, ...allPayments]
-          payments = payments.map((payment) => ({
+          const formatedPayments = payments.map((payment) => ({
             ...payment,
             type: PaymentType[payment.type],
           }))
@@ -64,7 +64,7 @@ class IntegrateService {
             ...payload,
             quantity,
             items,
-            payments,
+            formatedPayments,
           }
           try {
             await api.post(`/sales/${store}-${code}`, [saleToIntegrate])
@@ -173,6 +173,7 @@ class IntegrateService {
   async integrateOnlineHandlers(): Promise<void> {
     const handlers = await IntegrateRepository.getOnlineHandlers()
     const formatedHandler = formatHandlesToIntegrate(handlers)
+    console.log(formatedHandler)
     await Promise.all(
       formatedHandler.map(async ({ id, store_id, cash_code, ...payload }) => {
         try {

@@ -2,9 +2,15 @@ import { ipcMain } from 'electron'
 import HandlersService from '../services/HandlersService'
 import { sendLog } from '../utils/ApiLog'
 
-ipcMain.on('handler:create', async (event, handler) => {
+ipcMain.on('handler:create', async (event, {
+  handler,
+  shopOrder,
+  sendToShop
+}) => {
   try {
-    await HandlersService.create(handler)
+    await HandlersService.create(handler,
+      shopOrder,
+      sendToShop)
     event.reply('handler:create:response', { success: true })
   } catch (err) {
     sendLog({

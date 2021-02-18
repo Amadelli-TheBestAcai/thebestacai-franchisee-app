@@ -12,8 +12,19 @@ import api from '../utils/Api'
 import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
 class HandlersService {
-  async create(payload): Promise<void> {
+  async create(payload,
+    shopOrder,
+    sendToShop): Promise<void> {
     const currentCash = await CashierService.getCurrentCashier()
+
+    let order_id = null
+    if (sendToShop) {
+      const {
+        data: { id: orderId },
+      } = await api.post('/purchases', shopOrder)
+      order_id = orderId
+    }
+
     const handler: CreateHandlerDTO = {
       ...payload,
       id: uuidv4(),
@@ -23,9 +34,11 @@ class HandlersService {
       cash_history_id: currentCash.history_id,
       to_integrate: true,
       created_at: getNow(),
+      order_id
     }
     await HandlersRepository.create(handler)
     const hasInternet = await checkInternet()
+
     if (hasInternet) {
       await IntegrateService.integrateOnlineHandlers()
     }
