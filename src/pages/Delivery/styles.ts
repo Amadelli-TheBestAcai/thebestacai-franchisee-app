@@ -228,8 +228,8 @@ export const SalesDescription = styled.div`
     font-weight: bold;
     color: #00000052;
   }
-  p {
-    font-size: 24px;
+  label {
+    font-size: 22px;
     font-weight: bold;
     color: #00000052;
   }

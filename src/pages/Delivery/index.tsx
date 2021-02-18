@@ -322,13 +322,17 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
 
                     <SalesDescription>
                       <span>Total em Dinheiro</span>
-                      <p>{currencyFormater(appSalesResult?.money)}R$</p>
+                      <label>{currencyFormater(appSalesResult?.money)}R$</label>
                       <span>Total em Débito</span>
-                      <p>{currencyFormater(appSalesResult?.debit_card)}R$</p>
+                      <label>
+                        {currencyFormater(appSalesResult?.debit_card)}R$
+                      </label>
                       <span>Total em Crédito</span>
-                      <p>{currencyFormater(appSalesResult?.credit_card)}R$</p>
+                      <label>
+                        {currencyFormater(appSalesResult?.credit_card)}R$
+                      </label>
                       <span>Total:</span>
-                      <p>{currencyFormater(appSalesResult?.total)}R$</p>
+                      <label>{currencyFormater(appSalesResult?.total)}R$</label>
                       <Button
                         type="primary"
                         onClick={() => handleUpdateProduct()}
