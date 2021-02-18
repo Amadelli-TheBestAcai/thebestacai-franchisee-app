@@ -58,7 +58,10 @@ class SalesService {
     }
   }
 
-  async finishSale(payload: CreateSaleDTO, options?: SaleOption): Promise<void> {
+  async finishSale(
+    payload: CreateSaleDTO,
+    options?: SaleOption
+  ): Promise<void> {
     const cashier = await CashierService.getCurrentCashier()
     const sale = await SalesRepository.getById(payload.id)
     if (sale) {
@@ -267,7 +270,7 @@ class SalesService {
     }
 
     try {
-      await api.delete(`/sales/${id}`)
+      await api.delete(`/sales/${id}?storeId=${store_id}`)
       const { sales } = await this.getFromApi()
       return {
         success: true,
