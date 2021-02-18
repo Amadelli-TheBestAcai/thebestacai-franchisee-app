@@ -69,7 +69,10 @@ const PendingSaleForm: React.FC<IProps> = ({ modalState, cashes, history }) => {
           </Select>
         </FormItem>
         <FormItem label="Valor de Fechamento" name="amount_on_close">
-          <MonetaryInput getValue={(value) => setAmount(value)} />
+          <MonetaryInput
+            autoFocus={true}
+            getValue={(value) => setAmount(value)}
+          />
         </FormItem>
         <FormItem>
           <ActionContainer>

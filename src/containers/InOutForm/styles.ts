@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
-import { Modal as ModalAnt, Input as InputAnt, Select as SelectAnt } from 'antd'
+import { Modal as ModalAnt, Input as InputAnt, Select as SelectAnt, Row as RowAnt } from 'antd'
 
 export const Container = styled(ModalAnt)`
   .ant-modal-header,
@@ -72,6 +72,10 @@ export const Leave = styled.div`
 export const Select = styled(SelectAnt)`
   width: 100%;
   margin-bottom: 10px;
+`
+
+export const Row = styled(RowAnt)`
+  width: 100%;
 `
 
 export const Option = styled(SelectAnt.Option)``

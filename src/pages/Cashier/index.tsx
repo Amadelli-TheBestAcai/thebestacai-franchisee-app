@@ -310,6 +310,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
                         <FullAmountColumn span={11}>
                           <AmountLabel>VALOR CHEIO</AmountLabel>
                           <InputPrice
+                            autoFocus={true}
                             getValue={(value) =>
                               setAmount((oldValues) => ({
                                 ...oldValues,

@@ -145,6 +145,7 @@ const PaymentsContainer: React.FC<IProps> = ({
       >
         Valor:
         <Input
+          autoFocus={true}
           getValue={getAmount}
           onEnterPress={addPayment}
           defaultValue={valueToPay}

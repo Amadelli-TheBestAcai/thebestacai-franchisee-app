@@ -1,7 +1,9 @@
 import React, { useState, Dispatch, SetStateAction } from 'react'
 import { ipcRenderer } from 'electron'
 
-import { message, Spin } from 'antd'
+import MonetaryInput from '../../components/MonetaryInput'
+
+import { message, Spin, Col, Input as InputAnt } from 'antd'
 
 import {
   Container,
@@ -16,6 +18,7 @@ import {
   Leave,
   Select,
   Option,
+  Row,
 } from './styles'
 
 type IProps = {
@@ -113,7 +116,11 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     >
       <GroupContainer>
         <Description>Valor</Description>
-        <Input getValue={getAmount} onEnterPress={handleSubmit} />
+        <Input
+          autoFocus={true}
+          getValue={getAmount}
+          onEnterPress={handleSubmit}
+        />
       </GroupContainer>
       <GroupContainer>
         <Description>Motivo</Description>
@@ -130,6 +137,72 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
             onPressEnter={handleSubmit}
             onChange={({ target: { value } }) => setReasson(value)}
           />
+        )}
+        {type !== 'entrada' && (
+          <Row>
+            {reasontype === 'Pagamento fornecedor' && (
+              <Row>
+                <Col sm={24}>
+                  <GroupContainer>
+                    <Description>Categoria</Description>
+                    <InputAnt placeholder="Categoria" />
+                  </GroupContainer>
+                </Col>
+                <Col sm={24}>
+                  <GroupContainer>
+                    <Description>Produto</Description>
+                    <InputAnt placeholder="Produto" />
+                  </GroupContainer>
+                </Col>
+                <Col sm={12}>
+                  <GroupContainer>
+                    <Description>Quantidade</Description>
+                    <InputAnt placeholder="Quantidade" />
+                  </GroupContainer>
+                </Col>
+                <Col sm={12}>
+                  <GroupContainer>
+                    <Description>Valor Unitário</Description>
+                    <Input
+                      autoFocus={false}
+                      getValue={(value) => console.log(value)}
+                    />
+                  </GroupContainer>
+                </Col>
+                <Col sm={24}>
+                  <GroupContainer>
+                    <Description>Observação</Description>
+                    <InputAnt placeholder="Observação" />
+                  </GroupContainer>
+                </Col>
+              </Row>
+            )}
+            {reasontype === 'Pagamento freelance' && (
+              <Row>
+                <Col sm={12}>
+                  <GroupContainer>
+                    <Description>Quantidade</Description>
+                    <InputAnt placeholder="Quantidade" />
+                  </GroupContainer>
+                </Col>
+                <Col sm={12}>
+                  <GroupContainer>
+                    <Description>Valor Unitário</Description>
+                    <Input
+                      autoFocus={false}
+                      getValue={(value) => console.log(value)}
+                    />
+                  </GroupContainer>
+                </Col>
+                <Col sm={24}>
+                  <GroupContainer>
+                    <Description>Nome Freelancer</Description>
+                    <InputAnt placeholder="Nome Freelancer" />
+                  </GroupContainer>
+                </Col>
+              </Row>
+            )}
+          </Row>
         )}
       </GroupContainer>
     </Container>

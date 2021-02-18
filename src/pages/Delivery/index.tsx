@@ -266,6 +266,7 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
               <InputGroup>
                 <InputDescription>Valor do Delivery</InputDescription>
                 <InputPrice
+                  autoFocus={true}
                   getValue={(value) => setAmount(value)}
                   onEnterPress={handleCreateSale}
                 />

@@ -108,6 +108,7 @@ const BalanceContainer: React.FC<IProps> = ({
               />
             ) : (
               <InputPrice
+                autoFocus={true}
                 id="balanceInput"
                 getValue={(value) => setAmount(value)}
                 onEnterPress={handleEnterToSubmit}
