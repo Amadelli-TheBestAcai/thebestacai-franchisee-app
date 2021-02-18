@@ -1,5 +1,6 @@
 import ItemsRepository from '../repositories/ItemsRepository'
 import SalesRepository from '../repositories/SalesRepository'
+import UserService from '../services/UserService'
 
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
@@ -49,11 +50,13 @@ class ItemsService {
 
   async getItemsToIntegrate(sale_id: string): Promise<IntegrateItemDTO[]> {
     const items = await ItemsRepository.getBySale(sale_id)
+    const user = await UserService.getTokenInfo()
     return items.map((item) => ({
       product_id: item.product_id,
       product_store_id: item.product_store_id,
       quantity: item.quantity,
       update_stock: item.category_id !== 1,
+      user_id: user.id,
     }))
   }
 
