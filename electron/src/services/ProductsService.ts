@@ -4,7 +4,7 @@ import StoreService from '../services/StoreService'
 
 import ProductsRepository from '../repositories/ProductsRepository'
 
-import { replaceSpecialChars } from '../utils/replaceSpecialChars'
+import { replaceSpecialChars } from '../../../shared/utils/replaceSpecialChars'
 import { formaterToCategory } from '../utils/ProductFormater'
 import { checkInternet } from '../utils/InternetConnection'
 

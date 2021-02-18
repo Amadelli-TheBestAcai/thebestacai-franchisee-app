@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { ipcRenderer } from 'electron'
 
+import { replaceSpecialChars } from '../../../shared/utils/replaceSpecialChars'
+
 import { message, Spin, Col, Input as InputAnt } from 'antd'
 
 import {
@@ -70,7 +72,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       return message.warning('Informe a razão')
     }
 
-    const sendToShop =
+    let sendToShop =
       type !== 'entrada' &&
       hasInternet &&
       (reasontype === 'Pagamento fornecedor' ||
@@ -104,6 +106,17 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
         if (!shopIsValidToFreelancer()) {
           return message.warning('Preencha todos os dados corretamente.')
         }
+        const category = productsCategory.find(
+          (category) =>
+            replaceSpecialChars(category.name.toLowerCase()) === 'salarios'
+        )
+        const product = category.products.find(
+          (product) =>
+            replaceSpecialChars(product.name.toLowerCase()) === 'freelancer'
+        )
+        if (!category || !product) {
+          sendToShop = false
+        }
         shopOrder = {
           store_id: store,
           due_date: new Date(),
@@ -112,11 +125,11 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           total: +shopInfo.quantity * +shopInfo.unitary_value,
           purchasesItems: [
             {
-              product_id: +shopInfo.product_id,
+              product_id: +product.id,
               quantity: +shopInfo.quantity,
               unitary_value: +shopInfo.unitary_value,
-              category_id: +shopInfo.category_id,
-              observation: shopInfo.observation,
+              category_id: +category.id,
+              observation: `Nome: ${shopInfo.observation}`,
             },
           ],
         }
@@ -150,7 +163,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
 
   const handleSelect = (value: string) => {
     setReasonType(value)
-    setShopInfo(null)
   }
 
   const handleClose = (): void => {
@@ -178,13 +190,14 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
   ]
 
   useEffect(() => {
+    setShopInfo(null)
+    setReasonType('')
     if (modalState) {
       ipcRenderer.send('products:category:all')
       ipcRenderer.once(
         'products:category:all:response',
         (event, { hasInternet, store, categoryWithProducts }) => {
           setStore(store)
-          console.log(categoryWithProducts)
           setProductsCategory(categoryWithProducts || [])
           setHasInternet(hasInternet)
           setFetchingProductsCategory(false)

@@ -173,7 +173,6 @@ class IntegrateService {
   async integrateOnlineHandlers(): Promise<void> {
     const handlers = await IntegrateRepository.getOnlineHandlers()
     const formatedHandler = formatHandlesToIntegrate(handlers)
-    console.log(formatedHandler)
     await Promise.all(
       formatedHandler.map(async ({ id, store_id, cash_code, ...payload }) => {
         try {
