@@ -19,8 +19,10 @@ class ProductsService {
       category_id: productStore.product.category_id,
       category_name: productStore.product.category.name,
     }))
-    await ProductsRepository.deleteAll()
-    await ProductsRepository.create(formatedProducts)
+    if (formatedProducts.length) {
+      await ProductsRepository.deleteAll()
+      await ProductsRepository.create(formatedProducts)
+    }
   }
 
   async getOnlineProducts() {
@@ -55,8 +57,8 @@ class ProductsService {
           ? 1
           : replaceSpecialChars(secoundProduct.name) >
             replaceSpecialChars(firstProduct.name)
-            ? -1
-            : 0
+          ? -1
+          : 0
       )
     return formaterToCategory(formatedProducts)
   }
@@ -120,7 +122,7 @@ class ProductsService {
     return {
       hasInternet: true,
       store: store.id,
-      categoryWithProducts: content
+      categoryWithProducts: content,
     }
   }
 }
