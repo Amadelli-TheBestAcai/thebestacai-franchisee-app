@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { ipcRenderer } from 'electron'
 
+import { currencyFormater } from '../../helpers/currencyFormater'
 import { replaceSpecialChars } from '../../../shared/utils/replaceSpecialChars'
 
 import { message, Spin, Col, Input as InputAnt } from 'antd'
@@ -122,7 +123,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           due_date: new Date(),
           pay_date: new Date(),
           payment_method: 0,
-          total: +shopInfo.quantity * +shopInfo.unitary_value,
+          total: value,
           purchasesItems: [
             {
               product_id: +product.id,
@@ -356,12 +357,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                 <Col sm={12}>
                   <GroupContainer>
                     <Description>Valor Unitário</Description>
-                    <Input
-                      autoFocus={false}
-                      getValue={(value) =>
-                        handleShopInfo('unitary_value', value)
-                      }
-                    />
+                    <InputAnt value={currencyFormater(value)} disabled />
                   </GroupContainer>
                 </Col>
                 <Col sm={24}>
