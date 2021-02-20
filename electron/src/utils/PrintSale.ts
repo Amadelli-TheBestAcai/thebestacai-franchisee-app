@@ -3,9 +3,11 @@ import ItemsService from '../services/ItemsService'
 import StoreService from '../services/StoreService'
 import { Sale } from '../models/Sale'
 
-import { sendLog } from '../utils/ApiLog'
 import Printer from 'printer'
-import { printer as ThermalPrinter, types as TermalTypes } from 'node-thermal-printer'
+import {
+  printer as ThermalPrinter,
+  types as TermalTypes,
+} from 'node-thermal-printer'
 
 let printerFormater: ThermalPrinter = null
 
@@ -18,8 +20,8 @@ export const printSale = async (sale: Sale): Promise<void> => {
       removeSpecialCharacters: false,
       lineCharacter: '=',
       options: {
-        timeout: 5000
-      }
+        timeout: 5000,
+      },
     })
   }
   const store = await StoreService.getOne()
@@ -30,27 +32,35 @@ export const printSale = async (sale: Sale): Promise<void> => {
 
   printerFormater.clear()
   printerFormater.tableCustom([
-    { text: 'THE BEST ACAI', align: 'LEFT', width: 0.5, bold: true, },
-    { text: store.company_name, align: 'RIGHT', width: 0.5, bold: true }
+    { text: 'THE BEST ACAI', align: 'LEFT', width: 0.5, bold: true },
+    { text: store.company_name, align: 'RIGHT', width: 0.5, bold: true },
   ])
   printerFormater.drawLine()
   printerFormater.tableCustom([
     { text: 'PRODUTO', align: 'LEFT', cols: 30 },
     { text: 'QUANTIDADE', align: 'CENTER', cols: 10 },
-    { text: 'VALOR', align: 'CENTER', cols: 10 }
+    { text: 'VALOR', align: 'CENTER', cols: 10 },
   ])
-  items.forEach(item => {
+  items.forEach((item) => {
     if (item.category_id === 1) {
       printerFormater.tableCustom([
         { text: item.name, align: 'LEFT', cols: 30 },
         { text: '1', align: 'CENTER', cols: 10 },
-        { text: (+item.quantity * +item.price_unit).toFixed(2).toString(), align: 'CENTER', cols: 10 }
+        {
+          text: (+item.quantity * +item.price_unit).toFixed(2).toString(),
+          align: 'CENTER',
+          cols: 10,
+        },
       ])
     } else {
       printerFormater.tableCustom([
         { text: item.name, align: 'LEFT', cols: 30 },
         { text: item.quantity.toString(), align: 'CENTER', cols: 10 },
-        { text: item.price_unit.toFixed(2).toString(), align: 'CENTER', cols: 10 }
+        {
+          text: item.price_unit.toFixed(2).toString(),
+          align: 'CENTER',
+          cols: 10,
+        },
       ])
     }
   })
@@ -58,7 +68,12 @@ export const printSale = async (sale: Sale): Promise<void> => {
   printerFormater.tableCustom([
     { text: 'Total', align: 'LEFT', cols: 30 },
     { text: '', align: 'CENTER', cols: 10 },
-    { text: sale.total.toFixed(2).toString(), align: 'CENTER', bold: true, cols: 10 }
+    {
+      text: sale.total.toFixed(2).toString(),
+      align: 'CENTER',
+      bold: true,
+      cols: 10,
+    },
   ])
   // printerFormater.drawLine()
   // printerFormater.table(['REFERENCIA FISCAL', 'FX12YU1T21FJA12'])
@@ -71,9 +86,11 @@ export const printSale = async (sale: Sale): Promise<void> => {
     options: termalPrinter.options,
     printer,
     type: 'RAW',
-    success: function() {
+    success: function () {
       console.log('printed with success')
     },
-    error: function(err) { console.log(err) }
+    error: function (err) {
+      console.log(err)
+    },
   })
 }

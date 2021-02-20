@@ -221,52 +221,24 @@ const Home: React.FC = () => {
     if (!items.length) {
       return message.warning('Nenhum item cadastrado para a venda')
     }
-    Modal.confirm({
-      title: 'Impressão de Cupom',
-      content: 'Gostaria de realizar a impressão do cupom desta venda?',
-      okText: 'Sim',
-      okType: 'default',
-      cancelText: 'Não',
-      async onOk() {
-        setSavingSale(true)
-        ipcRenderer.send('sale:finish', {
-          sale: {
-            ...sale,
-            change_amount: getChangeAmount(),
-          },
-          saleOptions: {
-            printer: true,
-          },
-        })
-        ipcRenderer.once('sale:finish:response', (event, newSale) => {
-          setSavingSale(false)
-          message.success('Venda salva com sucesso')
-          setItems([])
-          setPayments([])
-          setSale(newSale)
-          document.getElementById('balanceInput').focus()
-        })
+
+    setSavingSale(true)
+    ipcRenderer.send('sale:finish', {
+      sale: {
+        ...sale,
+        change_amount: getChangeAmount(),
       },
-      onCancel() {
-        setSavingSale(true)
-        ipcRenderer.send('sale:finish', {
-          sale: {
-            ...sale,
-            change_amount: getChangeAmount(),
-          },
-          saleOptions: {
-            printer: false,
-          },
-        })
-        ipcRenderer.once('sale:finish:response', (event, newSale) => {
-          setSavingSale(false)
-          message.success('Venda salva com sucesso')
-          setItems([])
-          setPayments([])
-          setSale(newSale)
-          document.getElementById('balanceInput').focus()
-        })
+      saleOptions: {
+        printer: false,
       },
+    })
+    ipcRenderer.once('sale:finish:response', (event, newSale) => {
+      setSavingSale(false)
+      message.success('Venda salva com sucesso')
+      setItems([])
+      setPayments([])
+      setSale(newSale)
+      document.getElementById('balanceInput').focus()
     })
   }
 

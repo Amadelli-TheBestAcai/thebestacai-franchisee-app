@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import SalesService from '../services/SalesService'
 import CashierService from '../services/CashierService'
 import { sendLog } from '../utils/ApiLog'
+import { printSale } from '../utils/PrintSale'
 
 ipcMain.on('sale:create', async (event) => {
   try {
@@ -167,4 +168,8 @@ ipcMain.on('appSale:integrate', async (event, payload) => {
     event.reply('appSale:integrate:response', false)
     console.error(err)
   }
+})
+
+ipcMain.on('sale:print', async (event, payload) => {
+  printSale(payload)
 })

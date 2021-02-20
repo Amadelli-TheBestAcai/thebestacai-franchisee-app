@@ -1,4 +1,5 @@
 import React from 'react'
+import { ipcRenderer } from 'electron'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
@@ -11,6 +12,7 @@ import {
   Panel,
   RemoveIcon,
   ColHeader,
+  PrinterIcon,
 } from './styles'
 
 type IProps = {
@@ -42,6 +44,27 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
     if (type === 5) return 'APP'
   }
 
+  const onPrinter = () => {
+    const formatedItems = sale.item.map((item) => ({
+      category_id: item.storeProduct.product.category_id,
+      name: item.storeProduct.product.name,
+      quantity: item.quantity,
+      price_unit: item.storeProduct.price_unit,
+    }))
+
+    const total = formatedItems.reduce(
+      (total, item) => total + +(item.quantity || 0) * +(item.price_unit || 0),
+      0
+    )
+
+    const formatedSale = {
+      id: sale.id,
+      items: formatedItems,
+      total,
+    }
+    ipcRenderer.send('sale:print', formatedSale)
+  }
+
   return (
     <Container>
       <Panel
@@ -54,11 +77,10 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
             <ColHeader span={4}>{quantity}</ColHeader>
             <ColHeader span={4}>{time}</ColHeader>
             <ColHeader span={4}>{getType(type)}</ColHeader>
-            {hasPermission && (
-              <ColHeader span={4}>
-                <RemoveIcon onClick={() => onDelete(id)} />
-              </ColHeader>
-            )}
+            <ColHeader span={4}>
+              {hasPermission && <RemoveIcon onClick={() => onDelete(id)} />}
+              <PrinterIcon onClick={() => onPrinter()} />
+            </ColHeader>
           </Row>
         }
         key={id}

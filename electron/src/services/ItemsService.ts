@@ -53,7 +53,7 @@ class ItemsService {
     const user = await UserService.getTokenInfo()
     return items.map((item) => ({
       product_id: item.product_id,
-      product_store_id: item.product_store_id,
+      store_product_id: item.product_store_id,
       quantity: item.quantity,
       update_stock: item.category_id !== 1,
       user_id: user.id,
