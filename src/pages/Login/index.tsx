@@ -223,9 +223,12 @@ const Login: React.FC<IProps> = ({ history }) => {
                 onChange={handleSelect}
                 loading={loadingStores}
                 placeholder="Selecione uma loja"
+                style={{ textTransform: 'uppercase' }}
               >
                 {stores.map((store) => (
-                  <Option key={store.id}>{store.name}</Option>
+                  <Option style={{ textTransform: 'uppercase' }} key={store.id}>
+                    {store.name}
+                  </Option>
                 ))}
               </Select>
             </FormItem>

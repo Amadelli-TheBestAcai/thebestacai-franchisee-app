@@ -46,10 +46,10 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
 
   const onPrinter = () => {
     const formatedItems = sale.item.map((item) => ({
-      category_id: item.storeProduct.product.category_id,
+      category_id: +item.storeProduct.product.category_id,
       name: item.storeProduct.product.name,
-      quantity: item.quantity,
-      price_unit: item.storeProduct.price_unit,
+      quantity: +item.quantity,
+      price_unit: +item.storeProduct.price_unit,
     }))
 
     const total = formatedItems.reduce(

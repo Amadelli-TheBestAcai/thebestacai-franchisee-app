@@ -1,7 +1,6 @@
 import SettingsService from '../services/SettingsService'
-import ItemsService from '../services/ItemsService'
 import StoreService from '../services/StoreService'
-import { Sale } from '../models/Sale'
+import { replaceSpecialChars } from '../../../shared/utils/replaceSpecialChars'
 
 import Printer from 'printer'
 import {
@@ -11,7 +10,7 @@ import {
 
 let printerFormater: ThermalPrinter = null
 
-export const printSale = async (sale: Sale): Promise<void> => {
+export const printSale = async (sale): Promise<void> => {
   if (!printerFormater) {
     printerFormater = new ThermalPrinter({
       type: TermalTypes.EPSON,
@@ -26,14 +25,14 @@ export const printSale = async (sale: Sale): Promise<void> => {
   }
   const store = await StoreService.getOne()
   const { printer } = await SettingsService.getOneOrCreate()
-  const items = await ItemsService.getBySale(sale.id)
+  // const items = await ItemsService.getBySale(sale.id)
 
   const termalPrinter = Printer.getPrinter(printer)
 
   printerFormater.clear()
   printerFormater.tableCustom([
     { text: 'THE BEST ACAI', align: 'LEFT', width: 0.5, bold: true },
-    { text: store.company_name, align: 'RIGHT', width: 0.5, bold: true },
+    { text: replaceSpecialChars(store.company_name), align: 'RIGHT', width: 0.5, bold: true },
   ])
   printerFormater.drawLine()
   printerFormater.tableCustom([
@@ -41,7 +40,7 @@ export const printSale = async (sale: Sale): Promise<void> => {
     { text: 'QUANTIDADE', align: 'CENTER', cols: 10 },
     { text: 'VALOR', align: 'CENTER', cols: 10 },
   ])
-  items.forEach((item) => {
+  sale.items.forEach((item) => {
     if (item.category_id === 1) {
       printerFormater.tableCustom([
         { text: item.name, align: 'LEFT', cols: 30 },
@@ -54,7 +53,7 @@ export const printSale = async (sale: Sale): Promise<void> => {
       ])
     } else {
       printerFormater.tableCustom([
-        { text: item.name, align: 'LEFT', cols: 30 },
+        { text: replaceSpecialChars(item.name), align: 'LEFT', cols: 30 },
         { text: item.quantity.toString(), align: 'CENTER', cols: 10 },
         {
           text: item.price_unit.toFixed(2).toString(),
