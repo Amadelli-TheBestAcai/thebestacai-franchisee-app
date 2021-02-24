@@ -6,7 +6,7 @@ import {
   Button as ButtonAnt,
   Input as InputAnt,
 } from 'antd'
-import { EditAlt, History } from '../../styles/Icons'
+import { History, RemoveCircleOutline } from '../../styles/Icons'
 
 export const Container = styled.div`
   height: 100%;
@@ -89,7 +89,8 @@ const iconCSS = css`
   }
 `
 
-export const EditIcon = styled(EditAlt)`
+export const EditIcon = styled(RemoveCircleOutline)`
+  color: red;
   ${iconCSS}
 `
 export const HistoryIcon = styled(History)`

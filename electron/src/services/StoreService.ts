@@ -54,7 +54,7 @@ class StoreService {
       const { id } = await this.getOne()
       const {
         data: { content },
-      } = await api.get(`/products_store/store/${id}`)
+      } = await api.get(`/products_store/store/${id}?stockProducts=true`)
       return content
     } else {
       return []

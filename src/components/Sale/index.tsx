@@ -3,6 +3,7 @@ import { ipcRenderer } from 'electron'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
+import { Modal } from 'antd'
 
 import {
   Container,
@@ -45,24 +46,34 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
   }
 
   const onPrinter = () => {
-    const formatedItems = sale.item.map((item) => ({
-      category_id: +item.storeProduct.product.category_id,
-      name: item.storeProduct.product.name,
-      quantity: +item.quantity,
-      price_unit: +item.storeProduct.price_unit,
-    }))
+    Modal.confirm({
+      title: 'Imprimir Venda',
+      content: 'Gostaria de prosseguir e imprir esta venda?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      async onOk() {
+        const formatedItems = sale.item.map((item) => ({
+          category_id: +item.storeProduct.product.category_id,
+          name: item.storeProduct.product.name,
+          quantity: +item.quantity,
+          price_unit: +item.storeProduct.price_unit,
+        }))
 
-    const total = formatedItems.reduce(
-      (total, item) => total + +(item.quantity || 0) * +(item.price_unit || 0),
-      0
-    )
+        const total = formatedItems.reduce(
+          (total, item) =>
+            total + +(item.quantity || 0) * +(item.price_unit || 0),
+          0
+        )
 
-    const formatedSale = {
-      id: sale.id,
-      items: formatedItems,
-      total,
-    }
-    ipcRenderer.send('sale:print', formatedSale)
+        const formatedSale = {
+          id: sale.id,
+          items: formatedItems,
+          total,
+        }
+        ipcRenderer.send('sale:print', formatedSale)
+      },
+    })
   }
 
   return (
@@ -78,8 +89,8 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
             <ColHeader span={4}>{time}</ColHeader>
             <ColHeader span={4}>{getType(type)}</ColHeader>
             <ColHeader span={4}>
-              {hasPermission && <RemoveIcon onClick={() => onDelete(id)} />}
               <PrinterIcon onClick={() => onPrinter()} />
+              {hasPermission && <RemoveIcon onClick={() => onDelete(id)} />}
             </ColHeader>
           </Row>
         }

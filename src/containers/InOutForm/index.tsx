@@ -47,19 +47,18 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
   const [shopInfo, setShopInfo] = useState<ShopInfo | null>(null)
   const [store, setStore] = useState<number | null>(null)
 
-  const shopIsValidToFreelancer = (): boolean => {
+  const shopIsValid = (order): boolean => {
+    console.log(order)
     return (
-      !!shopInfo.unitary_value || !!shopInfo.observation || !!shopInfo.quantity
-    )
-  }
-
-  const shopIsValidToProvider = (): boolean => {
-    return (
-      !!shopInfo.category_id ||
-      !!shopInfo.product_id ||
-      !!shopInfo.unitary_value ||
-      !!shopInfo.observation ||
-      !!shopInfo.quantity
+      !!order.store_id &&
+      !!order.due_date &&
+      !!order.pay_date &&
+      !!order.total &&
+      !!order.observation &&
+      !!order.purchasesItems[0].product_id &&
+      !!order.purchasesItems[0].quantity &&
+      !!order.purchasesItems[0].unitary_value &&
+      !!order.purchasesItems[0].category_id
     )
   }
 
@@ -67,12 +66,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     if (loading) {
       return
     }
-    if (!value) {
-      return message.warning('Informe um valor')
-    } else if (!reasson && !reasontype) {
-      return message.warning('Informe a razão')
-    }
-
     let sendToShop =
       type !== 'entrada' &&
       hasInternet &&
@@ -83,9 +76,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
 
     if (type !== 'entrada') {
       if (reasontype === 'Pagamento fornecedor') {
-        if (!shopIsValidToProvider()) {
-          return message.warning('Preencha todos os dados corretamente.')
-        }
         shopOrder = {
           store_id: store,
           due_date: new Date(),
@@ -104,9 +94,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
         }
       }
       if (reasontype === 'Pagamento freelance') {
-        if (!shopIsValidToFreelancer()) {
-          return message.warning('Preencha todos os dados corretamente.')
-        }
         const category = productsCategory.find(
           (category) =>
             replaceSpecialChars(category.name.toLowerCase()) === 'salarios'
@@ -123,7 +110,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           due_date: new Date(),
           pay_date: new Date(),
           payment_method: 0,
-          total: value,
+          total: +shopInfo.quantity * +shopInfo.unitary_value,
           purchasesItems: [
             {
               product_id: +product.id,
@@ -137,12 +124,21 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       }
     }
 
+    if (!shopIsValid(shopOrder)) {
+      return message.warning('Preencha todos os campos corretamente.')
+    }
+
+    if (!value && !shopOrder.total) {
+      return message.warning('Informe um valor')
+    } else if (!reasson && !reasontype) {
+      return message.warning('Informe a razão')
+    }
     setLoading(true)
     ipcRenderer.send('handler:create', {
       handler: {
         type,
         reason: reasontype === 'Outros' ? reasson : reasontype,
-        amount: value,
+        amount: +shopOrder.total || value,
       },
       shopOrder,
       sendToShop,
@@ -236,14 +232,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       destroyOnClose={true}
     >
       <GroupContainer>
-        <Description>Valor</Description>
-        <Input
-          autoFocus={true}
-          getValue={getAmount}
-          onEnterPress={handleSubmit}
-        />
-      </GroupContainer>
-      <GroupContainer>
         <Description>Motivo</Description>
         <Select onChange={handleSelect}>
           {type === 'entrada'
@@ -252,6 +240,24 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                 <Option key={item.id}>{item.value}</Option>
               ))}
         </Select>
+        <Description>Valor</Description>
+        {type !== 'entrada' &&
+        hasInternet &&
+        (reasontype === 'Pagamento fornecedor' ||
+          reasontype === 'Pagamento freelance') ? (
+          <InputAnt
+            value={currencyFormater(
+              (shopInfo?.unitary_value || 0) * (shopInfo?.quantity || 0)
+            )}
+            disabled
+          />
+        ) : (
+          <Input
+            autoFocus={false}
+            getValue={getAmount}
+            onEnterPress={handleSubmit}
+          />
+        )}
         {reasontype === 'Outros' && (
           <InputArea
             value={reasson}
@@ -357,7 +363,12 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                 <Col sm={12}>
                   <GroupContainer>
                     <Description>Valor Unitário</Description>
-                    <InputAnt value={currencyFormater(value)} disabled />
+                    <Input
+                      autoFocus={false}
+                      getValue={(value) =>
+                        handleShopInfo('unitary_value', value)
+                      }
+                    />
                   </GroupContainer>
                 </Col>
                 <Col sm={24}>
