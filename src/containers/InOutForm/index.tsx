@@ -54,7 +54,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       !!order.due_date &&
       !!order.pay_date &&
       !!order.total &&
-      !!order.observation &&
+      (!!order.observation || order.purchasesItems[0].observation) &&
       !!order.purchasesItems[0].product_id &&
       !!order.purchasesItems[0].quantity &&
       !!order.purchasesItems[0].unitary_value &&
@@ -74,7 +74,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
 
     let shopOrder = null
 
-    if (type !== 'entrada') {
+    if (type !== 'entrada' && sendToShop) {
       if (reasontype === 'Pagamento fornecedor') {
         shopOrder = {
           store_id: store,
@@ -122,10 +122,9 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           ],
         }
       }
-    }
-
-    if (!shopIsValid(shopOrder)) {
-      return message.warning('Preencha todos os campos corretamente.')
+      if (!shopIsValid(shopOrder)) {
+        return message.warning('Preencha todos os campos corretamente.')
+      }
     }
 
     if (!value && !shopOrder.total) {
@@ -138,7 +137,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       handler: {
         type,
         reason: reasontype === 'Outros' ? reasson : reasontype,
-        amount: +shopOrder.total || value,
+        amount: +shopOrder?.total || value,
       },
       shopOrder,
       sendToShop,
@@ -259,11 +258,14 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           />
         )}
         {reasontype === 'Outros' && (
-          <InputArea
-            value={reasson}
-            onPressEnter={handleSubmit}
-            onChange={({ target: { value } }) => setReasson(value)}
-          />
+          <GroupContainer style={{ width: '100%' }}>
+            <Description>Observação</Description>
+            <InputArea
+              value={reasson}
+              onPressEnter={handleSubmit}
+              onChange={({ target: { value } }) => setReasson(value)}
+            />
+          </GroupContainer>
         )}
         {type !== 'entrada' && (
           <Row>

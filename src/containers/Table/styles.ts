@@ -20,6 +20,7 @@ export const THeaderContainer = styled.div`
 `
 
 export const THead = styled(RowAnt)`
+  background: rgb(73, 73, 73);
   width: 100%;
   height: 4vh;
 `

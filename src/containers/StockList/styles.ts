@@ -90,8 +90,8 @@ const iconCSS = css`
 `
 
 export const EditIcon = styled(RemoveCircleOutline)`
-  color: red;
   ${iconCSS}
+  fill: red;
 `
 export const HistoryIcon = styled(History)`
   ${iconCSS}
