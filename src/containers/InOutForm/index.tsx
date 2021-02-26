@@ -48,7 +48,6 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
   const [store, setStore] = useState<number | null>(null)
 
   const shopIsValid = (order): boolean => {
-    console.log(order)
     return (
       !!order.store_id &&
       !!order.due_date &&
@@ -83,6 +82,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           payment_method: 0,
           total: +shopInfo.quantity * +shopInfo.unitary_value,
           observation: shopInfo.observation,
+          name: shopInfo.observation,
           purchasesItems: [
             {
               product_id: +shopInfo.product_id,
@@ -111,6 +111,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           pay_date: new Date(),
           payment_method: 0,
           total: +shopInfo.quantity * +shopInfo.unitary_value,
+          name: shopInfo.observation,
           purchasesItems: [
             {
               product_id: +product.id,
@@ -132,6 +133,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
+
     setLoading(true)
     ipcRenderer.send('handler:create', {
       handler: {
@@ -298,13 +300,18 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
                     <Select
                       placeholder="Escolha a opção"
                       disabled={!shopInfo?.category_id}
+                      style={{ textTransform: 'capitalize' }}
                       onChange={(value) => handleShopInfo('product_id', +value)}
                     >
                       {productsCategory?.map(
                         (productCategory) =>
                           productCategory.id === shopInfo?.category_id &&
                           productCategory.products.map((product) => (
-                            <Option value={product.id} key={product.id}>
+                            <Option
+                              value={product.id}
+                              key={product.id}
+                              style={{ textTransform: 'capitalize' }}
+                            >
                               {product.name}
                             </Option>
                           ))
