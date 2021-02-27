@@ -112,10 +112,10 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
           money: sales
             .filter((sale) => +sale.tipo_pagamento === PaymentType.MONEY)
             .reduce((total, sale) => total + +sale.valor_pedido, 0),
-          debit_card: sales
+          credit_card: sales
             .filter((sale) => +sale.tipo_pagamento === PaymentType.CREDIT_CARD)
             .reduce((total, sale) => total + +sale.valor_pedido, 0),
-          credit_card: sales
+          debit_card: sales
             .filter((sale) => +sale.tipo_pagamento === PaymentType.DEBIT_CARD)
             .reduce((total, sale) => total + +sale.valor_pedido, 0),
           salesIds: sales.map((sale) => sale.id),
