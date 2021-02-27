@@ -75,13 +75,13 @@ class SalesService {
       await SalesRepository.create(payload)
     }
     const hasInternet = await checkInternet()
-    if (options.emit_nfce && !hasInternet) {
+    if (options?.emit_nfce && !hasInternet) {
       // TODO: retornar erro avisando indisponibilidade de internet
-    } else if (options.emit_nfce && options.printer) {
+    } else if (options?.emit_nfce && options.printer) {
       // TODO: emitir nota fiscal e gerar cupom
-    } else if (options.emit_nfce && !options.printer) {
+    } else if (options?.emit_nfce && !options.printer) {
       // TODO: emitir nota fiscal e NAO gerar cupom
-    } else if (options.printer) {
+    } else if (options?.printer) {
       printSale(payload)
     }
     if (hasInternet) {
