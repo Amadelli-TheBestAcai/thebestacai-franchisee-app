@@ -63,39 +63,33 @@ const Login: React.FC<IProps> = ({ history }) => {
         ipcRenderer.once(
           'integrate:checkAppVersion:response',
           (event, alreadyUpdated) => {
-            if (!alreadyUpdated) {
+            if (alreadyUpdated) {
+              if (haveStore) {
+                initializeApp()
+              } else {
+                setStep(2)
+                ipcRenderer.send('store:getAll', store)
+                ipcRenderer.once(
+                  'store:getAll:response',
+                  (event, { stores }) => {
+                    setStores(stores)
+                    setLoadingStores(false)
+                  }
+                )
+              }
+            } else {
               ipcRenderer.send('integrate:shouldUpdateApp')
               ipcRenderer.once(
                 'integrate:shouldUpdateApp:response',
                 (event, shouldUpdateApp) => {
                   if (shouldUpdateApp) {
-                    if (user.role < 4) {
-                      Modal.confirm({
-                        title: 'Há uma nova versão do APP',
-                        content:
-                          'Selecione Instalar para iniciar o download da nova versão.',
-                        okText: 'Instalar',
-                        cancelText: 'Mais Tarde',
-                        onOk() {
-                          ipcRenderer.send('check_for_update')
-                          ipcRenderer.once('update-available', () => {
-                            setShouldApplyNewVersion(true)
-                            ipcRenderer.on(
-                              'download-progress',
-                              (event, percent) => {
-                                setPercentDownloaded(+percent.slice(0, 2))
-                              }
-                            )
-                          })
-                        },
+                    setShouldApplyNewVersion(true)
+                    ipcRenderer.send('check_for_update')
+                    ipcRenderer.once('update-available', () => {
+                      ipcRenderer.on('download-progress', (event, percent) => {
+                        setPercentDownloaded(+percent.slice(0, 2))
                       })
-                    } else {
-                      Modal.info({
-                        title: 'Há uma nova versão do APP',
-                        content:
-                          'É necessário permissão para aplicar a atualização.',
-                      })
-                    }
+                    })
                   } else {
                     Modal.info({
                       title: 'Há uma nova versão do APP',
@@ -108,16 +102,6 @@ const Login: React.FC<IProps> = ({ history }) => {
             }
           }
         )
-        if (haveStore) {
-          initializeApp()
-        } else {
-          setStep(2)
-          ipcRenderer.send('store:getAll', store)
-          ipcRenderer.once('store:getAll:response', (event, { stores }) => {
-            setStores(stores)
-            setLoadingStores(false)
-          })
-        }
       } else {
         message.error('Credenciais inválidas')
       }
