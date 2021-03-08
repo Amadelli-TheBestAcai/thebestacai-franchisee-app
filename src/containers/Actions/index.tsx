@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, Dispatch, SetStateAction } from 'react'
 
 import InputForm from '../InputForm'
 import DiscountForm from '../DiscountForm'
@@ -22,15 +22,18 @@ type IProps = {
   haveItensOnSale: boolean
   addToQueue: (name: string) => void
   addDiscount: (value: number) => void
+  discountState: boolean
+  setDiscountState: Dispatch<SetStateAction<boolean>>
 }
 
 const Actions: React.FC<IProps> = ({
   haveItensOnSale,
   addToQueue,
   addDiscount,
+  discountState,
+  setDiscountState,
 }) => {
   const [commandState, setCommandState] = useState(false)
-  const [discountState, setDiscountState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
   const [handlerOutState, setHandlerOutState] = useState(false)
 
@@ -44,7 +47,7 @@ const Actions: React.FC<IProps> = ({
   return (
     <Container>
       <DiscountButton onClick={() => setDiscountState(true)}>
-        DESCONTO
+        [R] DESCONTO
         <OfferIcon />
       </DiscountButton>
       <EntryButton onClick={() => setHandlerInState(true)}>

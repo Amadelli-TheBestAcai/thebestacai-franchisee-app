@@ -57,6 +57,7 @@ const Home: React.FC = () => {
   const [paymentModalTitle, setPaymentModalTitle] = useState<string | null>(
     null
   )
+  const [discountState, setDiscountState] = useState(false)
 
   useEffect(() => {
     ipcRenderer.send('sale:getCurrent')
@@ -280,6 +281,12 @@ const Home: React.FC = () => {
     REGISTER: 'f1',
     focus_balance: 'b',
     FOCUS_BALANCE: 'B',
+    insert_discount: 'r',
+    INSERT_DISCOUNT: 'R',
+  }
+
+  const openDiscoundModal = () => {
+    setDiscountState(true)
   }
 
   const handlers = {
@@ -294,6 +301,8 @@ const Home: React.FC = () => {
     REGISTER: () => registerSale(),
     focus_balance: () => sendFocusToBalance(),
     FOCUS_BALANCE: () => sendFocusToBalance(),
+    insert_discount: () => openDiscoundModal(),
+    INSERT_DISCOUNT: () => openDiscoundModal(),
   }
 
   return (
@@ -324,6 +333,7 @@ const Home: React.FC = () => {
                     isLoading={fechtingSelfService}
                     shouldUseBalance={shouldUseBalance}
                     fetchingBalanceWeight={fetchingBalanceWeight}
+                    openDiscoundModal={openDiscoundModal}
                   />
                 </BalanceContainer>
                 <ProductsContainer>
@@ -337,6 +347,8 @@ const Home: React.FC = () => {
                       haveItensOnSale={!!items.length}
                       addToQueue={addToQueue}
                       addDiscount={addDiscount}
+                      discountState={discountState}
+                      setDiscountState={setDiscountState}
                     />
                   </ActionsContainer>
                   <ItemsContainer>

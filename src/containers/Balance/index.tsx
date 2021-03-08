@@ -30,6 +30,7 @@ type IProps = {
   selfService: Product
   getWeightByBalance: () => void
   registerSale: () => void
+  openDiscoundModal: () => void
   handleOpenPayment: (type: number, title: string) => void
 }
 
@@ -44,6 +45,7 @@ const BalanceContainer: React.FC<IProps> = ({
   handleOpenPayment,
   registerSale,
   fetchingBalanceWeight,
+  openDiscoundModal,
 }) => {
   const handleEnterToSubmit = () => {
     if (!amount) {
@@ -80,6 +82,9 @@ const BalanceContainer: React.FC<IProps> = ({
     }
     if (lowerKey === 'f1') {
       registerSale()
+    }
+    if (lowerKey === 'r') {
+      openDiscoundModal()
     }
     if (shouldUseBalance && lowerKey === 'b') {
       await getWeightByBalance()
