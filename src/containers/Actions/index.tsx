@@ -46,7 +46,10 @@ const Actions: React.FC<IProps> = ({
 
   return (
     <Container>
-      <DiscountButton onClick={() => setDiscountState(true)}>
+      <DiscountButton
+        onClick={() => setDiscountState(true)}
+        style={{ fontSize: '12px' }}
+      >
         [R] DESCONTO
         <OfferIcon />
       </DiscountButton>

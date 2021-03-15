@@ -114,7 +114,9 @@ const Settings: React.FC = () => {
             </InfoGroup>
           </Content>
           <Footer>
-            <Button onClick={() => handleSubmit()}>Salvar</Button>
+            <Button type="primary" onClick={() => handleSubmit()}>
+              Salvar
+            </Button>
           </Footer>
         </>
       )}

@@ -36,7 +36,10 @@ const DiscountForm: React.FC<IProps> = ({
       visible={modalState}
       onOk={handleSubmit}
       closable={false}
-      onCancel={() => setModalState(false)}
+      onCancel={() => {
+        document.getElementById('mainContainer').focus()
+        setModalState(false)
+      }}
       width={300}
       destroyOnClose={true}
     >
