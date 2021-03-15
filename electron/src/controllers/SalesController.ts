@@ -156,9 +156,9 @@ ipcMain.on('appSale:get', async (event) => {
   }
 })
 
-ipcMain.on('appSale:integrate', async (event, payload) => {
+ipcMain.on('appSale:integrate', async (event, sales) => {
   try {
-    await SalesService.integrateAppSales(payload)
+    await SalesService.integrateAppSales(sales)
     event.reply('appSale:integrate:response', true)
   } catch (err) {
     sendLog({

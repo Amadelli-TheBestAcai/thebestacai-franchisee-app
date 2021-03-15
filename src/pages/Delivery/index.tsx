@@ -63,7 +63,7 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
   const [sale, setSale] = useState<Sale | null>(null)
   const [cashier, setCashier] = useState<Cashier>()
   const [sales, setSales] = useState<AppSaleModel[]>([])
-  const [hasConnection, setHasConnection] = useState<AppSaleModel[]>([])
+  const [hasConnection, setHasConnection] = useState<boolean>(false)
   const [
     appSalesResult,
     setAppSalesResult,
@@ -180,17 +180,33 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
     })
   }
 
+  const formatAppSaleToSales = () => {
+    return sales.map((appSale) => ({
+      change_amount: 0,
+      type: 5,
+      discount: 0,
+      cash_id: +cashier?.cash_id,
+      cash_history_id: cashier?.history_id,
+      quantity: 1,
+      items: [],
+      payments: [
+        { amount: +appSale.valor_pedido, type: +appSale.tipo_pagamento },
+      ],
+    }))
+  }
+
   const handleUpdateProduct = async () => {
     confirm({
       title: 'Integrar Vendas',
       content:
-        'Gostaria de prosseguir com a integração das vendas ao caixa atual?',
+        'Gostaria de prosseguir com a integração das vendas ao caixa atual??',
       okText: 'Sim',
       okType: 'default',
       cancelText: 'Não',
       async onOk() {
+        const sales = formatAppSaleToSales()
         setLoadingSales(true)
-        ipcRenderer.send('appSale:integrate', appSalesResult)
+        ipcRenderer.send('appSale:integrate', sales)
         ipcRenderer.once('appSale:integrate:response', (event, status) => {
           if (status) {
             message.success('Vendas integradas com sucesso.')
