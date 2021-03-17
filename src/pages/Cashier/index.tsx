@@ -184,7 +184,7 @@ const Cashier: React.FC<IProps> = ({ history }) => {
           <>
             {step === 1 && (
               <PrimaryContent>
-                {cashes.map((cash) => (
+                {cashes?.map((cash) => (
                   <Cash
                     key={cash.cashier}
                     cash={cash}

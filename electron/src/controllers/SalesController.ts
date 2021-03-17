@@ -156,19 +156,22 @@ ipcMain.on('appSale:get', async (event) => {
   }
 })
 
-ipcMain.on('appSale:integrate', async (event, sales) => {
-  try {
-    await SalesService.integrateAppSales(sales)
-    event.reply('appSale:integrate:response', true)
-  } catch (err) {
-    sendLog({
-      title: 'Erro ao integrar vendas do app',
-      payload: { err: err.message },
-    })
-    event.reply('appSale:integrate:response', false)
-    console.error(err)
+ipcMain.on(
+  'appSale:integrate',
+  async (event, { salesToIntegrate, appSalesId }) => {
+    try {
+      await SalesService.integrateAppSales(salesToIntegrate, appSalesId)
+      event.reply('appSale:integrate:response', true)
+    } catch (err) {
+      sendLog({
+        title: 'Erro ao integrar vendas do app',
+        payload: { err: err.message },
+      })
+      event.reply('appSale:integrate:response', false)
+      console.error(err)
+    }
   }
-})
+)
 
 ipcMain.on('sale:print', async (event, payload) => {
   printSale(payload)

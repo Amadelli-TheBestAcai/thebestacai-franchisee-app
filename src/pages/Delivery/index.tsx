@@ -181,7 +181,7 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
   }
 
   const formatAppSaleToSales = () => {
-    return sales.map((appSale) => ({
+    const salesToIntegrate = sales.map((appSale) => ({
       change_amount: 0,
       type: 5,
       discount: 0,
@@ -193,6 +193,13 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
         { amount: +appSale.valor_pedido, type: +appSale.tipo_pagamento },
       ],
     }))
+
+    const appSalesId = sales.map((sale) => sale.id)
+
+    return {
+      salesToIntegrate,
+      appSalesId,
+    }
   }
 
   const handleUpdateProduct = async () => {
@@ -204,9 +211,9 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
       okType: 'default',
       cancelText: 'Não',
       async onOk() {
-        const sales = formatAppSaleToSales()
+        const payload = formatAppSaleToSales()
         setLoadingSales(true)
-        ipcRenderer.send('appSale:integrate', sales)
+        ipcRenderer.send('appSale:integrate', payload)
         ipcRenderer.once('appSale:integrate:response', (event, status) => {
           if (status) {
             message.success('Vendas integradas com sucesso.')
@@ -277,20 +284,25 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
                 </PaymentItem>
               </Radio.Group>
             </PaymentContainer>
-
             <RegisterContainer>
-              <InputGroup>
-                <InputDescription>Valor do Delivery</InputDescription>
-                <InputPrice
-                  autoFocus={true}
-                  getValue={(value) => setAmount(value)}
-                  onEnterPress={handleCreateSale}
-                />
-              </InputGroup>
+              {isLoading ? (
+                <Spin />
+              ) : (
+                <>
+                  <InputGroup>
+                    <InputDescription>Valor do Delivery</InputDescription>
+                    <InputPrice
+                      autoFocus={true}
+                      getValue={(value) => setAmount(value)}
+                      onEnterPress={handleCreateSale}
+                    />
+                  </InputGroup>
 
-              <RegisterButton onClick={() => handleCreateSale()}>
-                {isLoading ? <Spin /> : 'Registrar'}
-              </RegisterButton>
+                  <RegisterButton onClick={() => handleCreateSale()}>
+                    Registrar
+                  </RegisterButton>
+                </>
+              )}
             </RegisterContainer>
           </MainContainer>
         </>

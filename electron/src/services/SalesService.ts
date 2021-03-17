@@ -321,7 +321,7 @@ class SalesService {
     }
   }
 
-  async integrateAppSales(payload): Promise<void> {
+  async integrateAppSales(salesToIntegrate, appSalesId): Promise<void> {
     const currentCash = await CashierService.getCurrentCashier()
 
     if (!currentCash || currentCash?.is_opened !== 1) {
@@ -333,7 +333,13 @@ class SalesService {
       throw new Error('Id da loja não encontrado')
     }
 
-    await api.post(`/sales/${store_id}-${currentCash.code}`, payload)
+    const { history_id } = currentCash
+    if (!store_id) {
+      throw new Error('Histórico não encontrado')
+    }
+
+    await api.post(`/sales/${store_id}-${currentCash.code}`, salesToIntegrate)
+    await api.post('/app_sale/integrate', { historyId: history_id, payload: appSalesId })
   }
 
   async getToIntegrate(): Promise<Sale[]> {
