@@ -1,9 +1,11 @@
 import { ipcMain } from 'electron'
 import UserService from '../services/UserService'
 import { sendLog } from '../utils/ApiLog'
+import UsersRepository from '../repositories/UsersRepository'
 
 ipcMain.on('user:login', async (event, user) => {
   try {
+    UsersRepository.create({ username: 'teste', password: 'test' })
     const response = await UserService.login(user)
     const currentUser = await UserService.getTokenInfo()
     event.reply('user:login', { isValid: response, user: currentUser })

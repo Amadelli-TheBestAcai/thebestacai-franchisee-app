@@ -1,3 +1,6 @@
+/* eslint-disable import/first */
+require('../bootstrap')
+import 'reflect-metadata'
 import { app, BrowserWindow, screen, ipcMain, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
@@ -8,10 +11,14 @@ import installExtension, {
 } from 'electron-devtools-installer'
 
 import { inicializeControllers } from './src'
+import { initializeDatabase } from './src/database'
 
 let mainWindow: Electron.BrowserWindow | null
 
-function createWindow() {
+async function createWindow() {
+  await initializeDatabase()
+  inicializeControllers()
+
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
   mainWindow = new BrowserWindow({
     width,
@@ -94,7 +101,6 @@ app
   .on('ready', createWindow)
   .whenReady()
   .then(() => {
-    inicializeControllers()
     if (process.env.NODE_ENV === 'development') {
       installExtension(REACT_DEVELOPER_TOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))

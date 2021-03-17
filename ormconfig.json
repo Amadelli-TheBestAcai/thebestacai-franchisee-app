@@ -1,0 +1,14 @@
+{
+  "name": "default",
+  "type": "sqlite",
+  "database": "resources/db.sqlite",
+  "autoSchemaSync": true,
+  "entities": [
+    "electron/src/models/entities/*"
+  ],
+  "migrations": ["electron/src/database/migrations/*"],
+  "cli": {
+    "entitiesDir":  "electron/src/models/entities",
+    "migrationsDir": "electron/src/database/migrations"
+  }
+}

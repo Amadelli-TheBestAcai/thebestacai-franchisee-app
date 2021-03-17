@@ -13,7 +13,8 @@ module.exports = {
     serialport: 'commonjs serialport',
     knex: 'commonjs knex',
     bcrypt: 'commonjs bcrypt',
-    printer: 'commonjs printer'
+    printer: 'commonjs printer',
+    typeorm: 'commonjs typeorm'
   },
   module: {
     rules: [
