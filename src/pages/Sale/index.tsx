@@ -44,7 +44,6 @@ const Sale: React.FC<IProps> = ({ history }) => {
         setIsLoading(false)
         setIsConected(isConnected)
         setSales(data)
-        console.log(data)
         ipcRenderer.send('user:get')
       }
     )

@@ -32,7 +32,12 @@ export const printSale = async (sale): Promise<void> => {
   printerFormater.clear()
   printerFormater.tableCustom([
     { text: 'THE BEST ACAI', align: 'LEFT', width: 0.5, bold: true },
-    { text: replaceSpecialChars(store.company_name), align: 'RIGHT', width: 0.5, bold: true },
+    {
+      text: replaceSpecialChars(store.company_name),
+      align: 'RIGHT',
+      width: 0.5,
+      bold: true,
+    },
   ])
   printerFormater.drawLine()
   printerFormater.tableCustom([

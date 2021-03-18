@@ -17,9 +17,6 @@ class User {
   @Column()
   password: string
 
-  @Column({ nullable: true })
-  token: string
-
   @CreateDateColumn()
   created_at: Date
 

@@ -1,5 +1,6 @@
 import axios from 'axios'
-import UserService from '../services/UserService'
+import GetSessionUserService from '../services/User/GetSessionUserService'
+import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 import StoreService from '../services/StoreService'
 import { checkInternet } from '../utils/InternetConnection'
 
@@ -14,9 +15,9 @@ const api = axios.create({
 })
 
 api.interceptors.request.use(async (config) => {
-  const token = await UserService.getCurrentSession()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  const sessionUser = await GetSessionUserService.execute()
+  if (sessionUser) {
+    config.headers.Authorization = `Bearer ${sessionUser.access_token}`
   }
   return config
 })
@@ -27,7 +28,7 @@ export async function sendLog(message: {
 }): Promise<void> {
   const hasInternet = await checkInternet()
   if (hasInternet) {
-    const user = await UserService.getTokenInfo()
+    const user = await GetDecodedTokenService.execute()
     const store = await StoreService.getOne()
 
     const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`

@@ -9,7 +9,7 @@ import {
 @Entity({ name: 'session_user' })
 class SessionUser {
   @PrimaryGeneratedColumn('uuid')
-  id: number
+  id: string
 
   @Column()
   access_token: string

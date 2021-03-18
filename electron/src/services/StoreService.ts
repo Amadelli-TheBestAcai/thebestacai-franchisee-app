@@ -1,6 +1,6 @@
 import api from '../utils/Api'
 
-import UserService from './UserService'
+import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 import StoreRepository from '../repositories/StoreRepository'
 
 import { CreateStoreDTO } from '../../../shared/dtos/store/CreateStoreDTO'
@@ -34,7 +34,7 @@ class StoreService {
   async getStoreByUser(): Promise<{ id: number; name: string }[]> {
     const isOnline = await checkInternet()
     if (isOnline) {
-      const { id } = await UserService.getTokenInfo()
+      const { id } = await GetDecodedTokenService.execute()
       const {
         data: { data },
       } = await api.get(`/user_store/${id}`)

@@ -1,6 +1,6 @@
 import ItemsRepository from '../repositories/ItemsRepository'
 import SalesRepository from '../repositories/SalesRepository'
-import UserService from '../services/UserService'
+import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 
 import { Item } from '../models/Item'
 import { IntegrateItemDTO } from '../models/dtos/items/IntegrateItemDTO'
@@ -50,7 +50,7 @@ class ItemsService {
 
   async getItemsToIntegrate(sale_id: string): Promise<IntegrateItemDTO[]> {
     const items = await ItemsRepository.getBySale(sale_id)
-    const user = await UserService.getTokenInfo()
+    const user = await GetDecodedTokenService.execute()
     return items.map((item) => ({
       product_id: item.product_id,
       store_product_id: item.product_store_id,

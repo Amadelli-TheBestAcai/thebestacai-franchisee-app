@@ -1,13 +1,12 @@
 import { ipcMain } from 'electron'
-import UserService from '../services/UserService'
+import LoginService from '../services/User/LoginService'
+import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 import { sendLog } from '../utils/ApiLog'
-import UsersRepository from '../repositories/UsersRepository'
 
 ipcMain.on('user:login', async (event, user) => {
   try {
-    UsersRepository.create({ username: 'teste', password: 'test' })
-    const response = await UserService.login(user)
-    const currentUser = await UserService.getTokenInfo()
+    const response = await LoginService.execute(user)
+    const currentUser = await GetDecodedTokenService.execute()
     event.reply('user:login', { isValid: response, user: currentUser })
   } catch (err) {
     sendLog({
@@ -21,7 +20,7 @@ ipcMain.on('user:login', async (event, user) => {
 
 ipcMain.on('user:get', async (event) => {
   try {
-    const user = await UserService.getTokenInfo()
+    const user = await GetDecodedTokenService.execute()
     event.reply('user:get:response', user)
   } catch (err) {
     sendLog({

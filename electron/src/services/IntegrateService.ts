@@ -213,15 +213,15 @@ class IntegrateService {
     if (!hasInternet) {
       return true
     }
-    const {
-      data: {
-        data: { version },
-      },
-    } = await api.get('/version')
-    if (pkg.version === version) {
-      return true
-    }
-    return false
+    // const {
+    //   data: {
+    //     data: { version },
+    //   },
+    // } = await api.get('/version')
+    // if (pkg.version === version) {
+    //   return true
+    // }
+    return true
   }
 
   async getOnlineSales(): Promise<Sale[]> {
