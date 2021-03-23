@@ -6,13 +6,19 @@ import {
   CreateDateColumn,
 } from 'typeorm'
 
-@Entity({ name: 'store' })
+@Entity({ name: 'stores' })
 class User {
   @PrimaryGeneratedColumn('uuid')
-  id: number
+  id: string
 
   @Column()
-  name: string
+  cnpj: string
+
+  @Column()
+  company_name: string
+
+  @Column()
+  token_nfce: string
 
   @CreateDateColumn()
   created_at: Date

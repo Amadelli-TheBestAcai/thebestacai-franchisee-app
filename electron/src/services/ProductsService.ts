@@ -1,6 +1,6 @@
 import api from '../utils/Api'
 
-import StoreService from '../services/StoreService'
+import GetCurrentStoreService from './Store/GetCurrentStoreService'
 
 import ProductsRepository from '../repositories/ProductsRepository'
 
@@ -30,7 +30,7 @@ class ProductsService {
     if (!hasInternet) {
       return
     }
-    const store = await StoreService.getOne()
+    const store = await GetCurrentStoreService.execute()
     if (!store) {
       return
     }
@@ -107,7 +107,7 @@ class ProductsService {
 
   async getCategoriesWithProducts() {
     const hasInternet = await checkInternet()
-    const store = await StoreService.getOne()
+    const store = await GetCurrentStoreService.execute()
     if (!hasInternet) {
       return {
         hasInternet,

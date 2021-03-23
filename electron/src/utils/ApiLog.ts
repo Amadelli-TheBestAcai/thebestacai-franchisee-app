@@ -1,7 +1,7 @@
 import axios from 'axios'
 import GetSessionUserService from '../services/User/GetSessionUserService'
 import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
-import StoreService from '../services/StoreService'
+import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { checkInternet } from '../utils/InternetConnection'
 
 const API_URL =
@@ -29,7 +29,7 @@ export async function sendLog(message: {
   const hasInternet = await checkInternet()
   if (hasInternet) {
     const user = await GetDecodedTokenService.execute()
-    const store = await StoreService.getOne()
+    const store = await GetCurrentStoreService.execute()
 
     const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`
 

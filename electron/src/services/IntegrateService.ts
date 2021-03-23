@@ -1,7 +1,7 @@
 import IntegrateRepository from '../repositories/IntegrateRepository'
 
 import CashierService from '../services/CashierService'
-import StoreService from '../services/StoreService'
+import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import SalesService from '../services/SalesService'
 import HandlersService from '../services/HandlersService'
 
@@ -31,7 +31,7 @@ const pkg = require('../../../package.json')
 class IntegrateService {
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
     try {
-      const { id: store } = await StoreService.getOne()
+      const { id: store } = await GetCurrentStoreService.execute()
 
       const {
         amount_on_open,

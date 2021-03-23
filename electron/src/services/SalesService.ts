@@ -2,7 +2,7 @@ import SalesRepository from '../repositories/SalesRepository'
 import CashierService from '../services/CashierService'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
-import StoreService from '../services/StoreService'
+import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import IntegrateService from '../services/IntegrateService'
 
 import api from '../utils/Api'
@@ -154,7 +154,7 @@ class SalesService {
 
   async integrateOffline(amount_on_close: number, code: string): Promise<void> {
     const sales = await SalesRepository.getOffline()
-    const { id: store } = await StoreService.getOne()
+    const { id: store } = await GetCurrentStoreService.execute()
     const {
       amount_on_open,
       id: cashId,
