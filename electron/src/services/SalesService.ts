@@ -338,8 +338,18 @@ class SalesService {
       throw new Error('Histórico não encontrado')
     }
 
-    await api.post(`/sales/${store_id}-${currentCash.code}`, salesToIntegrate)
-    await api.post('/app_sale/integrate', { historyId: history_id, payload: appSalesId })
+    salesToIntegrate.reduce((previousPromise, nextSale) => {
+      return previousPromise.then(async () => {
+        return await api.post(`/sales/${store_id}-${currentCash.code}`, [
+          nextSale,
+        ])
+      })
+    }, Promise.resolve())
+
+    await api.post('/app_sale/integrate', {
+      historyId: history_id,
+      payload: appSalesId,
+    })
   }
 
   async getToIntegrate(): Promise<Sale[]> {
