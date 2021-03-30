@@ -95,6 +95,7 @@ const Login: React.FC<IProps> = ({ history }) => {
                       title: 'Há uma nova versão do APP',
                       content:
                         'Para aplica-la feche o caixa atual e faça o login novamente.',
+                      onOk: () => initializeApp(),
                     })
                   }
                 }
