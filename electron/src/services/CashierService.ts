@@ -1,5 +1,4 @@
 import api from '../utils/Api'
-
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import SalesService from './SalesService'
 import IntegrateService from './IntegrateService'
@@ -15,7 +14,7 @@ import { CloseCashierDTO } from '../models/dtos/Cashier/CloseCashierDTO'
 import { CreateCashierDTO } from '../models/dtos/Cashier/CreateCashierDTO'
 class CashierService {
   async getOnlineCashes(): Promise<{ cashier: string; avaliable: boolean }[]> {
-    const { id: store } = await GetCurrentStoreService.execute()
+    const { store_id: store } = await GetCurrentStoreService.execute()
     const {
       data: { data },
     } = await api.get(`/store_cashes/${store}/summary`)
@@ -63,7 +62,7 @@ class CashierService {
     const isConnected = await checkInternet()
     let newCashier: CreateCashierDTO = { code, is_opened: true, amount_on_open }
     if (isConnected) {
-      const { id: store } = await GetCurrentStoreService.execute()
+      const { store_id: store } = await GetCurrentStoreService.execute()
       const {
         data: {
           data: { cash_id, history_id, store_id },
@@ -85,7 +84,7 @@ class CashierService {
     if (isConnected) {
       await IntegrateService.integrateOnlineSales()
       await IntegrateService.integrateOnlineHandlers()
-      const { id: store } = await GetCurrentStoreService.execute()
+      const { store_id: store } = await GetCurrentStoreService.execute()
       await api.put(`/store_cashes/${store}-${code}/close`, { amount_on_close })
     }
     const { id } = await this.getCurrentCashier()

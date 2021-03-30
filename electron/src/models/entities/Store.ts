@@ -9,7 +9,10 @@ import {
 @Entity({ name: 'stores' })
 class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id: number
+
+  @Column()
+  store_id: number
 
   @Column()
   cnpj: string
@@ -17,7 +20,7 @@ class User {
   @Column()
   company_name: string
 
-  @Column()
+  @Column({ nullable: true })
   token_nfce: string
 
   @CreateDateColumn()

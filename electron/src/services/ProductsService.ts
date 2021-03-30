@@ -1,5 +1,4 @@
 import api from '../utils/Api'
-
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 
 import ProductsRepository from '../repositories/ProductsRepository'
@@ -9,9 +8,11 @@ import { formaterToCategory } from '../utils/ProductFormater'
 import { checkInternet } from '../utils/InternetConnection'
 
 import { Audit as AuditModel } from '../../../shared/models/audit'
+import { v4 } from 'uuid'
 class ProductsService {
   async updateAllProducts(products) {
     const formatedProducts = products.map((productStore) => ({
+      id: v4(),
       product_store_id: productStore.id,
       product_id: productStore.product_id,
       name: productStore.product.name,
@@ -37,7 +38,7 @@ class ProductsService {
 
     const {
       data: { content },
-    } = await api.get(`products_store/store/${store.id}`)
+    } = await api.get(`products_store/store/${store.store_id}`)
     this.updateAllProducts(content)
   }
 
@@ -121,7 +122,7 @@ class ProductsService {
 
     return {
       hasInternet: true,
-      store: store.id,
+      store: store.store_id,
       categoryWithProducts: content,
     }
   }

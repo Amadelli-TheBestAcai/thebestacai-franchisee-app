@@ -21,7 +21,7 @@
     "predeploy": "yarn build",
     "deploy": "electron-builder build --win --publish always",
     "test": "jest",
-    "database": "rimraf resources/db.sqlite  && npm run typeorm migration:run",
+    "database": "rimraf resources/db.sqlite  && yarn typeorm migration:run",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   },
   "keywords": [],

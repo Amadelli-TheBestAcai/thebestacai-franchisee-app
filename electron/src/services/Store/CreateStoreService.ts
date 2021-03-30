@@ -17,12 +17,12 @@ class CreateStoreService {
       if (!store) {
         const {
           data: {
-            data: { id, cnpj, company_name, token_nfce_production },
+            data: { id: store_id, cnpj, company_name, token_nfce_production },
           },
         } = await api.get(`/stores?id=${storeId}`)
 
         await this._storeRepository.create({
-          id,
+          store_id,
           cnpj,
           company_name,
           token_nfce: token_nfce_production,

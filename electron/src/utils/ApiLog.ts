@@ -31,7 +31,7 @@ export async function sendLog(message: {
     const user = await GetDecodedTokenService.execute()
     const store = await GetCurrentStoreService.execute()
 
-    const from = `Store: ${store.id}-${store.company_name}. User: ${user.id}-${user.name}`
+    const from = `Store: ${store.store_id}-${store.company_name}. User: ${user.id}-${user.name}`
 
     try {
       await api.post('/sales-manager-logs', {

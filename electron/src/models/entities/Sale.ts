@@ -18,32 +18,32 @@ class Sale {
   @Column()
   store_id: number
 
-  @Column()
+  @Column({ nullable: true })
   cash_history_id: number
 
-  @Column()
+  @Column({ nullable: true })
   cash_id: number
 
-  @Column()
+  @Column({ nullable: true })
   cash_code: string
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
   change_amount: number
 
-  @Column()
+  @Column({ nullable: true })
   name: string
 
   @Column()
   type: string
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
   discount: number
 
-  @Column('decimal', { precision: 10, scale: 2 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: true })
   total: number
 
-  @Column()
-  quantity: string
+  @Column({ nullable: true })
+  quantity: number
 
   @Column()
   to_integrate: boolean

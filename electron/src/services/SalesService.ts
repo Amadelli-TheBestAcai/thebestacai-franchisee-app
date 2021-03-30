@@ -32,6 +32,7 @@ class SalesService {
       cash_id: cashier.cash_id,
       cash_code: cashier.code,
       change_amount: 0,
+      total: 0,
       type: 'STORE',
       discount: 0,
       to_integrate: false,
@@ -154,7 +155,7 @@ class SalesService {
 
   async integrateOffline(amount_on_close: number, code: string): Promise<void> {
     const sales = await SalesRepository.getOffline()
-    const { id: store } = await GetCurrentStoreService.execute()
+    const { store_id: store } = await GetCurrentStoreService.execute()
     const {
       amount_on_open,
       id: cashId,

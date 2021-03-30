@@ -63,10 +63,10 @@ class FindAllProductsByStore {
   async execute(): Promise<Response[]> {
     const isOnline = await checkInternet()
     if (isOnline) {
-      const { id } = await this._storeRepository.findCurrent()
+      const { store_id } = await this._storeRepository.findCurrent()
       const {
         data: { content },
-      } = await api.get(`/products_store/store/${id}?stockProducts=true`)
+      } = await api.get(`/products_store/store/${store_id}?stockProducts=true`)
       return content
     } else {
       return []

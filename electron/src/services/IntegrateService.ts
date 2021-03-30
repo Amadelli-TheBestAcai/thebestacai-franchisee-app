@@ -31,7 +31,7 @@ const pkg = require('../../../package.json')
 class IntegrateService {
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
     try {
-      const { id: store } = await GetCurrentStoreService.execute()
+      const { store_id: store } = await GetCurrentStoreService.execute()
 
       const {
         amount_on_open,
