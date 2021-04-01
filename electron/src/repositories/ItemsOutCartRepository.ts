@@ -1,19 +1,32 @@
-import knex from '../database'
-import { ItemOutCart } from '../models/ItemOutCart'
-import { CreateItemOutCartDTO } from '../models/dtos/itemOutCart/CreateItemOutCartDTO'
+import { Repository, getRepository, DeepPartial } from 'typeorm'
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
-class ItemsOutCartRepository {
-  async create(payload: CreateItemOutCartDTO) {
-    return await knex('items_out_cart').insert(payload)
+import ItemOutCart from '../models/entities/ItemOutCart'
+import { IItemOutCartRepository } from './interfaces/IItemOutCartRepository'
+
+class ItemsOutCartRepository implements IItemOutCartRepository {
+  private ormRepository: Repository<ItemOutCart>
+
+  constructor() {
+    this.ormRepository = getRepository(ItemOutCart)
   }
 
-  async getAll(): Promise<ItemOutCart[]> {
-    return await knex('items_out_cart')
+  async create(payload: DeepPartial<ItemOutCart>): Promise<ItemOutCart> {
+    const itemOutCart = await this.ormRepository.create(payload)
+    await this.ormRepository.save(itemOutCart)
+    return itemOutCart
   }
 
-  async deleteById(id: number): Promise<void> {
-    await knex('items_out_cart').where({ id }).del()
+  async getAllToIntegrate(): Promise<ItemOutCart[]> {
+    return await this.ormRepository.find({ where: { integrated: false } })
+  }
+
+  async update(
+    id: string,
+    payload: QueryDeepPartialEntity<ItemOutCart>
+  ): Promise<void> {
+    await this.ormRepository.update(id, payload)
   }
 }
 
-export default new ItemsOutCartRepository()
+export default ItemsOutCartRepository

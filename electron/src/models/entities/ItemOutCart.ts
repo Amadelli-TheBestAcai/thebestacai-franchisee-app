@@ -20,6 +20,9 @@ class ItemOutCart {
   @Column()
   store_id: number
 
+  @Column({ default: false })
+  integrated: boolean
+
   @Column()
   cash_code: string
 
