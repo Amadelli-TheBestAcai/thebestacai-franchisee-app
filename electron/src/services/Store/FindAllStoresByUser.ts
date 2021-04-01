@@ -1,9 +1,6 @@
 import api from '../../utils/Api'
 import { checkInternet } from '../../utils/InternetConnection'
 
-import { IStoreRepository } from '../../repositories/interfaces/IStoreRepository'
-import StoresRepository from '../../repositories/StoresRepository'
-
 type Response = {
   id: number
   name: string

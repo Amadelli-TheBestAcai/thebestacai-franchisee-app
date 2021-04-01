@@ -2,11 +2,11 @@ import api from '../../utils/Api'
 import { checkInternet } from '../../utils/InternetConnection'
 
 import { IStoreRepository } from '../../repositories/interfaces/IStoreRepository'
-import StoresRepository from '../../repositories/StoresRepository'
+import StoreRepository from '../../repositories/StoreRepository'
 
 class CreateStoreService {
   private _storeRepository: IStoreRepository
-  constructor(storeRepository: IStoreRepository = new StoresRepository()) {
+  constructor(storeRepository: IStoreRepository = new StoreRepository()) {
     this._storeRepository = storeRepository
   }
 

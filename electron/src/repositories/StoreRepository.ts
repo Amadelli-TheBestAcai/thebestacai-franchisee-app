@@ -1,16 +1,24 @@
-import knex from '../database'
-import { CreateStoreDTO } from '../../../shared/dtos/store/CreateStoreDTO'
-import { Store } from '../../../shared/models/store'
+import { Repository, getRepository, DeepPartial } from 'typeorm'
+import Store from '../models/entities/Store'
 
-class StoreRepository {
-  async create(payload: CreateStoreDTO): Promise<void> {
-    await knex('store').insert(payload)
+import { IStoreRepository } from './interfaces/IStoreRepository'
+
+class StoreRepository implements IStoreRepository {
+  private ormRepository: Repository<Store>
+
+  constructor() {
+    this.ormRepository = getRepository(Store)
   }
 
-  async getOne(): Promise<Store> {
-    const store = await knex('store')
-    return store[0]
+  async create(payload: DeepPartial<Store>): Promise<Store> {
+    const store = await this.ormRepository.create(payload)
+    await this.ormRepository.save(store)
+    return store
+  }
+
+  async findCurrent(): Promise<Store> {
+    return await this.ormRepository.findOne()
   }
 }
 
-export default new StoreRepository()
+export default StoreRepository
