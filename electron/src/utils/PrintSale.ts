@@ -1,4 +1,4 @@
-import SettingsService from '../services/SettingsService'
+import GetSettingsService from '../services/Setting/GetSettingsService'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { replaceSpecialChars } from '../../../shared/utils/replaceSpecialChars'
 
@@ -24,7 +24,7 @@ export const printSale = async (sale): Promise<void> => {
     })
   }
   const store = await GetCurrentStoreService.execute()
-  const { printer } = await SettingsService.getOneOrCreate()
+  const { printer } = await GetSettingsService.execute()
   // const items = await ItemsService.getBySale(sale.id)
 
   const termalPrinter = Printer.getPrinter(printer)

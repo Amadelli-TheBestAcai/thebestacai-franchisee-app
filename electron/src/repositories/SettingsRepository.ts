@@ -1,19 +1,32 @@
-import knex from '../database'
-import { Settings } from '../../../shared/models/settings'
+import { Repository, getRepository, DeepPartial } from 'typeorm'
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+import Settings from '../models/entities/Settings'
 
-class SettingsRepository {
-  async create(payload: Settings): Promise<void> {
-    await knex('settings').insert(payload)
+import { ISettingRepository } from './interfaces/ISettingRepository'
+
+class SettingsRepository implements ISettingRepository {
+  private ormRepository: Repository<Settings>
+
+  constructor() {
+    this.ormRepository = getRepository(Settings)
   }
 
-  async update(id: string, payload: Settings): Promise<void> {
-    await knex('settings').where({ id }).update(payload)
+  async create(payload: DeepPartial<Settings>): Promise<Settings> {
+    const settings = this.ormRepository.create(payload)
+    await this.ormRepository.save(settings)
+    return settings
   }
 
-  async getOne(): Promise<Settings | null> {
-    const store = await knex('settings')
-    return store[0]
+  async update(
+    id: string,
+    payload: QueryDeepPartialEntity<Settings>
+  ): Promise<void> {
+    await this.ormRepository.update(id, payload)
+  }
+
+  async getOne(): Promise<Settings> {
+    return await this.ormRepository.findOne()
   }
 }
 
-export default new SettingsRepository()
+export default SettingsRepository

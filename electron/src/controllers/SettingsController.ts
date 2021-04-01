@@ -1,11 +1,12 @@
 import { ipcMain } from 'electron'
-import SettingsService from '../services/SettingsService'
+import GetSettingsService from '../services/Setting/GetSettingsService'
+import UpdateSettingsService from '../services/Setting/UpdateSettingsService'
 import { sendLog } from '../utils/ApiLog'
 import Printer from 'printer'
 
 ipcMain.on('configuration:get', async (event) => {
   try {
-    const setting = await SettingsService.getOneOrCreate()
+    const setting = await GetSettingsService.execute()
     event.reply('configuration:get:response', setting)
   } catch (err) {
     sendLog({
@@ -19,7 +20,7 @@ ipcMain.on('configuration:get', async (event) => {
 
 ipcMain.on('configuration:update', async (event, payload) => {
   try {
-    const setting = await SettingsService.update(payload)
+    const setting = await UpdateSettingsService.execute(payload)
     event.reply('configuration:update:response', { setting, status: true })
   } catch (err) {
     sendLog({
@@ -32,5 +33,8 @@ ipcMain.on('configuration:update', async (event, payload) => {
 })
 
 ipcMain.on('configuration:printers:get', async (event) => {
-  event.reply('configuration:printers:get:response', Printer.getPrinters().map(printer => printer.name))
+  event.reply(
+    'configuration:printers:get:response',
+    Printer.getPrinters().map((printer) => printer.name)
+  )
 })

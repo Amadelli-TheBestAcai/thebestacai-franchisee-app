@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import SettingsService from '../services/SettingsService'
+import GetSettingsService from '../services/Setting/GetSettingsService'
 import SerialPort from 'serialport'
 import { sendLog } from '../utils/ApiLog'
 import { sleep } from '../utils/Sleep'
@@ -8,7 +8,7 @@ let port: SerialPort = null
 
 ipcMain.on('balance:connect', async (event) => {
   try {
-    const settings = await SettingsService.getOneOrCreate()
+    const settings = await GetSettingsService.execute()
 
     if (!settings.balance_port) {
       return
