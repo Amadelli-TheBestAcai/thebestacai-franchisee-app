@@ -82,7 +82,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           payment_method: 0,
           total: +shopInfo.quantity * +shopInfo.unitary_value,
           observation: shopInfo.observation,
-          name: shopInfo.observation,
+          name: 'Pagamento fornecedor',
           purchasesItems: [
             {
               product_id: +shopInfo.product_id,
@@ -110,7 +110,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
           pay_date: new Date(),
           payment_method: 0,
           total: +shopInfo.quantity * +shopInfo.unitary_value,
-          name: shopInfo.observation,
+          name: 'Pagamento freelance',
           purchasesItems: [
             {
               product_id: +product.id,

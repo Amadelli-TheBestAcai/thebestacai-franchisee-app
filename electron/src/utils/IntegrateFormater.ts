@@ -2,6 +2,7 @@ import { Handler } from '../models/Handler'
 import { Sale } from '../models/Sale'
 import { SalesTypes } from '../models/enums/SalesTypes'
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
+import { CashHandler } from '../models/entities'
 
 type FormatedSale = {
   id: string
@@ -45,7 +46,7 @@ type FormatedHandler = {
 }
 
 export const formatHandlesToIntegrate = (
-  handlers: Handler[],
+  handlers: Handler[] | CashHandler[],
   cash_id?: number,
   cash_history_id?: number
 ): FormatedHandler[] => {
@@ -58,7 +59,7 @@ export const formatHandlesToIntegrate = (
     cash_id: cash_id || handler.cash_id,
     cash_code: handler.cash_code,
     cash_history_id: cash_history_id || handler.cash_history_id,
-    order_id: handler.order_id
+    order_id: handler.order_id,
   }))
   return cleanDuplicatedValues<FormatedHandler>(formatedHandlers, 'id')
 }

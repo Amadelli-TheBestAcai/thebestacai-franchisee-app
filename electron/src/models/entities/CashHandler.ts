@@ -32,10 +32,10 @@ class CashHandler {
   @Column('decimal', { precision: 10, scale: 2 })
   amount: number
 
-  @Column()
+  @Column({ default: true })
   to_integrate: boolean
 
-  @Column()
+  @Column({ nullable: true })
   order_id: number
 
   @CreateDateColumn()

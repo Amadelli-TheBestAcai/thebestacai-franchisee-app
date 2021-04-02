@@ -3,7 +3,9 @@ import IntegrateRepository from '../repositories/IntegrateRepository'
 import CashierService from '../services/CashierService'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import SalesService from '../services/SalesService'
-import HandlersService from '../services/HandlersService'
+
+import { ICashHandlerRepository } from '../repositories/interfaces/ICashHandlerRepository'
+import CashHandlerRepository from '../repositories/CashHandlerRepository'
 
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
@@ -24,11 +26,14 @@ import {
   getQuantityItems,
   getAmountOnCash,
 } from '../utils/IntegrateFormater'
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('../../../package.json')
-
 class IntegrateService {
+  private _cashHandlerRepository: ICashHandlerRepository
+  constructor(
+    storeCashRepository: ICashHandlerRepository = new CashHandlerRepository()
+  ) {
+    this._cashHandlerRepository = storeCashRepository
+  }
+
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
     try {
       const { store_id: store } = await GetCurrentStoreService.execute()
@@ -93,7 +98,9 @@ class IntegrateService {
         formatedHandler.map(async ({ id, cash_code, store_id, ...payload }) => {
           try {
             await api.post(`/cash_handler/${store}-${code}`, [payload])
-            await HandlersService.update(id, { to_integrate: false })
+            await this._cashHandlerRepository.update(id, {
+              to_integrate: false,
+            })
           } catch (err) {
             sendLog({
               title: 'Erro ao ao integrar handler offline',
@@ -177,7 +184,7 @@ class IntegrateService {
       formatedHandler.map(async ({ id, store_id, cash_code, ...payload }) => {
         try {
           await api.post(`/cash_handler/${store_id}-${cash_code}`, [payload])
-          await HandlersService.update(id, { to_integrate: false })
+          await this._cashHandlerRepository.update(id, { to_integrate: false })
         } catch (err) {
           sendLog({
             title: 'Erro ao integrar de movimentação online',
