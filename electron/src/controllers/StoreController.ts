@@ -3,7 +3,7 @@ import { ipcMain } from 'electron'
 import CreateStoreService from '../services/Store/CreateStoreService'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import FindAllStoresByUser from '../services/Store/FindAllStoresByUser'
-import FindAllProductsByStore from '../services/Product/FindAllProductsByStore'
+import GetAllProductsByStore from '../services/Product/GetAllProductsByStore'
 import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 
 import { sendLog } from '../utils/ApiLog'
@@ -53,7 +53,8 @@ ipcMain.on('store:getAll', async (event) => {
 
 ipcMain.on('store:products:get', async (event) => {
   try {
-    const products = await FindAllProductsByStore.execute()
+    const products = await GetAllProductsByStore.execute()
+    console.log(products)
     event.reply('store:products:get:response', products)
   } catch (err) {
     sendLog({

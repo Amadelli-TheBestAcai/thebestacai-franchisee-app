@@ -1,10 +1,17 @@
 import { ipcMain } from 'electron'
-import ProductsService from '../services/ProductsService'
+import FindAllCategoriesWithProductsService from '../services/Product/FindAllCategoriesWithProductsService'
+import GetProductAuditsService from '../services/Product/GetProductAuditsService'
+import GetSelfServiceProductService from '../services/Product/GetSelfServiceProductService'
+import UpdateProductStockService from '../services/Product/UpdateProductStockService'
+import UpdateProductsFromApiService from '../services/Product/UpdateProductsFromApiService'
+import GetAllProductsByStore from '../services/Product/GetAllProductsByStore'
+import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
+import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('products:get', async (event) => {
   try {
-    const response = await ProductsService.getProducts()
+    const response = await GetAllProductsByStore.execute()
     event.returnValue = response
   } catch (err) {
     sendLog({
@@ -18,7 +25,7 @@ ipcMain.on('products:get', async (event) => {
 
 ipcMain.on('products:refresh', async (event) => {
   try {
-    await ProductsService.getOnlineProducts()
+    await UpdateProductsFromApiService.execute()
     event.reply('products:refresh:response', { success: true })
   } catch (err) {
     sendLog({
@@ -32,7 +39,7 @@ ipcMain.on('products:refresh', async (event) => {
 
 ipcMain.on('products:get:selfService', async (event) => {
   try {
-    const item = await ProductsService.getSelfService()
+    const item = await GetSelfServiceProductService.execute()
     event.reply('products:get:selfService:response', item)
   } catch (err) {
     sendLog({
@@ -45,7 +52,7 @@ ipcMain.on('products:get:selfService', async (event) => {
 
 ipcMain.on('products:stock:update', async (event, { id, quantity }) => {
   try {
-    await ProductsService.updateStock(id, quantity)
+    await UpdateProductStockService.execute(id, quantity)
     event.reply('products:stock:update:response', true)
   } catch (err) {
     sendLog({
@@ -59,21 +66,31 @@ ipcMain.on('products:stock:update', async (event, { id, quantity }) => {
 
 ipcMain.on('products:category:all', async (event) => {
   try {
-    const response = await ProductsService.getCategoriesWithProducts()
-    event.reply('products:category:all:response', response)
+    const hasInternet = checkInternet()
+    const categoryWithProducts = await FindAllCategoriesWithProductsService.execute()
+    const store = await GetCurrentStoreService.execute()
+    event.reply('products:category:all:response', {
+      hasInternet,
+      store,
+      categoryWithProducts,
+    })
   } catch (err) {
     sendLog({
       title: 'Erro ao obter todas as categorias com produtos',
       payload: err.message,
     })
-    event.reply('products:category:all:response', { hasInternet: false, store: null, categoryWithProducts: [] })
+    event.reply('products:category:all:response', {
+      hasInternet: false,
+      store: null,
+      categoryWithProducts: [],
+    })
     console.error(err)
   }
 })
 
 ipcMain.on('products:audit:get', async (event, { id, page, size }) => {
   try {
-    const { audits, totalElements } = await ProductsService.getAudit(
+    const { audits, totalElements } = await GetProductAuditsService.execute(
       id,
       page,
       size

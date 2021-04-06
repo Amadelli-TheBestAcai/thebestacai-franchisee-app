@@ -28,13 +28,13 @@ const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
 
   return (
     <Container>
-      {!products.length ? (
+      {!products?.length ? (
         <LoadingContainer>
           <Spin />
         </LoadingContainer>
       ) : (
         <TabContainer defaultActiveKey="1">
-          {products.map((productCategory, index) => (
+          {products?.map((productCategory, index) => (
             <TabItem tab={productCategory.category} key={index + 1}>
               <ProductHeader>
                 <ProductHeaderCol span={8}>
