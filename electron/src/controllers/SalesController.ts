@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import SalesService from '../services/SalesService'
-import CashierService from '../services/CashierService'
+import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
 import { sendLog } from '../utils/ApiLog'
 import { printSale } from '../utils/PrintSale'
 
@@ -34,7 +34,7 @@ ipcMain.on('sale:add', async (event, sale) => {
 ipcMain.on('sale:getCurrent', async (event) => {
   try {
     const { sale, items, payments } = await SalesService.getCurrentSale()
-    const cashier = await CashierService.getCurrentCashier()
+    const cashier = await GetCurrentStoreCashService.execute()
     event.reply('sale:getCurrent:response', { sale, items, payments, cashier })
   } catch (err) {
     sendLog({

@@ -30,7 +30,7 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
     })
     ipcRenderer.send('cashier:get', store)
     ipcRenderer.once('cashier:get:response', (event, { current }) => {
-      if (current?.is_opened === 1) {
+      if (current?.is_opened) {
         setCash('ABERTO')
       } else {
         setCash('FECHADO')

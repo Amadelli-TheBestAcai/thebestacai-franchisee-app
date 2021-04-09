@@ -1,11 +1,13 @@
 import IntegrateRepository from '../repositories/IntegrateRepository'
 
-import CashierService from '../services/CashierService'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
+import GetCurrentStoreCashService from './StoreCash/GetCurrentStoreCashService'
 import SalesService from '../services/SalesService'
 
 import { ICashHandlerRepository } from '../repositories/interfaces/ICashHandlerRepository'
 import CashHandlerRepository from '../repositories/CashHandlerRepository'
+import { IStoreCashRepository } from '../repositories/interfaces/IStoreCashRepository'
+import StoreCashRepository from '../repositories/StoreCashRepository'
 
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
@@ -28,10 +30,13 @@ import {
 } from '../utils/IntegrateFormater'
 class IntegrateService {
   private _cashHandlerRepository: ICashHandlerRepository
+  private _storeCashRepository: IStoreCashRepository
   constructor(
-    storeCashRepository: ICashHandlerRepository = new CashHandlerRepository()
+    cashHandlerRepository: ICashHandlerRepository = new CashHandlerRepository(),
+    storeCashRepository: IStoreCashRepository = new StoreCashRepository()
   ) {
-    this._cashHandlerRepository = storeCashRepository
+    this._cashHandlerRepository = cashHandlerRepository
+    this._storeCashRepository = storeCashRepository
   }
 
   async integrateOffline(code: string, amount_on_close: number): Promise<void> {
@@ -41,7 +46,7 @@ class IntegrateService {
       const {
         amount_on_open,
         id: localCashId,
-      } = await CashierService.getCurrentCashier()
+      } = await GetCurrentStoreCashService.execute()
 
       const {
         data: {
@@ -133,7 +138,7 @@ class IntegrateService {
         amount_on_cash,
       })
 
-      await CashierService.closeLocalCashier(localCashId)
+      await this._storeCashRepository.update(localCashId, { is_opened: false })
     } catch (err) {
       sendLog({
         title: 'Erro ao realizar integração de vendas offline',
@@ -204,8 +209,8 @@ class IntegrateService {
   }
 
   async shouldUpdateApp(): Promise<boolean> {
-    const currentCash = await CashierService.getCurrentCashier()
-    if (currentCash && currentCash.is_opened === 1) {
+    const currentCash = await GetCurrentStoreCashService.execute()
+    if (currentCash && !currentCash?.is_opened) {
       return false
     }
     const sales = await IntegrateRepository.getOnlineSales()

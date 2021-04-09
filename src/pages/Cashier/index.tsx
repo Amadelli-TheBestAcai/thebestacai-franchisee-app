@@ -69,9 +69,9 @@ const Cashier: React.FC<IProps> = ({ history }) => {
     ipcRenderer.send('cashier:get')
     ipcRenderer.once(
       'cashier:get:response',
-      (event, { cashes, current, is_connected, has_pending }) => {
+      (event, { cashes, current, is_connected, has_pending, ...props }) => {
         setIsConnected(is_connected)
-        if (current?.is_opened === 1) {
+        if (current?.is_opened) {
           setCurrentCash(current.code)
           setStep(2)
         }
@@ -147,6 +147,10 @@ const Cashier: React.FC<IProps> = ({ history }) => {
             }
           )
         } else {
+          console.log({
+            code: cash,
+            amount_on_open: total || '0',
+          })
           ipcRenderer.send('cashier:open', {
             code: cash,
             amount_on_open: total || '0',

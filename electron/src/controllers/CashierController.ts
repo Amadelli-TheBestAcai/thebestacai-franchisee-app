@@ -1,13 +1,20 @@
 import { ipcMain } from 'electron'
-import CashierService from '../services/CashierService'
+import FindStoreCashesService from '../services/StoreCash/FindStoreCashesService'
+import UpdateStoreCashObservationService from '../services/StoreCash/UpdateStoreCashObservationService'
+import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
+import FindStoreCashBalanceService from '../services/StoreCash/FindStoreCashBalanceService'
+import FindStoreCashHistoryService from '../services/StoreCash/FindStoreCashHistoryService'
+import OpenStoreCashService from '../services/StoreCash/OpenStoreCashService'
+import CloseStoreCashService from '../services/StoreCash/CloseStoreCashService'
 import SalesService from '../services/SalesService'
+import IntegrateService from '../services/IntegrateService'
 import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('cashier:get', async (event) => {
   try {
-    const cashes = await CashierService.getCashes()
-    const current = await CashierService.getCurrentCashier()
+    const cashes = await FindStoreCashesService.execute()
+    const current = await GetCurrentStoreCashService.execute()
     const is_connected = await checkInternet()
     const sales = await SalesService.getOffline()
     event.reply('cashier:get:response', {
@@ -28,7 +35,7 @@ ipcMain.on('cashier:get', async (event) => {
 
 ipcMain.on('cashier:open', async (event, { ...cashier }) => {
   try {
-    await CashierService.openCashier(cashier)
+    await OpenStoreCashService.execute(cashier)
     event.reply('cashier:open:response', {
       success: true,
       message: 'Caixa aberto com sucesso',
@@ -48,7 +55,9 @@ ipcMain.on('cashier:open', async (event, { ...cashier }) => {
 
 ipcMain.on('cashier:close', async (event, { ...cashier }) => {
   try {
-    await CashierService.closeCashier(cashier)
+    // await IntegrateService.integrateOnlineSales()
+    // await IntegrateService.integrateOnlineHandlers()
+    await CloseStoreCashService.execute(cashier)
     event.reply('cashier:close:response', {
       success: true,
       message: 'Caixa fechado com sucesso',
@@ -68,7 +77,7 @@ ipcMain.on('cashier:close', async (event, { ...cashier }) => {
 
 ipcMain.on('cashier:history:get', async (event) => {
   try {
-    const response = await CashierService.getCurrentCashHistory()
+    const response = await FindStoreCashHistoryService.execute()
     event.reply('cashier:history:get:response', response)
   } catch (err) {
     sendLog({
@@ -81,7 +90,7 @@ ipcMain.on('cashier:history:get', async (event) => {
 
 ipcMain.on('cashier:balance:get', async (event) => {
   try {
-    const response = await CashierService.getBalance()
+    const response = await FindStoreCashBalanceService.execute()
     event.reply('cashier:balance:get:response', response)
   } catch (err) {
     sendLog({
@@ -94,7 +103,7 @@ ipcMain.on('cashier:balance:get', async (event) => {
 
 ipcMain.on('cashier:update:observation', async (event, observation) => {
   try {
-    await CashierService.updateObservation(observation)
+    await UpdateStoreCashObservationService.execute(observation)
     event.reply('cashier:update:observation:response', true)
   } catch (err) {
     sendLog({

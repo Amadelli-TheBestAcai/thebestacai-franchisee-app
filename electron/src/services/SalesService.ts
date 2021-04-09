@@ -1,9 +1,9 @@
 import SalesRepository from '../repositories/SalesRepository'
-import CashierService from '../services/CashierService'
 import ItemsService from '../services/ItemsService'
 import PaymentsService from '../services/PaymentsService'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import IntegrateService from '../services/IntegrateService'
+import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
 
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
@@ -19,11 +19,20 @@ import { printSale } from '../utils/PrintSale'
 
 import { AppSale } from '../../../shared/models/appSales'
 import { SaleOption } from '../../../shared/models/saleOption'
-import { IntegrateAppSalesDTO } from '../../../shared/dtos/appSales/IntegrateAppSalesDTO'
+
+import { IStoreCashRepository } from '../repositories/interfaces/IStoreCashRepository'
+import StoreCashRepository from '../repositories/StoreCashRepository'
 class SalesService {
+  private _storeCashRepository: IStoreCashRepository
+  constructor(
+    storeCashRepository: IStoreCashRepository = new StoreCashRepository()
+  ) {
+    this._storeCashRepository = storeCashRepository
+  }
+
   async create(): Promise<CreateSaleDTO> {
-    const cashier = await CashierService.getCurrentCashier()
-    if (!cashier && cashier?.is_opened !== 1) {
+    const cashier = await GetCurrentStoreCashService.execute()
+    if (!cashier && !cashier.is_opened) {
       return null
     }
     const newSale: CreateSaleDTO = {
@@ -63,7 +72,7 @@ class SalesService {
     payload: CreateSaleDTO,
     options?: SaleOption
   ): Promise<void> {
-    const cashier = await CashierService.getCurrentCashier()
+    const cashier = await GetCurrentStoreCashService.execute()
     const sale = await SalesRepository.getById(payload.id)
     if (sale) {
       await SalesRepository.update(payload.id, {
@@ -159,7 +168,7 @@ class SalesService {
     const {
       amount_on_open,
       id: cashId,
-    } = await CashierService.getCurrentCashier()
+    } = await GetCurrentStoreCashService.execute()
     const {
       data: {
         data: { cash_id, history_id },
@@ -195,7 +204,7 @@ class SalesService {
     await api.put(`/store_cashes/${store}-${code}/close`, {
       amount_on_close,
     })
-    await CashierService.closeLocalCashier(cashId)
+    await this._storeCashRepository.update(cashId, { is_opened: false })
   }
 
   async getFromApi(
@@ -209,7 +218,7 @@ class SalesService {
         appSales: [],
       }
     }
-    const currentCash = await CashierService.getCurrentCashier()
+    const currentCash = await GetCurrentStoreCashService.execute()
 
     if (!currentCash) {
       return {
@@ -219,7 +228,7 @@ class SalesService {
       }
     }
 
-    if (!withClosedCash && currentCash?.is_opened !== 1) {
+    if (!withClosedCash && !currentCash?.is_opened) {
       return {
         isConnected,
         sales: [],
@@ -255,8 +264,8 @@ class SalesService {
       }
     }
 
-    const currentCash = await CashierService.getCurrentCashier()
-    if (!currentCash || currentCash?.is_opened !== 1) {
+    const currentCash = await GetCurrentStoreCashService.execute()
+    if (!currentCash || !currentCash?.is_opened) {
       return {
         success: false,
         data: [],
@@ -302,8 +311,8 @@ class SalesService {
       }
     }
 
-    const currentCash = await CashierService.getCurrentCashier()
-    if (!currentCash || currentCash?.is_opened !== 1) {
+    const currentCash = await GetCurrentStoreCashService.execute()
+    if (!currentCash || !currentCash?.is_opened) {
       throw new Error('Caixa fechado')
     }
 
@@ -323,9 +332,9 @@ class SalesService {
   }
 
   async integrateAppSales(payload): Promise<void> {
-    const currentCash = await CashierService.getCurrentCashier()
+    const currentCash = await GetCurrentStoreCashService.execute()
 
-    if (!currentCash || currentCash?.is_opened !== 1) {
+    if (!currentCash || !currentCash?.is_opened) {
       throw new Error('Caixa fechado')
     }
 

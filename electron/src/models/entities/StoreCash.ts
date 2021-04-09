@@ -9,7 +9,7 @@ import {
 @Entity({ name: 'store_cashes' })
 class StoreCash {
   @PrimaryGeneratedColumn('uuid')
-  id: number
+  id: string
 
   @Column()
   code: string

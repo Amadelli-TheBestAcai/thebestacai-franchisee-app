@@ -5,5 +5,5 @@ export interface Cashier {
   cash_id?: number
   history_id?: number
   store_id?: number
-  is_opened?: number
+  is_opened?: boolean
 }
