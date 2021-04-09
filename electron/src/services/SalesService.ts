@@ -4,13 +4,14 @@ import PaymentsService from '../services/PaymentsService'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import IntegrateService from '../services/IntegrateService'
 import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
+import GetPaymentsToIntegrateService from './Payment/GetPaymentsToIntegrateService'
 
 import api from '../utils/Api'
 import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
 import { UpdateSaleDTO } from '../models/dtos/sales/UpdateSaleDTO'
 import { Sale } from '../models/Sale'
 import { Item } from '../models/Item'
-import { Payment } from '../models/Payment'
+import { Payment } from '../models/entities'
 import { v4 as uuidv4 } from 'uuid'
 import { checkInternet } from '../utils/InternetConnection'
 import { getNow } from '../utils/DateHandler'
@@ -22,12 +23,18 @@ import { SaleOption } from '../../../shared/models/saleOption'
 
 import { IStoreCashRepository } from '../repositories/interfaces/IStoreCashRepository'
 import StoreCashRepository from '../repositories/StoreCashRepository'
+
+import { IPaymentsRepository } from '../repositories/interfaces/IPaymentsRepository'
+import PaymentsRepository from '../repositories/PaymentsRepository'
 class SalesService {
   private _storeCashRepository: IStoreCashRepository
+  private _paymentRepository: IPaymentsRepository
   constructor(
-    storeCashRepository: IStoreCashRepository = new StoreCashRepository()
+    storeCashRepository: IStoreCashRepository = new StoreCashRepository(),
+    paymentRepository: IPaymentsRepository = new PaymentsRepository()
   ) {
     this._storeCashRepository = storeCashRepository
+    this._paymentRepository = paymentRepository
   }
 
   async create(): Promise<CreateSaleDTO> {
@@ -60,7 +67,7 @@ class SalesService {
     const currentSale = await SalesRepository.getCurrentSale()
     if (currentSale) {
       const items = await ItemsService.getBySale(currentSale.id)
-      const payments = await PaymentsService.getBySale(currentSale.id)
+      const payments = await this._paymentRepository.getBySale(currentSale.id)
       return { sale: currentSale, items, payments }
     } else {
       const newSale = await this.create()
@@ -101,7 +108,7 @@ class SalesService {
 
   async delete(sale: string): Promise<void> {
     await ItemsService.deleteBySale(sale)
-    await PaymentsService.deleteBySale(sale)
+    await this._paymentRepository.deleteBySale(sale)
     await SalesRepository.deleteById(sale)
   }
 
@@ -179,7 +186,7 @@ class SalesService {
     await Promise.all(
       sales.map(async (sale) => {
         const items = await ItemsService.getItemsToIntegrate(sale.id)
-        const payments = await PaymentsService.getPaymentsToIntegrate(sale.id)
+        const payments = await GetPaymentsToIntegrateService.execute(sale.id)
         const formatedSale = {
           change_amount: sale.change_amount,
           type: sale.type,

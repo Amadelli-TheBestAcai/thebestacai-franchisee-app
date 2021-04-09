@@ -2,6 +2,7 @@ import IntegrateRepository from '../repositories/IntegrateRepository'
 
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import GetCurrentStoreCashService from './StoreCash/GetCurrentStoreCashService'
+import GetPaymentsToIntegrateService from './Payment/GetPaymentsToIntegrateService'
 import SalesService from '../services/SalesService'
 
 import { ICashHandlerRepository } from '../repositories/interfaces/ICashHandlerRepository'
@@ -10,7 +11,6 @@ import { IStoreCashRepository } from '../repositories/interfaces/IStoreCashRepos
 import StoreCashRepository from '../repositories/StoreCashRepository'
 
 import ItemsService from '../services/ItemsService'
-import PaymentsService from '../services/PaymentsService'
 
 import api from '../utils/Api'
 import { sendLog } from '../utils/ApiLog'
@@ -64,7 +64,7 @@ class IntegrateService {
         formatedSales.map(async ({ id, cash_code, store_id, ...payload }) => {
           const items = await ItemsService.getItemsToIntegrate(id)
           const quantity = getQuantityItems(items)
-          const payments = await PaymentsService.getPaymentsToIntegrate(id)
+          const payments = await GetPaymentsToIntegrateService.execute(id)
           allPayments = [...payments, ...allPayments]
           const formatedPayments = payments.map((payment) => ({
             ...payment,
@@ -154,7 +154,7 @@ class IntegrateService {
       formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
         const items = await ItemsService.getItemsToIntegrate(id)
         const quantity = getQuantityItems(items)
-        const payments = await PaymentsService.getPaymentsToIntegrate(id)
+        const payments = await GetPaymentsToIntegrateService.execute(id)
         const saleToIntegrate = {
           ...payload,
           quantity,

@@ -1,10 +1,15 @@
 import { ipcMain } from 'electron'
+import { getCustomRepository } from 'typeorm'
 import PaymentsService from '../services/PaymentsService'
+import PaymentsRepository from '../repositories/PaymentsRepository'
+import CreatePaymentService from '../services/Payment/CreatePaymentService'
 import { sendLog } from '../utils/ApiLog'
+
+const _paymentRepository = getCustomRepository(PaymentsRepository)
 
 ipcMain.on('payment:get', async (event, sale) => {
   try {
-    const payments = await PaymentsService.getBySale(sale)
+    const payments = await _paymentRepository.getBySale(sale)
     event.returnValue = payments
   } catch (err) {
     sendLog({
@@ -17,8 +22,8 @@ ipcMain.on('payment:get', async (event, sale) => {
 
 ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
   try {
-    await PaymentsService.create(payload, sale)
-    const payments = await PaymentsService.getBySale(sale)
+    await CreatePaymentService.execute(payload, sale)
+    const payments = await _paymentRepository.getBySale(sale)
     event.reply('payment:add:response', payments)
   } catch (err) {
     sendLog({
@@ -31,8 +36,8 @@ ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
 
 ipcMain.on('payment:remove', async (event, { id, sale }) => {
   try {
-    await PaymentsService.deleteById(id)
-    const payments = await PaymentsService.getBySale(sale)
+    await _paymentRepository.deleteById(id)
+    const payments = await _paymentRepository.getBySale(sale)
     event.reply('payment:remove:response', payments)
   } catch (err) {
     sendLog({
