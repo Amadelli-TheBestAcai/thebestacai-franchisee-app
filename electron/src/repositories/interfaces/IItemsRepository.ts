@@ -19,4 +19,5 @@ export interface IItemsRepository {
   deleteBySale(sale_id: string): Promise<void>
   findById(id: string): Promise<Item>
   deleteById(id: string): Promise<void>
+  getTotalBySale(sale_id: string): Promise<number>
 }

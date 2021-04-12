@@ -1,9 +1,6 @@
 import api from '../../utils/Api'
 import { checkInternet } from '../../utils/InternetConnection'
 
-import { IStoreRepository } from '../../repositories/interfaces/IStoreRepository'
-import StoreRepository from '../../repositories/StoreRepository'
-
 type Response = {
   id: number
   name: string
@@ -27,12 +24,6 @@ type Response = {
 }
 
 class FindAllCategoriesWithProductsService {
-  private _storeRepository: IStoreRepository
-
-  constructor(storeRepository: IStoreRepository = new StoreRepository()) {
-    this._storeRepository = storeRepository
-  }
-
   async execute(): Promise<Response[]> {
     const hasInternet = await checkInternet()
     if (!hasInternet) {

@@ -1,12 +1,20 @@
 import { ipcMain } from 'electron'
+import { getCustomRepository } from 'typeorm'
 import ItemsService from '../services/ItemsService'
 import SalesService from '../services/SalesService'
+import CreateOrUpdateItemService from '../services/Item/CreateOrUpdateItemService'
+import DecressItemQuantityService from '../services/Item/DecressItemQuantityService'
+import UpdateTotalSaleService from '../services/Sale/UpdateTotalSaleService'
+import ItemsRepository from '../repositories/ItemsRepository'
 import { sendLog } from '../utils/ApiLog'
+
+const _itemRepository = getCustomRepository(ItemsRepository)
 
 ipcMain.on('item:add', async (event, { sale, ...payload }) => {
   try {
-    await ItemsService.createOrUpdate(payload, sale)
-    const items = await ItemsService.getBySale(sale)
+    await CreateOrUpdateItemService.execute(payload, sale)
+    await UpdateTotalSaleService.execute(sale)
+    const items = await _itemRepository.getBySale(sale)
     const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:add:response', { sale: currentSale, items })
   } catch (err) {
@@ -20,8 +28,9 @@ ipcMain.on('item:add', async (event, { sale, ...payload }) => {
 
 ipcMain.on('item:decress', async (event, { id, sale }) => {
   try {
-    await ItemsService.decressQuantity(id, sale)
-    const items = await ItemsService.getBySale(sale)
+    await DecressItemQuantityService.execute(id)
+    await UpdateTotalSaleService.execute(sale)
+    const items = await _itemRepository.getBySale(sale)
     const { sale: currentSale } = await SalesService.getCurrentSale()
     event.reply('item:decress:response', { sale: currentSale, items })
   } catch (err) {
@@ -35,7 +44,7 @@ ipcMain.on('item:decress', async (event, { id, sale }) => {
 
 ipcMain.on('item:get', async (event, sale) => {
   try {
-    const items = await ItemsService.getBySale(sale)
+    const items = await _itemRepository.getBySale(sale)
     event.returnValue = items
   } catch (err) {
     sendLog({
@@ -48,7 +57,7 @@ ipcMain.on('item:get', async (event, sale) => {
 
 ipcMain.on('item:total', async (event, sale) => {
   try {
-    const total = await ItemsService.getTotalBySale(sale)
+    const total = await _itemRepository.getTotalBySale(sale)
     event.returnValue = total
   } catch (err) {
     sendLog({

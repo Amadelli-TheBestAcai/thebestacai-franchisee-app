@@ -3,6 +3,8 @@ import IntegrateRepository from '../repositories/IntegrateRepository'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import GetCurrentStoreCashService from './StoreCash/GetCurrentStoreCashService'
 import GetPaymentsToIntegrateService from './Payment/GetPaymentsToIntegrateService'
+import GetItemsToIntegrateService from './Item/GetItemsToIntegrateService'
+import GetDecodedTokenService from './User/GetDecodedTokenService'
 import SalesService from '../services/SalesService'
 
 import { ICashHandlerRepository } from '../repositories/interfaces/ICashHandlerRepository'
@@ -60,9 +62,13 @@ class IntegrateService {
       const formatedSales = formatSalesToIntegrate(sales, cash_id, history_id)
 
       let allPayments: IntegratePaymentsDTO[] = []
+      const currentUser = await GetDecodedTokenService.execute()
       await Promise.all(
         formatedSales.map(async ({ id, cash_code, store_id, ...payload }) => {
-          const items = await ItemsService.getItemsToIntegrate(id)
+          const items = await GetItemsToIntegrateService.execute(
+            id,
+            currentUser
+          )
           const quantity = getQuantityItems(items)
           const payments = await GetPaymentsToIntegrateService.execute(id)
           allPayments = [...payments, ...allPayments]
@@ -150,9 +156,10 @@ class IntegrateService {
   async integrateOnlineSales(): Promise<void> {
     const sales = await IntegrateRepository.getOnlineSales()
     const formatedSales = formatSalesToIntegrate(sales)
+    const currentUser = await GetDecodedTokenService.execute()
     await Promise.all(
       formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
-        const items = await ItemsService.getItemsToIntegrate(id)
+        const items = await GetItemsToIntegrateService.execute(id, currentUser)
         const quantity = getQuantityItems(items)
         const payments = await GetPaymentsToIntegrateService.execute(id)
         const saleToIntegrate = {

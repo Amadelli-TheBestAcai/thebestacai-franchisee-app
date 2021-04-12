@@ -1,6 +1,5 @@
 import { ipcMain } from 'electron'
 import { getCustomRepository } from 'typeorm'
-import PaymentsService from '../services/PaymentsService'
 import PaymentsRepository from '../repositories/PaymentsRepository'
 import CreatePaymentService from '../services/Payment/CreatePaymentService'
 import { sendLog } from '../utils/ApiLog'

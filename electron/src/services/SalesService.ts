@@ -1,8 +1,10 @@
 import SalesRepository from '../repositories/SalesRepository'
 import ItemsService from '../services/ItemsService'
-import PaymentsService from '../services/PaymentsService'
+import GetItemsToIntegrateService from './Item/GetItemsToIntegrateService'
+import GetDecodedTokenService from './User/GetDecodedTokenService'
 import GetCurrentStoreService from './Store/GetCurrentStoreService'
 import IntegrateService from '../services/IntegrateService'
+import UpdateTotalSaleService from '../services/Sale/UpdateTotalSaleService'
 import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
 import GetPaymentsToIntegrateService from './Payment/GetPaymentsToIntegrateService'
 
@@ -26,15 +28,21 @@ import StoreCashRepository from '../repositories/StoreCashRepository'
 
 import { IPaymentsRepository } from '../repositories/interfaces/IPaymentsRepository'
 import PaymentsRepository from '../repositories/PaymentsRepository'
+
+import { IItemsRepository } from '../repositories/interfaces/IItemsRepository'
+import ItemsRepository from '../repositories/ItemsRepository'
 class SalesService {
   private _storeCashRepository: IStoreCashRepository
   private _paymentRepository: IPaymentsRepository
+  private _itemRepository: IItemsRepository
   constructor(
     storeCashRepository: IStoreCashRepository = new StoreCashRepository(),
-    paymentRepository: IPaymentsRepository = new PaymentsRepository()
+    paymentRepository: IPaymentsRepository = new PaymentsRepository(),
+    itemRepository: IItemsRepository = new ItemsRepository()
   ) {
     this._storeCashRepository = storeCashRepository
     this._paymentRepository = paymentRepository
+    this._itemRepository = itemRepository
   }
 
   async create(): Promise<CreateSaleDTO> {
@@ -66,7 +74,7 @@ class SalesService {
   }> {
     const currentSale = await SalesRepository.getCurrentSale()
     if (currentSale) {
-      const items = await ItemsService.getBySale(currentSale.id)
+      const items = await this._itemRepository.getBySale(currentSale.id)
       const payments = await this._paymentRepository.getBySale(currentSale.id)
       return { sale: currentSale, items, payments }
     } else {
@@ -107,7 +115,7 @@ class SalesService {
   }
 
   async delete(sale: string): Promise<void> {
-    await ItemsService.deleteBySale(sale)
+    await this._itemRepository.deleteBySale(sale)
     await this._paymentRepository.deleteBySale(sale)
     await SalesRepository.deleteById(sale)
   }
@@ -127,12 +135,12 @@ class SalesService {
     const {
       sale: { id: currentSale },
     } = await this.getCurrentSale()
-    const items = await ItemsService.getBySale(oldSale)
+    const items = await this._itemRepository.getBySale(oldSale)
     await Promise.all(
       items.map(async (item) => {
-        const oldItem = await ItemsService.getByProductAndSale(
-          currentSale,
-          item.product_id
+        const oldItem = await this._itemRepository.getByProductAndSale(
+          item.product_id,
+          currentSale
         )
         if (oldItem && oldItem.product_id !== 1) {
           const newItem: Item = {
@@ -140,7 +148,7 @@ class SalesService {
             quantity: +oldItem.quantity + +item.quantity,
             total: +oldItem.total + +item.total,
           }
-          await ItemsService.updateByProductAndSale(
+          await this._itemRepository.updateByProductAndSale(
             item.product_id,
             currentSale,
             {
@@ -156,8 +164,8 @@ class SalesService {
         }
       })
     )
-    await ItemsService.updateQuantityAndTotal(currentSale)
-    await ItemsService.deleteBySale(oldSale)
+    await UpdateTotalSaleService.execute(currentSale)
+    await this._itemRepository.deleteBySale(oldSale)
     await SalesRepository.deleteById(oldSale)
   }
 
@@ -183,9 +191,13 @@ class SalesService {
     } = await api.put(`/store_cashes/${store}-${code}/open`, {
       amount_on_open,
     })
+    const currentUser = await GetDecodedTokenService.execute()
     await Promise.all(
       sales.map(async (sale) => {
-        const items = await ItemsService.getItemsToIntegrate(sale.id)
+        const items = await GetItemsToIntegrateService.execute(
+          sale.id,
+          currentUser
+        )
         const payments = await GetPaymentsToIntegrateService.execute(sale.id)
         const formatedSale = {
           change_amount: sale.change_amount,

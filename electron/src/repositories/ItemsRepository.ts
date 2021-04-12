@@ -1,8 +1,14 @@
-import { Repository, getRepository, DeepPartial } from 'typeorm'
+import {
+  Repository,
+  getRepository,
+  DeepPartial,
+  EntityRepository,
+} from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 import { IItemsRepository } from './interfaces/IItemsRepository'
 import { Item } from '../models/entities'
 
+@EntityRepository(Item)
 class ItemsRepository implements IItemsRepository {
   private ormRepository: Repository<Item>
 
@@ -60,6 +66,12 @@ class ItemsRepository implements IItemsRepository {
   async deleteById(id: string): Promise<void> {
     await this.ormRepository.softDelete({ id })
   }
+
+  async getTotalBySale(sale_id: string): Promise<number> {
+    const items = await this.ormRepository.find({ where: { sale_id } })
+    const total = items.reduce((total, item) => total + +item.total, 0)
+    return total
+  }
 }
 
-export default new ItemsRepository()
+export default ItemsRepository
