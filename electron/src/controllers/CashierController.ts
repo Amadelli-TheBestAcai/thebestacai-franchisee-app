@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron'
+import { getCustomRepository } from 'typeorm'
 import FindStoreCashesService from '../services/StoreCash/FindStoreCashesService'
 import UpdateStoreCashObservationService from '../services/StoreCash/UpdateStoreCashObservationService'
 import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
@@ -6,17 +7,19 @@ import FindStoreCashBalanceService from '../services/StoreCash/FindStoreCashBala
 import FindStoreCashHistoryService from '../services/StoreCash/FindStoreCashHistoryService'
 import OpenStoreCashService from '../services/StoreCash/OpenStoreCashService'
 import CloseStoreCashService from '../services/StoreCash/CloseStoreCashService'
-import SalesService from '../services/SalesService'
-import IntegrateService from '../services/IntegrateService'
+import IntegrateOnlineService from '../services/Integration/IntegrateOnlineService'
 import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
+import SalesRepository from '../repositories/SalesRepository'
+
+const _salesRepository = getCustomRepository(SalesRepository)
 
 ipcMain.on('cashier:get', async (event) => {
   try {
     const cashes = await FindStoreCashesService.execute()
     const current = await GetCurrentStoreCashService.execute()
     const is_connected = await checkInternet()
-    const sales = await SalesService.getOffline()
+    const sales = await _salesRepository.getOffline()
     event.reply('cashier:get:response', {
       cashes,
       current,
@@ -55,8 +58,7 @@ ipcMain.on('cashier:open', async (event, { ...cashier }) => {
 
 ipcMain.on('cashier:close', async (event, { ...cashier }) => {
   try {
-    // await IntegrateService.integrateOnlineSales()
-    // await IntegrateService.integrateOnlineHandlers()
+    await IntegrateOnlineService.execute()
     await CloseStoreCashService.execute(cashier)
     event.reply('cashier:close:response', {
       success: true,

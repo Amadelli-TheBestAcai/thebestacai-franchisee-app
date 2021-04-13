@@ -1,12 +1,5 @@
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
-import {
-  Repository,
-  getRepository,
-  DeepPartial,
-  EntityRepository,
-  Not,
-  IsNull,
-} from 'typeorm'
+import { DeepPartial } from 'typeorm'
 import { Sale } from '../../models/entities'
 
 export interface ISalesRepository {
@@ -19,4 +12,5 @@ export interface ISalesRepository {
   getCommands(): Promise<Sale[]>
   createCommand(id: string, name: string): Promise<void>
   getById(id: string): Promise<Sale>
+  getOnline(): Promise<Sale[]>
 }

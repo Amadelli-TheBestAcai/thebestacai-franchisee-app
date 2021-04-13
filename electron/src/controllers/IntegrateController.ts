@@ -1,10 +1,18 @@
 import { ipcMain } from 'electron'
-import IntegrateService from '../services/IntegrateService'
+import { getCustomRepository } from 'typeorm'
+import IntegrateOfflineService from '../services/Integration/IntegrateOfflineService'
+import IntegrateOnlineService from '../services/Integration/IntegrateOnlineService'
 import { sendLog } from '../utils/ApiLog'
+
+import SalesRepository from '../repositories/SalesRepository'
+import CashHandlerRepository from '../repositories/CashHandlerRepository'
+
+const _saleRepository = getCustomRepository(SalesRepository)
+const _cashHandlerRepository = getCustomRepository(CashHandlerRepository)
 
 ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
   try {
-    await IntegrateService.integrateOffline(code, amount_on_close)
+    await IntegrateOfflineService.execute(code, amount_on_close)
     event.reply('integrate:offline:response', true)
   } catch (err) {
     sendLog({
@@ -18,8 +26,7 @@ ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
 
 ipcMain.on('integrate:shouldUpdateApp', async (event) => {
   try {
-    const response = await IntegrateService.shouldUpdateApp()
-    event.reply('integrate:shouldUpdateApp:response', response)
+    event.reply('integrate:shouldUpdateApp:response', true)
   } catch (err) {
     sendLog({
       title: 'Erro ao obter versão atual do caixa',
@@ -32,8 +39,7 @@ ipcMain.on('integrate:shouldUpdateApp', async (event) => {
 
 ipcMain.on('integrate:checkAppVersion', async (event) => {
   try {
-    const response = await IntegrateService.appAlreadyUpdated()
-    event.reply('integrate:checkAppVersion:response', response)
+    event.reply('integrate:checkAppVersion:response', true)
   } catch (err) {
     sendLog({
       title: 'Erro ao checkar nova versão para o APP',
@@ -46,8 +52,8 @@ ipcMain.on('integrate:checkAppVersion', async (event) => {
 
 ipcMain.on('integrate:status', async (event) => {
   try {
-    const sales = await IntegrateService.getOnlineSales()
-    const handlers = await IntegrateService.getOnlineHandlers()
+    const sales = await _saleRepository.getOnline()
+    const handlers = await _cashHandlerRepository.getOnlineHandlers()
     event.reply('integrate:status:response', { sales, handlers })
   } catch (err) {
     sendLog({
@@ -61,8 +67,7 @@ ipcMain.on('integrate:status', async (event) => {
 
 ipcMain.on('integrate:integrate', async (event) => {
   try {
-    await IntegrateService.integrateOnlineSales()
-    await IntegrateService.integrateOnlineHandlers()
+    await IntegrateOnlineService.execute()
     event.reply('integrate:integrate:response', true)
   } catch (err) {
     sendLog({

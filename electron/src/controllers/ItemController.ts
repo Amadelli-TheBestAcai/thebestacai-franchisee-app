@@ -1,21 +1,21 @@
 import { ipcMain } from 'electron'
 import { getCustomRepository } from 'typeorm'
-import ItemsService from '../services/ItemsService'
-import SalesService from '../services/SalesService'
 import CreateOrUpdateItemService from '../services/Item/CreateOrUpdateItemService'
 import DecressItemQuantityService from '../services/Item/DecressItemQuantityService'
 import UpdateTotalSaleService from '../services/Sale/UpdateTotalSaleService'
 import ItemsRepository from '../repositories/ItemsRepository'
+import SalesRepository from '../repositories/SalesRepository'
 import { sendLog } from '../utils/ApiLog'
 
 const _itemRepository = getCustomRepository(ItemsRepository)
+const _salesRepository = getCustomRepository(SalesRepository)
 
 ipcMain.on('item:add', async (event, { sale, ...payload }) => {
   try {
     await CreateOrUpdateItemService.execute(payload, sale)
     await UpdateTotalSaleService.execute(sale)
     const items = await _itemRepository.getBySale(sale)
-    const { sale: currentSale } = await SalesService.getCurrentSale()
+    const currentSale = await _salesRepository.getCurrentSale()
     event.reply('item:add:response', { sale: currentSale, items })
   } catch (err) {
     sendLog({
@@ -31,7 +31,7 @@ ipcMain.on('item:decress', async (event, { id, sale }) => {
     await DecressItemQuantityService.execute(id)
     await UpdateTotalSaleService.execute(sale)
     const items = await _itemRepository.getBySale(sale)
-    const { sale: currentSale } = await SalesService.getCurrentSale()
+    const currentSale = await _salesRepository.getCurrentSale()
     event.reply('item:decress:response', { sale: currentSale, items })
   } catch (err) {
     sendLog({

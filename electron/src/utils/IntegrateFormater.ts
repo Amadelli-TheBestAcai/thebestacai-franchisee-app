@@ -1,8 +1,7 @@
 import { Handler } from '../models/Handler'
-import { Sale } from '../models/Sale'
+import { Sale, CashHandler } from '../models/entities'
 import { SalesTypes } from '../models/enums/SalesTypes'
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
-import { CashHandler } from '../models/entities'
 
 type FormatedSale = {
   id: string
@@ -46,7 +45,7 @@ type FormatedHandler = {
 }
 
 export const formatHandlesToIntegrate = (
-  handlers: Handler[] | CashHandler[],
+  handlers: CashHandler[],
   cash_id?: number,
   cash_history_id?: number
 ): FormatedHandler[] => {
@@ -76,7 +75,7 @@ export const getQuantityItems = (
 }
 
 export const getInOutHandlers = (
-  handlers: Handler[]
+  handlers: CashHandler[]
 ): { amount_in: number; amount_out: number } => {
   const amount_in = handlers.reduce((total, handler) => {
     if (handler.type === 'entrada') {

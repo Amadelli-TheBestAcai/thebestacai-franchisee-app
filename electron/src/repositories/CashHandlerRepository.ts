@@ -1,9 +1,14 @@
-import { Repository, getRepository, DeepPartial } from 'typeorm'
+import {
+  Repository,
+  getRepository,
+  DeepPartial,
+  EntityRepository,
+} from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
-import CashHandler from '../models/entities/CashHandler'
+import { CashHandler } from '../models/entities'
 
 import { ICashHandlerRepository } from './interfaces/ICashHandlerRepository'
-
+@EntityRepository(CashHandler)
 class CashHandlerRepository implements ICashHandlerRepository {
   private ormRepository: Repository<CashHandler>
 

@@ -149,9 +149,13 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
           amount,
         })
         ipcRenderer.once('payment:add:response', () => {
-          ipcRenderer.send('sale:add', { ...sale, quantity: 1, total: amount })
+          ipcRenderer.send('sale:addDelivery', {
+            ...sale,
+            quantity: 1,
+            total: amount,
+          })
         })
-        ipcRenderer.once('sale:add:response', (event, status) => {
+        ipcRenderer.once('sale:addDelivery:response', (event, status) => {
           if (status) {
             message.success('Venda salva com sucesso')
             setSale((oldValues) => ({

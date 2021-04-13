@@ -1,12 +1,23 @@
 import { ipcMain } from 'electron'
-import SalesService from '../services/SalesService'
+import { getCustomRepository } from 'typeorm'
 import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
+import CreateSaleService from '../services/Sale/CreateSaleService'
+import GetSalesFromApiService from '../services/Sale/GetSalesFromApiService'
+import DeleteSalesFromApiService from '../services/Sale/DeleteSalesFromApiService'
+import TransferCommandItems from '../services/Sale/TransferCommandItems'
+import GetAppSalesToIntegrateService from '../services/Sale/GetAppSalesToIntegrateService'
+import IntegrateAppSalesService from '../services/Sale/IntegrateAppSalesService'
+import FinishSaleService from '../services/Sale/FinishSaleService'
+import GetCurrentSaleService from '../services/Sale/GetCurrentSaleService'
 import { sendLog } from '../utils/ApiLog'
 import { printSale } from '../utils/PrintSale'
+import SalesRepository from '../repositories/SalesRepository'
+
+const _salesRepository = getCustomRepository(SalesRepository)
 
 ipcMain.on('sale:create', async (event) => {
   try {
-    const sale = await SalesService.create()
+    const sale = await CreateSaleService.execute()
     event.reply('sale:create:response', sale)
   } catch (err) {
     sendLog({
@@ -17,23 +28,23 @@ ipcMain.on('sale:create', async (event) => {
   }
 })
 
-ipcMain.on('sale:add', async (event, sale) => {
+ipcMain.on('sale:addDelivery', async (event, sale) => {
   try {
-    await SalesService.finishSale(sale)
-    event.reply('sale:add:response', true)
+    await FinishSaleService.execute(sale)
+    event.reply('sale:addDelivery:response', true)
   } catch (err) {
     sendLog({
       title: 'Erro ao finalizar venda',
       payload: { err: err.message, sale },
     })
-    event.reply('sale:add:response', false)
+    event.reply('sale:addDelivery:response', false)
     console.error(err)
   }
 })
 
 ipcMain.on('sale:getCurrent', async (event) => {
   try {
-    const { sale, items, payments } = await SalesService.getCurrentSale()
+    const { sale, items, payments } = await GetCurrentSaleService.execute()
     const cashier = await GetCurrentStoreCashService.execute()
     event.reply('sale:getCurrent:response', { sale, items, payments, cashier })
   } catch (err) {
@@ -47,7 +58,7 @@ ipcMain.on('sale:getCurrent', async (event) => {
 
 ipcMain.on('sale:command:get', async (event) => {
   try {
-    const sales = await SalesService.getSalesCommands()
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:get:response', sales)
   } catch (err) {
     sendLog({
@@ -61,7 +72,8 @@ ipcMain.on('sale:command:get', async (event) => {
 
 ipcMain.on('sale:command:create', async (event, { id, name }) => {
   try {
-    const sale = await SalesService.createCommand(id, name)
+    await _salesRepository.createCommand(id, name)
+    const sale = CreateSaleService.execute()
     event.reply('sale:command:create:response', sale)
   } catch (err) {
     sendLog({
@@ -74,8 +86,8 @@ ipcMain.on('sale:command:create', async (event, { id, name }) => {
 
 ipcMain.on('sale:finish', async (event, { sale, saleOptions }) => {
   try {
-    await SalesService.finishSale(sale, saleOptions)
-    const { sale: newSale } = await SalesService.getCurrentSale()
+    await FinishSaleService.execute(sale, saleOptions)
+    const { sale: newSale } = await GetCurrentSaleService.execute()
     event.reply('sale:finish:response', newSale)
   } catch (err) {
     sendLog({
@@ -88,8 +100,8 @@ ipcMain.on('sale:finish', async (event, { sale, saleOptions }) => {
 
 ipcMain.on('sale:command:transfer', async (event, sale) => {
   try {
-    await SalesService.transferItemsCommand(sale)
-    const sales = await SalesService.getSalesCommands()
+    await TransferCommandItems.execute(sale)
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:transfer:response', sales)
   } catch (err) {
     sendLog({
@@ -102,8 +114,8 @@ ipcMain.on('sale:command:transfer', async (event, sale) => {
 
 ipcMain.on('sale:command:remove', async (event, sale) => {
   try {
-    await SalesService.delete(sale)
-    const sales = await SalesService.getSalesCommands()
+    await _salesRepository.deleteById(sale)
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:remove:response', sales)
   } catch (err) {
     sendLog({
@@ -116,7 +128,7 @@ ipcMain.on('sale:command:remove', async (event, sale) => {
 
 ipcMain.on('sale:api:get', async (event) => {
   try {
-    const { isConnected, sales } = await SalesService.getFromApi()
+    const { isConnected, sales } = await GetSalesFromApiService.execute()
     event.reply('sale:api:get:response', { isConnected, data: sales })
   } catch (err) {
     sendLog({
@@ -130,7 +142,8 @@ ipcMain.on('sale:api:get', async (event) => {
 
 ipcMain.on('sale:api:delete', async (event, id) => {
   try {
-    const { success, data } = await SalesService.deleteFromApi(id)
+    const success = await DeleteSalesFromApiService.execute(id)
+    const data = await GetSalesFromApiService.execute()
     event.reply('sale:api:delete:response', { success, data })
   } catch (err) {
     sendLog({
@@ -144,7 +157,7 @@ ipcMain.on('sale:api:delete', async (event, id) => {
 
 ipcMain.on('appSale:get', async (event) => {
   try {
-    const { hasInternet, sales } = await SalesService.getAppSalesToIntegrate()
+    const { hasInternet, sales } = await GetAppSalesToIntegrateService.execute()
     event.reply('appSale:get:response', { hasInternet, sales })
   } catch (err) {
     sendLog({
@@ -158,7 +171,7 @@ ipcMain.on('appSale:get', async (event) => {
 
 ipcMain.on('appSale:integrate', async (event, sales) => {
   try {
-    await SalesService.integrateAppSales(sales)
+    await IntegrateAppSalesService.execute(sales)
     event.reply('appSale:integrate:response', true)
   } catch (err) {
     sendLog({

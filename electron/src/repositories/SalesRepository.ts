@@ -52,9 +52,11 @@ class SalesRepository implements ISalesRepository {
   }
 
   async getCommands(): Promise<Sale[]> {
-    return this.ormRepository.find({
+    const sales = await this.ormRepository.find({
       where: { name: Not(IsNull()) },
     })
+
+    return sales.filter((sale) => !sale.is_current)
   }
 
   async createCommand(id: string, name: string): Promise<void> {
@@ -64,6 +66,12 @@ class SalesRepository implements ISalesRepository {
   async getById(id: string): Promise<Sale> {
     return this.ormRepository.findOne({
       where: { id },
+    })
+  }
+
+  async getOnline(): Promise<Sale[]> {
+    return this.ormRepository.find({
+      where: { to_integrate: true, cash_history_id: Not(IsNull()) },
     })
   }
 }
