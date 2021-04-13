@@ -26,7 +26,7 @@ class ItemsRepository implements IItemsRepository {
     id: string,
     payload: QueryDeepPartialEntity<Item>
   ): Promise<void> {
-    await this.ormRepository.update({ id }, payload)
+    await this.ormRepository.update({ id }, { ...payload })
   }
 
   async updateBySale(

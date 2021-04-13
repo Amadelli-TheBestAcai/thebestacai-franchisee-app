@@ -16,12 +16,12 @@ class CreateOrUpdateItemService {
       sale_id
     )
     if (oldItem && oldItem.category_id !== 1) {
-      const payload: CreateItemDTO = {
-        ...oldItem,
-        total: +oldItem.total + +item.total,
-        quantity: +oldItem.quantity + +item.quantity,
-      }
-      await this._itemRepository.update(oldItem.id, payload)
+      const total = +oldItem.total + +item.total
+      const quantity = +oldItem.quantity + +item.quantity
+      await this._itemRepository.update(oldItem.id, {
+        total,
+        quantity,
+      })
     } else {
       const payload: CreateItemDTO = {
         ...item,
@@ -29,7 +29,6 @@ class CreateOrUpdateItemService {
       }
       await this._itemRepository.create(payload)
     }
-    await this.updateQuantityAndTotal(sale_id)
   }
 }
 
