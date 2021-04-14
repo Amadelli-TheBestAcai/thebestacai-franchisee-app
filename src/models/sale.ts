@@ -12,5 +12,5 @@ export interface Sale {
   quantity: number
   to_integrate: boolean
   is_current: boolean
-  created_at: string
+  created_at: Date
 }

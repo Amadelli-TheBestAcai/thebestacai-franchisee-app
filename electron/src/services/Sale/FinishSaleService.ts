@@ -29,7 +29,6 @@ class FinishSaleService {
     const sale = await this._saleRepository.getById(payload.id)
     if (sale) {
       await this._saleRepository.update(payload.id, {
-        ...payload,
         is_current: false,
         to_integrate: true,
         cash_history_id: cashier.history_id,

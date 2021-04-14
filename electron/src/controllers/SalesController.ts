@@ -73,7 +73,7 @@ ipcMain.on('sale:command:get', async (event) => {
 ipcMain.on('sale:command:create', async (event, { id, name }) => {
   try {
     await _salesRepository.createCommand(id, name)
-    const sale = CreateSaleService.execute()
+    const sale = await CreateSaleService.execute()
     event.reply('sale:command:create:response', sale)
   } catch (err) {
     sendLog({

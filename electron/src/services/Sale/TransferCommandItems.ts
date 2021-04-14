@@ -28,16 +28,12 @@ class TransferCommandItems {
           currentSale
         )
         if (oldItem && oldItem.product_id !== 1) {
-          const newItem = {
-            ...oldItem,
-            quantity: +oldItem.quantity + +item.quantity,
-            total: +oldItem.total + +item.total,
-          }
           await this._itemRepository.updateByProductAndSale(
             item.product_id,
             currentSale,
             {
-              ...newItem,
+              quantity: +oldItem.quantity + +item.quantity,
+              total: +oldItem.total + +item.total,
               sale_id: currentSale,
             }
           )
@@ -47,7 +43,6 @@ class TransferCommandItems {
       })
     )
     await UpdateTotalSaleService.execute(currentSale)
-    await this._itemRepository.deleteBySale(sale)
     await this._saleRepository.deleteById(sale)
   }
 }
