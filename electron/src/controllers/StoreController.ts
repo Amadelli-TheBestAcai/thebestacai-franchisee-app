@@ -53,7 +53,7 @@ ipcMain.on('store:getAll', async (event) => {
 
 ipcMain.on('store:products:get', async (event) => {
   try {
-    const products = await GetAllProductsByStore.execute()
+    const products = await FindAllProductsService.execute()
     console.log(products)
     event.reply('store:products:get:response', products)
   } catch (err) {

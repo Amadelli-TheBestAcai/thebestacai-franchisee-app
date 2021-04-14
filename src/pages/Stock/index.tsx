@@ -20,6 +20,7 @@ const Stock: React.FC = () => {
   useEffect(() => {
     ipcRenderer.send('store:products:get')
     ipcRenderer.once('store:products:get:response', (event, products) => {
+      console.log(products)
       setProductsStock(
         products.filter(
           (data) =>
