@@ -1,5 +1,5 @@
 export interface Sale {
-  id: string
+  id?: string
   cash_code?: string
   store_id?: number
   cash_id?: number

@@ -8,6 +8,7 @@ import TransferCommandItems from '../services/Sale/TransferCommandItems'
 import GetAppSalesToIntegrateService from '../services/Sale/GetAppSalesToIntegrateService'
 import IntegrateAppSalesService from '../services/Sale/IntegrateAppSalesService'
 import FinishSaleService from '../services/Sale/FinishSaleService'
+import FinishDeliverySaleService from '../services/Sale/FinishDeliverySaleService'
 import GetCurrentSaleService from '../services/Sale/GetCurrentSaleService'
 import { sendLog } from '../utils/ApiLog'
 import { printSale } from '../utils/PrintSale'
@@ -28,9 +29,9 @@ ipcMain.on('sale:create', async (event) => {
   }
 })
 
-ipcMain.on('sale:addDelivery', async (event, sale) => {
+ipcMain.on('sale:addDelivery', async (event, { sale, payment }) => {
   try {
-    await FinishSaleService.execute(sale)
+    await FinishDeliverySaleService.execute(sale, payment)
     event.reply('sale:addDelivery:response', true)
   } catch (err) {
     sendLog({

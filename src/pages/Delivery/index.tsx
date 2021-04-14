@@ -50,9 +50,6 @@ import { message, Modal, Spin, Button, Empty } from 'antd'
 import { Sale } from '../../models/sale'
 import { Cashier } from '../../models/cashier'
 
-import moment from 'moment-timezone'
-import { v4 as uuidv4 } from 'uuid'
-
 import ImageLogo from '../../assets/img/logo-login.png'
 
 const { confirm } = Modal
@@ -79,7 +76,6 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
       setCashier(cashier)
       setSale((oldValues) => ({
         ...oldValues,
-        id: uuidv4(),
         store_id: cashier?.store_id,
         cash_id: cashier?.cash_id,
         cash_code: cashier?.code,
@@ -89,9 +85,6 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
         discount: 0,
         to_integrate: true,
         is_current: false,
-        created_at: moment(new Date())
-          .tz('America/Sao_Paulo')
-          .format('DD/MM/YYYYTHH:mm:ss'),
       }))
       setLoading(false)
     })
@@ -143,24 +136,23 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
       cancelText: 'Não',
       onOk() {
         setLoading(true)
-        ipcRenderer.send('payment:add', {
-          sale: sale.id,
-          type: paymentType,
-          amount,
-        })
-        ipcRenderer.once('payment:add:response', () => {
-          ipcRenderer.send('sale:addDelivery', {
+        ipcRenderer.send('sale:addDelivery', {
+          sale: {
             ...sale,
             quantity: 1,
             total: amount,
-          })
+          },
+          payment: {
+            type: paymentType,
+            amount,
+          },
         })
         ipcRenderer.once('sale:addDelivery:response', (event, status) => {
+          setAmount(0)
           if (status) {
             message.success('Venda salva com sucesso')
             setSale((oldValues) => ({
               ...oldValues,
-              id: uuidv4(),
               store_id: cashier?.store_id,
               cash_id: cashier?.cash_id,
               cash_code: cashier?.code,
@@ -170,15 +162,11 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
               discount: 0,
               to_integrate: true,
               is_current: false,
-              created_at: moment(new Date())
-                .tz('America/Sao_Paulo')
-                .format('DD/MM/YYYYTHH:mm:ss'),
             }))
           } else {
             message.error('Falha ao salvar venda')
           }
           setLoading(false)
-          setAmount(0)
         })
       },
     })
@@ -283,18 +271,25 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
             </PaymentContainer>
 
             <RegisterContainer>
-              <InputGroup>
-                <InputDescription>Valor do Delivery</InputDescription>
-                <InputPrice
-                  autoFocus={true}
-                  getValue={(value) => setAmount(value)}
-                  onEnterPress={handleCreateSale}
-                />
-              </InputGroup>
+              {isLoading ? (
+                <Spin />
+              ) : (
+                <>
+                  <InputGroup>
+                    <InputDescription>Valor do Delivery</InputDescription>
 
-              <RegisterButton onClick={() => handleCreateSale()}>
-                {isLoading ? <Spin /> : 'Registrar'}
-              </RegisterButton>
+                    <InputPrice
+                      autoFocus={true}
+                      getValue={(value) => setAmount(value)}
+                      onEnterPress={handleCreateSale}
+                    />
+                  </InputGroup>
+
+                  <RegisterButton onClick={() => handleCreateSale()}>
+                    Registrar
+                  </RegisterButton>
+                </>
+              )}
             </RegisterContainer>
           </MainContainer>
         </>

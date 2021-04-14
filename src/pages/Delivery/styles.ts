@@ -191,6 +191,7 @@ export const SalesTable = styled.div`
   height: 100%;
   width: 80%;
   flex-direction: column;
+  overflow-y: scroll;
 `
 
 export const SalesListHeader = styled.div`

@@ -4,7 +4,8 @@ import StoreCashRepository from '../../repositories/StoreCashRepository'
 import { ISalesRepository } from '../../repositories/interfaces/ISalesRepository'
 import SalesRepository from '../../repositories/SalesRepository'
 
-import { CreateSaleDTO } from '../../models/dtos/sales/CreateSaleDTO'
+import { DeepPartial } from 'typeorm'
+import { Sale } from '../../models/entities'
 import { SaleOption } from '../../../../shared/models/saleOption'
 
 import { checkInternet } from '../../utils/InternetConnection'
@@ -24,7 +25,10 @@ class FinishSaleService {
     this._storeCashRepository = storeCashRepository
   }
 
-  async execute(payload: CreateSaleDTO, options?: SaleOption): Promise<void> {
+  async execute(
+    payload: DeepPartial<Sale>,
+    options?: SaleOption
+  ): Promise<void> {
     const cashier = await this._storeCashRepository.getOne()
     const sale = await this._saleRepository.getById(payload.id)
     if (sale) {
@@ -34,7 +38,7 @@ class FinishSaleService {
         cash_history_id: cashier.history_id,
       })
     } else {
-      await this._saleRepository.create({ ...payload })
+      await this._saleRepository.create(payload)
     }
     const hasInternet = await checkInternet()
     if (options?.emit_nfce && !hasInternet) {

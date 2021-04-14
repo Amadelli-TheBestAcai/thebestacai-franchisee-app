@@ -12,7 +12,7 @@ export const Container = styled.div`
 export const HandlersContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: 90%;
   margin: 1%;
   background: #dddddd;
 `
@@ -35,7 +35,7 @@ export const Title = styled.label`
 export const HandlersList = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  height: 100%;
   overflow: scroll;
   ::-webkit-scrollbar {
     width: 0px;
