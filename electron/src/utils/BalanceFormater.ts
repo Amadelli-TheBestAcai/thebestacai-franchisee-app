@@ -62,7 +62,6 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
   balance.billing.store_ticket = +(
     balance.store.total / (balance.billing.store_sales || 1)
   ).toFixed(2)
-
   return balance
 }
 

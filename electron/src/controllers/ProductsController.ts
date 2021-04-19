@@ -71,7 +71,7 @@ ipcMain.on('products:category:all', async (event) => {
     const store = await GetCurrentStoreService.execute()
     event.reply('products:category:all:response', {
       hasInternet,
-      store,
+      store: store.store_id,
       categoryWithProducts,
     })
   } catch (err) {

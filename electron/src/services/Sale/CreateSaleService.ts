@@ -20,7 +20,7 @@ class CreateSaleService {
 
   async execute(): Promise<Sale> {
     const cashier = await this._storeCashRepository.getOne()
-    if (!cashier && !cashier.is_opened) {
+    if (!cashier || !cashier.is_opened) {
       return null
     }
     const newSale = {

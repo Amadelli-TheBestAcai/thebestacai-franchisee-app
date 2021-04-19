@@ -6,6 +6,10 @@ import StoreCashRepository from '../../repositories/StoreCashRepository'
 
 import { getBalance } from '../../utils/BalanceFormater'
 
+type Response = {
+  balance: Balance
+  isConnected: boolean
+}
 class FindStoreCashBalanceService {
   private _storeCashRepository: IStoreCashRepository
   constructor(
@@ -14,13 +18,12 @@ class FindStoreCashBalanceService {
     this._storeCashRepository = storeRepository
   }
 
-  async execute(withClosedCash = false): Promise<Balance> {
+  async execute(withClosedCash = false): Promise<Response> {
     const isConnected = await checkInternet()
     if (!isConnected) {
       return
     }
     const currentCash = await this._storeCashRepository.getOne()
-
     if (!currentCash) {
       return
     }
@@ -40,7 +43,11 @@ class FindStoreCashBalanceService {
       },
     } = await api.get(`/current_sales_history/${store_id}-${code}`)
 
-    return getBalance(sales)
+    const balance = getBalance(sales)
+    return {
+      isConnected,
+      balance,
+    }
   }
 }
 

@@ -33,6 +33,7 @@ class CashHandlerRepository implements ICashHandlerRepository {
     return await this.ormRepository
       .createQueryBuilder('cash_handlers')
       .where('cash_handlers.cash_history_id IS NULL')
+      .andWhere('cash_handlers.to_integrate = true')
       .getMany()
   }
 
@@ -40,6 +41,7 @@ class CashHandlerRepository implements ICashHandlerRepository {
     return await this.ormRepository
       .createQueryBuilder('cash_handlers')
       .where('cash_handlers.cash_history_id IS NOT NULL')
+      .andWhere('cash_handlers.to_integrate = true')
       .getMany()
   }
 }

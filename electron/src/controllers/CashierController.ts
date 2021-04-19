@@ -92,7 +92,7 @@ ipcMain.on('cashier:history:get', async (event) => {
 
 ipcMain.on('cashier:balance:get', async (event) => {
   try {
-    const response = await FindStoreCashBalanceService.execute()
+    const response = await FindStoreCashBalanceService.execute(true)
     event.reply('cashier:balance:get:response', response)
   } catch (err) {
     sendLog({

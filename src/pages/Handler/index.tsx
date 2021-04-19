@@ -65,7 +65,7 @@ const Handler: React.FC = () => {
       onOk() {
         setIsLoading(true)
         ipcRenderer.send('handler:delete', id)
-        ipcRenderer.on(
+        ipcRenderer.once(
           'handler:delete:response',
           (event, { success, data }) => {
             setIsLoading(false)
@@ -86,7 +86,7 @@ const Handler: React.FC = () => {
       {isLoading ? (
         <Spinner />
       ) : isConected ? (
-        handlers.length ? (
+        handlers?.length ? (
           <HandlersContainer>
             <HandlersHeader>
               <Column span={4}>

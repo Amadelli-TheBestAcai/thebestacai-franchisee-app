@@ -72,7 +72,6 @@ const Login: React.FC<IProps> = ({ history }) => {
                 ipcRenderer.once(
                   'store:getAll:response',
                   (event, { stores }) => {
-                    console.log({ stores })
                     setStores(stores)
                     setLoadingStores(false)
                   }

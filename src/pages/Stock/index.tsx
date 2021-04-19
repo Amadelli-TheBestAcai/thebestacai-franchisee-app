@@ -15,12 +15,11 @@ const Stock: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<
     ProductStoreModel[] | undefined
   >(undefined)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     ipcRenderer.send('store:products:get')
     ipcRenderer.once('store:products:get:response', (event, products) => {
-      console.log(products)
       setProductsStock(
         products.filter(
           (data) =>

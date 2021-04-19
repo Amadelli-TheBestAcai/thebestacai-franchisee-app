@@ -132,9 +132,7 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
     } else if (!reasson && !reasontype) {
       return message.warning('Informe a razão')
     }
-
-    setLoading(true)
-    ipcRenderer.send('handler:create', {
+    const payload = {
       handler: {
         type,
         reason: reasontype === 'Outros' ? reasson : reasontype,
@@ -142,7 +140,10 @@ const InOutForm: React.FC<IProps> = ({ modalState, setModalState, type }) => {
       },
       shopOrder,
       sendToShop,
-    })
+    }
+
+    setLoading(true)
+    ipcRenderer.send('handler:create', payload)
     ipcRenderer.once('handler:create:response', (event, { success }) => {
       if (success) {
         setValue(null)

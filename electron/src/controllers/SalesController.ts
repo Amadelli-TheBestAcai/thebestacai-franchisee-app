@@ -144,8 +144,8 @@ ipcMain.on('sale:api:get', async (event) => {
 ipcMain.on('sale:api:delete', async (event, id) => {
   try {
     const success = await DeleteSalesFromApiService.execute(id)
-    const data = await GetSalesFromApiService.execute()
-    event.reply('sale:api:delete:response', { success, data })
+    const { sales } = await GetSalesFromApiService.execute()
+    event.reply('sale:api:delete:response', { success, data: sales })
   } catch (err) {
     sendLog({
       title: 'Erro ao remover vendas da api',
