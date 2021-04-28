@@ -78,27 +78,13 @@ const Login: React.FC<IProps> = ({ history }) => {
                 )
               }
             } else {
-              ipcRenderer.send('integrate:shouldUpdateApp')
-              ipcRenderer.once(
-                'integrate:shouldUpdateApp:response',
-                (event, shouldUpdateApp) => {
-                  if (shouldUpdateApp) {
-                    setShouldApplyNewVersion(true)
-                    ipcRenderer.send('check_for_update')
-                    ipcRenderer.once('update-available', () => {
-                      ipcRenderer.on('download-progress', (event, percent) => {
-                        setPercentDownloaded(+percent.slice(0, 2))
-                      })
-                    })
-                  } else {
-                    Modal.info({
-                      title: 'Há uma nova versão do APP',
-                      content:
-                        'Para aplica-la feche o caixa atual e faça o login novamente.',
-                    })
-                  }
-                }
-              )
+              setShouldApplyNewVersion(true)
+              ipcRenderer.send('check_for_update')
+              ipcRenderer.once('update-available', () => {
+                ipcRenderer.on('download-progress', (event, percent) => {
+                  setPercentDownloaded(+percent.slice(0, 2))
+                })
+              })
             }
           }
         )

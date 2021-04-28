@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { getCustomRepository } from 'typeorm'
 import IntegrateOfflineService from '../services/Integration/IntegrateOfflineService'
 import IntegrateOnlineService from '../services/Integration/IntegrateOnlineService'
+import CheckAppIsUpdatedService from '../services/app/CheckAppIsUpdatedService'
 import { sendLog } from '../utils/ApiLog'
 
 import SalesRepository from '../repositories/SalesRepository'
@@ -24,22 +25,10 @@ ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
   }
 })
 
-ipcMain.on('integrate:shouldUpdateApp', async (event) => {
-  try {
-    event.reply('integrate:shouldUpdateApp:response', true)
-  } catch (err) {
-    sendLog({
-      title: 'Erro ao obter versão atual do caixa',
-      payload: err.message,
-    })
-    console.error(err)
-    event.reply('integrate:shouldUpdateApp:response', false)
-  }
-})
-
 ipcMain.on('integrate:checkAppVersion', async (event) => {
   try {
-    event.reply('integrate:checkAppVersion:response', true)
+    const response = await CheckAppIsUpdatedService.execute()
+    event.reply('integrate:checkAppVersion:response', response)
   } catch (err) {
     sendLog({
       title: 'Erro ao checkar nova versão para o APP',
