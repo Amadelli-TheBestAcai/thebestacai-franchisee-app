@@ -12,7 +12,7 @@ class IntegrateAppSalesService {
     this._storeCashRepository = storeCashRepository
   }
 
-  async execute(payload): Promise<void> {
+  async execute(salesToIntegrate, appSalesId): Promise<void> {
     const currentCash = await this._storeCashRepository.getOne()
 
     if (!currentCash || !currentCash?.is_opened) {
@@ -24,7 +24,23 @@ class IntegrateAppSalesService {
       throw new Error('Id da loja não encontrado')
     }
 
-    await api.post(`/sales/${store_id}-${currentCash.code}`, payload)
+    const { history_id } = currentCash
+    if (!store_id) {
+      throw new Error('Histórico não encontrado')
+    }
+
+    salesToIntegrate.reduce((previousPromise, nextSale) => {
+      return previousPromise.then(async () => {
+        return await api.post(`/sales/${store_id}-${currentCash.code}`, [
+          nextSale,
+        ])
+      })
+    }, Promise.resolve())
+
+    await api.post('/app_sale/integrate', {
+      historyId: history_id,
+      payload: appSalesId,
+    })
   }
 }
 
