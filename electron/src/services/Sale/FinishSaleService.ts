@@ -35,6 +35,8 @@ class FinishSaleService {
       await this._saleRepository.update(payload.id, {
         is_current: false,
         to_integrate: true,
+        change_amount: payload.change_amount,
+        discount: payload.discount,
         cash_history_id: cashier.history_id,
       })
     } else {

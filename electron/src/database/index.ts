@@ -8,10 +8,7 @@ export const initializeDatabase = async (): Promise<void> => {
   await createConnection({
     name: 'default',
     type: 'sqlite',
-    database:
-      process.env.NODE_ENV === 'development'
-        ? './resources/db.sqlite'
-        : `${process.env.AppData}/db.sqlite`,
+    database: `${process.env.AppData}/db.sqlite`,
     entities,
     migrations,
     migrationsRun: true,

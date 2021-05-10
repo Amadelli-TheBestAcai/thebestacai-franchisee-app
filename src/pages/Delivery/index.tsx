@@ -52,6 +52,8 @@ import { Cashier } from '../../models/cashier'
 
 import ImageLogo from '../../assets/img/logo-login.png'
 
+import PixLogo from '../../assets/img/pix.png'
+
 const { confirm } = Modal
 
 type ComponentProps = RouteComponentProps
@@ -266,6 +268,16 @@ const Delivery: React.FC<ComponentProps> = ({ history }) => {
                 <PaymentItem>
                   <Radio value={4}>Online</Radio>
                   <CheckOnline />
+                </PaymentItem>
+                <PaymentItem>
+                  <Radio value={6}>PIX</Radio>
+                  <AppIcon
+                    src={PixLogo}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                    }}
+                  />
                 </PaymentItem>
               </Radio.Group>
             </PaymentContainer>

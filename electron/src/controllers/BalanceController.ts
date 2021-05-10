@@ -13,9 +13,8 @@ ipcMain.on('balance:connect', async (event) => {
     if (!settings.balance_port) {
       return
     }
-
     if (port && port.isOpen) {
-      port.close()
+      return
     }
 
     port = new SerialPort(

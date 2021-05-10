@@ -154,7 +154,6 @@ export const UberEatsIcon = styled(Ubereats)`
 export const TelefoneIcon = styled(TelephoneFill)`
   ${PlatformIconCss}
 `
-
 const PaymentIconCss = css`
   width: 20px;
   height: 20px;

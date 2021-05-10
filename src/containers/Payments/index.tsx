@@ -24,6 +24,8 @@ import {
   TicketIcon,
 } from './styles'
 
+import PixLogo from '../../assets/img/pix.png'
+
 interface IProps {
   payments: PaymentModel[]
   handleOpenPayment: (type: number, title: string) => void
@@ -93,6 +95,20 @@ const PaymentsContainer: React.FC<IProps> = ({
         >
           [T] TICKET
           <TicketIcon />
+        </Button>
+
+        <Button
+          className="ant-btn"
+          onClick={() => handleOpenPayment(PaymentType.PIX, 'PIX')}
+        >
+          [P] PIX
+          <img
+            src={PixLogo}
+            style={{
+              width: '25px',
+              height: '25px',
+            }}
+          />
         </Button>
       </Header>
       <Content>

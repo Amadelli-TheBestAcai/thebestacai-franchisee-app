@@ -147,10 +147,6 @@ const Cashier: React.FC<IProps> = ({ history }) => {
             }
           )
         } else {
-          console.log({
-            code: cash,
-            amount_on_open: total || '0',
-          })
           ipcRenderer.send('cashier:open', {
             code: cash,
             amount_on_open: total || '0',

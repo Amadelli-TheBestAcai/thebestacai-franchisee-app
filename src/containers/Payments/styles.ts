@@ -50,7 +50,7 @@ export const Button = styled.button`
   font-weight: 500;
   color: white;
   border: none;
-  width: 9vw;
+  width: 7vw;
   padding: 0;
   font-size: 12px;
 

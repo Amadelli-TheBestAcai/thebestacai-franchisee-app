@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { getCustomRepository } from 'typeorm'
 import PaymentsRepository from '../repositories/PaymentsRepository'
 import CreatePaymentService from '../services/Payment/CreatePaymentService'
+import UpdateTotalSaleService from '../services/Sale/UpdateTotalSaleService'
 import { sendLog } from '../utils/ApiLog'
 
 const _paymentRepository = getCustomRepository(PaymentsRepository)
@@ -22,6 +23,7 @@ ipcMain.on('payment:get', async (event, sale) => {
 ipcMain.on('payment:add', async (event, { sale, ...payload }) => {
   try {
     await CreatePaymentService.execute(payload, sale)
+    await UpdateTotalSaleService.execute(sale)
     const payments = await _paymentRepository.getBySale(sale)
     event.reply('payment:add:response', payments)
   } catch (err) {

@@ -11,10 +11,10 @@ class Settings {
   @PrimaryGeneratedColumn('uuid')
   id: number
 
-  @Column()
+  @Column({ nullable: true })
   disabled_balance: boolean
 
-  @Column()
+  @Column({ nullable: true })
   balance_port: string
 
   @Column()

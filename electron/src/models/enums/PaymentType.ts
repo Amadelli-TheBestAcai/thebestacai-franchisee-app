@@ -5,4 +5,5 @@ export enum PaymentType {
   TICKET = 3,
   ONLINE = 4,
   BANK_SLIP = 5,
+  PIX = 6,
 }

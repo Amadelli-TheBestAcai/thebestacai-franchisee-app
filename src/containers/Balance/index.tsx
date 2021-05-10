@@ -77,6 +77,9 @@ const BalanceContainer: React.FC<IProps> = ({
     if (lowerKey === 't') {
       handleOpenPayment(PaymentType.TICKET, 'Ticket')
     }
+    if (lowerKey === 'p') {
+      handleOpenPayment(PaymentType.PIX, 'PIX')
+    }
     if (shouldUseBalance && key === 'Enter') {
       handleEnterToSubmit()
     }
