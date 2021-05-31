@@ -8,6 +8,8 @@ import Spinner from '../../components/Spinner'
 
 import { Balance as BalanceModel } from '../../../shared/models/balance'
 
+import PixLogo from '../../assets/img/pix.png'
+
 import {
   Container,
   CardContainer,
@@ -79,6 +81,20 @@ const Balance: React.FC = () => {
                 </CardContent>
               </CardRow>
               <CardRow>
+                <img
+                  src={PixLogo}
+                  style={{
+                    width: '3vw',
+                    height: '5vh',
+                    margin: '0% 7% 0% 13%',
+                  }}
+                />
+                <CardContent>
+                  R$ {balance.delivery.pix.toFixed(2).replace('.', ',')}
+                  <Description>PIX</Description>
+                </CardContent>
+              </CardRow>
+              <CardRow>
                 <CheckOnline />
                 <CardContent>
                   R$ {balance.delivery.online.toFixed(2).replace('.', ',')}
@@ -115,6 +131,20 @@ const Balance: React.FC = () => {
                 <CardContent>
                   R$ {balance.store.debit.toFixed(2).replace('.', ',')}
                   <Description>Débito</Description>
+                </CardContent>
+              </CardRow>
+              <CardRow green>
+                <img
+                  src={PixLogo}
+                  style={{
+                    width: '3vw',
+                    height: '5vh',
+                    margin: '0% 7% 0% 13%',
+                  }}
+                />
+                <CardContent>
+                  R$ {balance.store.pix.toFixed(2).replace('.', ',')}
+                  <Description>PIX</Description>
                 </CardContent>
               </CardRow>
               <CardRow green>
