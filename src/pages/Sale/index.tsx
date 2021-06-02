@@ -33,6 +33,7 @@ const Sale: React.FC<IProps> = ({ history }) => {
   const [pendingSales, setPendingSales] = useState<number>(0)
   const [isIntegrating, setIsIntegrating] = useState<boolean>(false)
   const [hasPermission, setPermission] = useState(false)
+  const [hasRemovePermission, setRemovePermission] = useState(false)
   const [sales, setSales] = useState<SalesHistory[]>([])
   const [isConected, setIsConected] = useState<boolean>(true)
 
@@ -54,6 +55,15 @@ const Sale: React.FC<IProps> = ({ history }) => {
     ipcRenderer.once('user:get:response', (event, user) => {
       const { role } = user
       setPermission(
+        [
+          UserRoles.Master,
+          UserRoles.Administrador,
+          UserRoles.Franqueado,
+          UserRoles.Gerente,
+          UserRoles.Encarregado,
+        ].some((elem) => elem === role)
+      )
+      setRemovePermission(
         [
           UserRoles.Master,
           UserRoles.Administrador,
@@ -168,6 +178,7 @@ const Sale: React.FC<IProps> = ({ history }) => {
                       sale={sale}
                       onDelete={onDelete}
                       hasPermission={hasPermission}
+                      hasRemovePermission={hasRemovePermission}
                     />
                   ))}
                 </SalesList>

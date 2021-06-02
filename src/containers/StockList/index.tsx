@@ -31,6 +31,7 @@ const { confirm } = Modal
 
 interface IProps {
   products: ProductStoreModel[]
+  filteredProducts: ProductStoreModel[]
   setLoading: Dispatch<SetStateAction<boolean>>
   setProductsStock: Dispatch<SetStateAction<ProductStoreModel[]>>
   loading: boolean
@@ -38,6 +39,7 @@ interface IProps {
 
 const StockList: React.FC<IProps> = ({
   products,
+  filteredProducts,
   loading,
   setLoading,
   setProductsStock,
@@ -112,7 +114,7 @@ const StockList: React.FC<IProps> = ({
             const newProduct = products
             newProduct[productIndex].quantity =
               (+selectedProduct?.quantity || 0) - (newQuantity || 0)
-
+            console.log(newProduct)
             setProductsStock([...newProduct])
             setSelectedProduct(null)
             setLoading(false)
@@ -131,7 +133,7 @@ const StockList: React.FC<IProps> = ({
   return (
     <Container>
       <Table header={header} loading={loading}>
-        {products.map((storeProduct) => (
+        {(filteredProducts || products).map((storeProduct) => (
           <Tupla align="middle" key={`${storeProduct.id}`}>
             <Col sm={6} xs={12}>
               <LabelName>{storeProduct.product?.name}</LabelName>

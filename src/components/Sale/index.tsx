@@ -20,9 +20,15 @@ type IProps = {
   sale: SalesHistory
   onDelete: (id: number) => void
   hasPermission: boolean
+  hasRemovePermission: boolean
 }
 
-const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
+const Sale: React.FC<IProps> = ({
+  sale,
+  onDelete,
+  hasPermission,
+  hasRemovePermission,
+}) => {
   const {
     id,
     type,
@@ -90,7 +96,9 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
             <ColHeader span={4}>{getType(type)}</ColHeader>
             <ColHeader span={4}>
               <PrinterIcon onClick={() => onPrinter()} />
-              {hasPermission && <RemoveIcon onClick={() => onDelete(id)} />}
+              {hasPermission && hasRemovePermission && (
+                <RemoveIcon onClick={() => onDelete(id)} />
+              )}
             </ColHeader>
           </Row>
         }

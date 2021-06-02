@@ -28,6 +28,7 @@ const { confirm } = Modal
 const Handler: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [hasPermission, setPermission] = useState(false)
+  const [hasRemovePermission, setRemovePermission] = useState(false)
   const [handlers, setHandlers] = useState<HandlerModel[]>([])
   const [isConected, setIsConected] = useState(true)
 
@@ -48,9 +49,19 @@ const Handler: React.FC = () => {
           UserRoles.Master,
           UserRoles.Administrador,
           UserRoles.Franqueado,
+          UserRoles.Encarregado,
           UserRoles.Gerente,
         ].some((elem) => elem === role)
       )
+      setRemovePermission(
+        [
+          UserRoles.Master,
+          UserRoles.Administrador,
+          UserRoles.Franqueado,
+          UserRoles.Gerente,
+        ].some((elem) => elem === role)
+      )
+
       setIsLoading(false)
     })
   }, [])
@@ -114,6 +125,7 @@ const Handler: React.FC = () => {
                   key={handler.id}
                   handler={handler}
                   hasPermission={hasPermission}
+                  hasRemovePermission={hasRemovePermission}
                   onDelete={onDelete}
                 />
               ))}

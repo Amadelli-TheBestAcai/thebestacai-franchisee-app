@@ -37,6 +37,7 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
           UserRoles.Master,
           UserRoles.Administrador,
           UserRoles.Franqueado,
+          UserRoles.Encarregado,
           UserRoles.Gerente,
         ].some((elem) => elem === role)
       )

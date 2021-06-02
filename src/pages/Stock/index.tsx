@@ -55,7 +55,8 @@ const Stock: React.FC = () => {
         <StockList
           loading={loading}
           setLoading={setLoading}
-          products={filteredProducts || productsStock}
+          filteredProducts={filteredProducts}
+          products={productsStock}
           setProductsStock={setProductsStock}
         ></StockList>
       </Content>

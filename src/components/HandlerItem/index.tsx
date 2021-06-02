@@ -8,12 +8,14 @@ type IProps = {
   handler: HandlerModel
   onDelete: (id: number) => void
   hasPermission: boolean
+  hasRemovePermission: boolean
 }
 
 const HandlerItem: React.FC<IProps> = ({
   handler,
   onDelete,
   hasPermission,
+  hasRemovePermission,
 }) => {
   const { id, type, amount, created_at, reason } = handler
   const time = created_at.split(' ')[1]
@@ -34,7 +36,7 @@ const HandlerItem: React.FC<IProps> = ({
       <Column span={4}>
         <Description>{reason}</Description>
       </Column>
-      {hasPermission && (
+      {hasPermission && hasRemovePermission && (
         <Column span={4}>
           <RemoveIcon onClick={() => onDelete(id)} />
         </Column>
