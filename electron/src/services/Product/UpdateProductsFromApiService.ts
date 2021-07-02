@@ -39,6 +39,13 @@ class UpdateProductsFromApiService {
       price_unit: productStore.price_unit,
       category_id: productStore.product.category_id,
       category_name: productStore.product.category.name,
+      unity_taxable: productStore.unity_taxable,
+      cod_ncm: productStore.product.cod_ncm,
+      cfop: productStore.cfop,
+      price_taxable: productStore.price_taxable,
+      icms_tax_situation: productStore.icms_tax_situation,
+      icms_origin: productStore.icms_origin,
+      additional_information: productStore.additional_information,
     }))
 
     if (formatedProducts.length) {

@@ -9,6 +9,7 @@ import { CreateSettings1615944534764 } from './migrations/1615944534764-CreateSe
 import { CreateStore1617144243177 } from './migrations/1617144243177-CreateStore'
 import { CreateStoreCashes1617145792700 } from './migrations/1617145792700-CreateStoreCashes'
 import { CreateItemOutCart1617317287530 } from './migrations/1617317287530-CreateItemOutCart'
+import { AddNfeFieldsToProducts1625183586246 } from './migrations/1625183586246-AddNfeFieldsToProducts'
 
 export const migrations = [
   CreateUser1615943770893,
@@ -22,4 +23,5 @@ export const migrations = [
   CreateStore1617144243177,
   CreateStoreCashes1617145792700,
   CreateItemOutCart1617317287530,
+  AddNfeFieldsToProducts1625183586246,
 ]

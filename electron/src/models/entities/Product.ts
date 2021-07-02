@@ -29,6 +29,27 @@ class Product {
   @Column('decimal', { precision: 10, scale: 2 })
   price_unit: string
 
+  @Column({ nullable: true })
+  unity_taxable: string
+
+  @Column({ nullable: true })
+  cod_ncm: number
+
+  @Column({ nullable: true })
+  cfop: number
+
+  @Column({ nullable: true })
+  price_taxable: number
+
+  @Column({ nullable: true })
+  icms_tax_situation: number
+
+  @Column({ nullable: true })
+  icms_origin: number
+
+  @Column({ nullable: true })
+  additional_information: string
+
   @CreateDateColumn()
   created_at: Date
 
