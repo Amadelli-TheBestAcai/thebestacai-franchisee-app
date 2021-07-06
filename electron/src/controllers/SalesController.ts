@@ -10,6 +10,7 @@ import IntegrateAppSalesService from '../services/Sale/IntegrateAppSalesService'
 import FinishSaleService from '../services/Sale/FinishSaleService'
 import FinishDeliverySaleService from '../services/Sale/FinishDeliverySaleService'
 import GetCurrentSaleService from '../services/Sale/GetCurrentSaleService'
+import EmitNfCeService from '../services/Sale/EmitNfCeService'
 import { sendLog } from '../utils/ApiLog'
 import { printSale } from '../utils/PrintSale'
 import SalesRepository from '../repositories/SalesRepository'
@@ -186,4 +187,17 @@ ipcMain.on('appSale:integrate', async (event, { sales, appSalesIds }) => {
 
 ipcMain.on('sale:print', async (event, payload) => {
   printSale(payload)
+})
+
+ipcMain.on('sale:nfe', async (event, nfce) => {
+  try {
+    const response = await EmitNfCeService.execute(nfce)
+    event.reply('sale:nfe:response', response)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao emitir nfce',
+      payload: { err: err.message, payload: nfce },
+    })
+    event.reply('sale:nfe:response', { error: true })
+  }
 })

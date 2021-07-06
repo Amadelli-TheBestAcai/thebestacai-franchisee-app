@@ -6,4 +6,5 @@ export interface IProductsRepository {
   deleteAll(): Promise<void>
   getSelfService(): Promise<Product>
   getAll(): Promise<Product[]>
+  getByProductId(product_id: number): Promise<Product>
 }

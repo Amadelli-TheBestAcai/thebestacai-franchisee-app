@@ -18,8 +18,7 @@ import {
 } from './styles'
 
 import { Product } from '../../models/product'
-import { ProductNfe } from '../../models/productNfe'
-import { Nfe } from '../../models/nfe'
+import { ProductNfe } from '../../../shared/models/productNfe'
 
 type IProps = {
   modalState: boolean

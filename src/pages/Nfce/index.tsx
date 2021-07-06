@@ -10,8 +10,8 @@ import { Divider, message, Popover, Spin } from 'antd'
 import RouterDescription from '../../components/RouterDescription'
 
 import { Product as ProductModel } from '../../models/product'
-import { ProductNfe } from '../../models/productNfe'
-import { Nfe } from '../../models/nfe'
+import { ProductNfe } from '../../../shared/models/productNfe'
+import { Nfe } from '../../../shared/models/nfe'
 
 import {
   Container,
@@ -153,19 +153,19 @@ const Nfce: React.FC = () => {
     }
     const nfcePayload = {
       ...cleanObject(nfe),
-      produtos: productsNfe.map((product) => ({
-        ...product,
-        quantidadeTributavel: product.quantidadeComercial,
+      produtos: productsNfe.map(({ id, ...props }) => ({
+        ...props,
+        quantidadeTributavel: props.quantidadeComercial,
       })),
     }
     setEmitingNfe(true)
-    ipcRenderer.send('products:nfe:emit', nfcePayload)
-    ipcRenderer.once('products:nfe:emit:response', (event, { error }) => {
+    ipcRenderer.send('sale:nfe', nfcePayload)
+    ipcRenderer.once('sale:nfe:response', (event, { error, message }) => {
       setEmitingNfe(false)
       if (error) {
-        message.error(
-          'Serviço temporariamento indisponível, tente novamente mais tarde'
-        )
+        message.error(message || 'Falha ao emitir NFCe, contate o suporte.')
+      } else {
+        message.success(message || 'NFCe emitida com sucesso')
       }
     })
   }

@@ -27,6 +27,10 @@ class ProductsRepository implements IProductsRepository {
   async getAll(): Promise<Product[]> {
     return await this.ormRepository.find()
   }
+
+  async getByProductId(product_id: number): Promise<Product> {
+    return await this.ormRepository.findOne({ where: { product_id } })
+  }
 }
 
 export default ProductsRepository
