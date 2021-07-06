@@ -83,12 +83,9 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     ipcRenderer.send('configuration:get')
-    ipcRenderer.once(
-      'configuration:get:response',
-      (event, { disabled_balance }) => {
-        setShouldUseBalance(disabled_balance)
-      }
-    )
+    ipcRenderer.once('configuration:get:response', (event, configs) => {
+      setShouldUseBalance(configs.disabled_balance)
+    })
   }, [])
 
   const addItem = (

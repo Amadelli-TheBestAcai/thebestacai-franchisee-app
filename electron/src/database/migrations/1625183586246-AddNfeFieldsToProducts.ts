@@ -9,7 +9,9 @@ export class AddNfeFieldsToProducts1625183586246 implements MigrationInterface {
     )
     await queryRunner.query('ALTER TABLE "products" ADD "cod_ncm" integer')
     await queryRunner.query('ALTER TABLE "products" ADD "cfop" integer')
-    await queryRunner.query('ALTER TABLE "products" ADD "price_taxable"')
+    await queryRunner.query(
+      'ALTER TABLE "products" ADD "price_taxable" integer'
+    )
     await queryRunner.query(
       'ALTER TABLE "products" ADD "icms_tax_situation" integer'
     )

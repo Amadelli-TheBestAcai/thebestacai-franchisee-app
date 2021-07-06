@@ -7,6 +7,7 @@ const API_URL =
     ? 'https://hml-thebestacai-api.herokuapp.com'
     : 'https://thebestacai-api.herokuapp.com'
 
+console.log(API_URL)
 const api = axios.create({
   baseURL: API_URL,
   responseType: 'json',

@@ -3,6 +3,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 import InputForm from '../InputForm'
 import DiscountForm from '../DiscountForm'
 import InOutForm from '../InOutForm'
+import NfeForm from '../NfeForm'
 
 import { message } from 'antd'
 
@@ -16,6 +17,8 @@ import {
   EntryIcon,
   OutIcon,
   CommandIcon,
+  NfeButton,
+  NfeIcon,
 } from './styles'
 
 type IProps = {
@@ -36,6 +39,7 @@ const Actions: React.FC<IProps> = ({
   const [commandState, setCommandState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
   const [handlerOutState, setHandlerOutState] = useState(false)
+  const [nfeState, setNfeState] = useState(false)
 
   const handleCommand = () => {
     if (!haveItensOnSale) {
@@ -65,6 +69,10 @@ const Actions: React.FC<IProps> = ({
         COMANDA
         <CommandIcon />
       </CommandButton>
+      <NfeButton onClick={() => setNfeState(true)}>
+        Nfe
+        <NfeIcon />
+      </NfeButton>
       <InputForm
         placeHolder="Digite o nome do cliente"
         onFinish={addToQueue}
@@ -76,6 +84,7 @@ const Actions: React.FC<IProps> = ({
         modalState={discountState}
         setModalState={setDiscountState}
       />
+      <NfeForm modalState={nfeState} setModalState={setNfeState} />
       <InOutForm
         type="entrada"
         modalState={handlerInState}

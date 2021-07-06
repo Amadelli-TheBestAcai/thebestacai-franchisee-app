@@ -14,6 +14,7 @@ import {
   Home,
   IconContainer,
   BoxIcon,
+  NfceIcon,
 } from './styles'
 
 type IProps = RouteComponentProps
@@ -110,6 +111,14 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
         <Money
           style={{ color: isRoute('/sale') ? 'black' : '#FF9D0A' }}
           onClick={() => handleClick('/sale')}
+        />
+      </IconContainer>
+      <IconContainer
+        style={{ background: isRoute('/nfce') ? '#FF9D0A' : 'black' }}
+      >
+        <NfceIcon
+          style={{ color: isRoute('/nfce') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/nfce')}
         />
       </IconContainer>
     </Container>

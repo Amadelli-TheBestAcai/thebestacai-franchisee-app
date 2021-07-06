@@ -8,6 +8,10 @@ import GetAllProductsByStore from '../services/Product/GetAllProductsByStore'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
+import { IProductsRepository } from '../repositories/interfaces/IProductsRepository'
+import ProductsRepository from '../repositories/ProductsRepository'
+
+const productRepository: IProductsRepository = new ProductsRepository()
 
 ipcMain.on('products:get', async (event) => {
   try {
@@ -110,6 +114,20 @@ ipcMain.on('products:audit:get', async (event, { id, page, size }) => {
       totalElements: 0,
       status: false,
     })
+    console.error(err)
+  }
+})
+
+ipcMain.on('products:nfe', async (event) => {
+  try {
+    const content = await productRepository.getAll()
+    event.reply('products:nfe:response', { content, error: false })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter produtos para nfe',
+      payload: err.message,
+    })
+    event.reply('products:nfe:response', { content: [], error: true })
     console.error(err)
   }
 })
