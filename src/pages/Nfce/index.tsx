@@ -5,7 +5,7 @@ import { cleanObject } from '../../../shared/utils/cleanObject'
 import { v4 } from 'uuid'
 import { ipcRenderer } from 'electron'
 
-import { Divider, message, Popover, Spin } from 'antd'
+import { Divider, message as messageAnt, Popover, Spin } from 'antd'
 
 import RouterDescription from '../../components/RouterDescription'
 
@@ -49,7 +49,7 @@ const Nfce: React.FC = () => {
     ipcRenderer.send('products:nfe')
     ipcRenderer.once('products:nfe:response', (event, { error, content }) => {
       if (error) {
-        message.error('Falha ao obter produtos para NFe')
+        messageAnt.error('Falha ao obter produtos para NFe')
       }
       setProducts(content)
     })
@@ -59,7 +59,7 @@ const Nfce: React.FC = () => {
     setNfe((oldValues) => ({ ...oldValues, [name]: value }))
   }
 
-  const calculateTotal = (productsNfe: ProductNfe[]) => {
+  const calculateTotal = (productsNfe: ProductNfe[]): number => {
     const total = productsNfe.reduce(
       (total, product) =>
         +product.quantidadeComercial && +product.valorUnitarioComercial
@@ -71,6 +71,8 @@ const Nfce: React.FC = () => {
     form.setFieldsValue({
       valorPagamento: total.toFixed(2).replace('.', ','),
     })
+
+    return +total
   }
 
   const isValidProduct = (product: ProductModel) => {
@@ -143,16 +145,17 @@ const Nfce: React.FC = () => {
   }
 
   const handleEmit = () => {
-    if (nfe.CPFDestinatario?.toString().length !== 11) {
-      message.warning('Cpf inválido')
+    if (onlyNumbers(nfe.CPFDestinatario)?.toString().length !== 11) {
+      messageAnt.warning('Cpf inválido')
       return
     }
     if (!productsNfe.length) {
-      message.warning('Adicione pelo menos um produto')
+      messageAnt.warning('Adicione pelo menos um produto')
       return
     }
     const nfcePayload = {
       ...cleanObject(nfe),
+      valorPagamento: calculateTotal(productsNfe),
       produtos: productsNfe.map(({ id, ...props }) => ({
         ...props,
         quantidadeTributavel: props.quantidadeComercial,
@@ -163,9 +166,9 @@ const Nfce: React.FC = () => {
     ipcRenderer.once('sale:nfe:response', (event, { error, message }) => {
       setEmitingNfe(false)
       if (error) {
-        message.error(message || 'Falha ao emitir NFCe, contate o suporte.')
+        messageAnt.error(message || 'Falha ao emitir NFCe, contate o suporte.')
       } else {
-        message.success(message || 'NFCe emitida com sucesso')
+        messageAnt.success(message || 'NFCe emitida com sucesso')
       }
     })
   }
@@ -297,7 +300,7 @@ const Nfce: React.FC = () => {
                     mask="999.999.999-99"
                     className="ant-input"
                     onChange={({ target: { value } }) =>
-                      handleUpdateNfe('CPFDestinatario', onlyNumbers(value))
+                      handleUpdateNfe('CPFDestinatario', value)
                     }
                   />
                 </FormItem>
@@ -373,6 +376,7 @@ const Nfce: React.FC = () => {
                 <FormItem
                   label="Informações Adicionais"
                   name="informacoesAdicionaisFisco"
+                  rules={[{ required: true }]}
                 >
                   <Input.TextArea
                     rows={5}

@@ -33,6 +33,12 @@ class Sale {
   @Column({ nullable: true })
   name: string
 
+  @Column({ nullable: true })
+  nfe_url: string
+
+  @Column({ nullable: true })
+  nfe_id: number
+
   @Column()
   type: string
 

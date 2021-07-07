@@ -54,7 +54,7 @@ class EmitNfCeService {
 
     const store = await this._storeRepository.findCurrent()
 
-    if (!store.token_nfce) {
+    if (!store || !store.token_nfce) {
       return {
         error: true,
         message:
@@ -64,7 +64,7 @@ class EmitNfCeService {
 
     const storeCash = await this._storeCashRepository.getOne()
 
-    if (!storeCash.is_opened) {
+    if (!storeCash || !storeCash.is_opened) {
       return {
         error: true,
         message:
@@ -72,18 +72,7 @@ class EmitNfCeService {
       }
     }
 
-    try {
-      const {
-        data: { erro: nfe_erro, url: nfe_url, id: nfe_id },
-      } = await apiNfe.post('/emitirNFCe', { ...nfe, ambiente })
-    } catch {
-      return {
-        error: true,
-        message:
-          'Serviço temporariamente indisponível. Tente novamente mais tarde',
-      }
-    }
-    const sale = {
+    let sale = {
       cash_code: storeCash.code,
       store_id: store.store_id,
       cash_id: storeCash.cash_id,
@@ -95,6 +84,33 @@ class EmitNfCeService {
       quantity: nfe.produtos.length,
       to_integrate: false,
       is_current: false,
+      nfe_id: null,
+      nfe_url: null,
+    }
+
+    try {
+      const {
+        data: { erro: nfe_erro, url: nfe_url, id: nfe_id, ...props },
+      } = await apiNfe.post('/emitirNFCe', { ...nfe, ambiente })
+      if (!nfe_url || !nfe_id) {
+        return {
+          error: true,
+          message:
+            'Serviço temporariamente indisponível. Tente novamente mais tarde',
+        }
+      }
+      sale = {
+        ...sale,
+        nfe_id,
+        nfe_url,
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        error: true,
+        message:
+          'Serviço temporariamente indisponível. Tente novamente mais tarde',
+      }
     }
 
     const saleResponse = await this._saleRepository.create(sale)
@@ -120,9 +136,9 @@ class EmitNfCeService {
       })
     )
 
-    await this._saleRepository.update(saleResponse.id, { to_integrate: true })
+    // await this._saleRepository.update(saleResponse.id, { to_integrate: true })
 
-    await IntegrateOnlineService.execute()
+    // await IntegrateOnlineService.execute()
 
     return {
       error: false,
@@ -130,5 +146,5 @@ class EmitNfCeService {
     }
   }
 }
-
+// "id": 61
 export default new EmitNfCeService()
