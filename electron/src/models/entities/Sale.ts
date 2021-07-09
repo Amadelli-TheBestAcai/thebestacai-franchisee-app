@@ -34,10 +34,10 @@ class Sale {
   name: string
 
   @Column({ nullable: true })
-  nfe_url: string
+  nfce_url: string
 
   @Column({ nullable: true })
-  nfe_id: number
+  nfce_id: number
 
   @Column()
   type: string

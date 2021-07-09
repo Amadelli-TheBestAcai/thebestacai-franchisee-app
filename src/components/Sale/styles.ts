@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Trash, Printer } from '../../styles/Icons'
+import { Trash, Printer, ClipboardNotes } from '../../styles/Icons'
 
 import { Row as RowAnt, Col as ColAnt, Collapse } from 'antd'
 
@@ -46,5 +46,13 @@ export const PrinterIcon = styled(Printer)`
   height: 22px;
   margin: 0 5px;
   color: green;
+  cursor: pointer;
+`
+
+export const NfceIcon = styled(ClipboardNotes)`
+  width: 22px;
+  height: 22px;
+  margin: 0 5px;
+  color: #5151f0;
   cursor: pointer;
 `

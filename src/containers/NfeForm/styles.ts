@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Trash } from '../../styles/Icons'
+import MaskInput from 'react-input-mask'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
@@ -50,3 +51,4 @@ export const RemoveIcon = styled(Trash)`
   margin: 0px 5px;
   cursor: pointer;
 `
+export const InputMask = styled(MaskInput)``

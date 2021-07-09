@@ -84,15 +84,31 @@ class EmitNfCeService {
       quantity: nfe.produtos.length,
       to_integrate: false,
       is_current: false,
-      nfe_id: null,
-      nfe_url: null,
+      nfce_id: null,
+      nfce_url: null,
     }
 
     try {
       const {
-        data: { erro: nfe_erro, url: nfe_url, id: nfe_id, ...props },
-      } = await apiNfe.post('/emitirNFCe', { ...nfe, ambiente })
-      if (!nfe_url || !nfe_id) {
+        data: {
+          erro: nfe_erro,
+          url: nfce_url,
+          id: nfce_id,
+          message: nfe_message,
+          erros: nfe_erros,
+        },
+      } = await apiNfe.post('/emitirNFCe', {
+        ambiente,
+        ...nfe,
+      })
+
+      if (nfe_erro || nfe_erros?.length) {
+        return {
+          error: true,
+          message: nfe_message || nfe_erros.join(', '),
+        }
+      }
+      if (!nfce_url || !nfce_id) {
         return {
           error: true,
           message:
@@ -101,15 +117,18 @@ class EmitNfCeService {
       }
       sale = {
         ...sale,
-        nfe_id,
-        nfe_url,
+        nfce_id,
+        nfce_url,
       }
     } catch (err) {
       console.log(err)
       return {
         error: true,
-        message:
-          'Serviço temporariamente indisponível. Tente novamente mais tarde',
+        message: err?.response?.data?.mensagem.includes('XML')
+          ? 'Produtos com dados tributários inválidos ou serviço indisponível. Contate o suporte'
+          : err?.response?.data?.mensagem
+          ? err.response.data.mensagem
+          : 'Serviço temporariamente indisponível. Tente novamente mais tarde',
       }
     }
 
@@ -136,9 +155,9 @@ class EmitNfCeService {
       })
     )
 
-    // await this._saleRepository.update(saleResponse.id, { to_integrate: true })
+    await this._saleRepository.update(saleResponse.id, { to_integrate: true })
 
-    // await IntegrateOnlineService.execute()
+    await IntegrateOnlineService.execute()
 
     return {
       error: false,

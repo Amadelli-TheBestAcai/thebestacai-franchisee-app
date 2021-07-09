@@ -15,6 +15,8 @@ type Response = {
     nfce_ref: string
     created_at: string
     deleted_at: string
+    nfce_id: number
+    nfce_url: string
     item: {
       id: number
       store_product_id: number

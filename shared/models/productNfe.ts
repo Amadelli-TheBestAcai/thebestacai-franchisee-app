@@ -3,7 +3,7 @@ export interface ProductNfe {
   idItem?: number
   codigo?: number
   descricao?: string
-  ncm?: number
+  ncm?: string
   cfop?: number
   unidadeComercial?: string
   quantidadeComercial?: number

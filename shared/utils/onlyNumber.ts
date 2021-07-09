@@ -1,6 +1,6 @@
-export const onlyNumbers = (value: any): number => {
+export const onlyNumbers = (value: any): number | null => {
   if (!value) {
-    return
+    return null
   }
   return +value.replace(/[^0-9]/g, '')
 }

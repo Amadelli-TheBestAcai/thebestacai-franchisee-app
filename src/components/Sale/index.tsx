@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ipcRenderer } from 'electron'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
 import { Modal } from 'antd'
-
+import NfeForm from '../../containers/NfeForm'
 import {
   Container,
   Row,
@@ -14,6 +14,7 @@ import {
   RemoveIcon,
   ColHeader,
   PrinterIcon,
+  NfceIcon,
 } from './styles'
 
 type IProps = {
@@ -29,6 +30,7 @@ const Sale: React.FC<IProps> = ({
   hasPermission,
   hasRemovePermission,
 }) => {
+  const [nfceModal, setNfceModal] = useState(false)
   const {
     id,
     type,
@@ -75,6 +77,7 @@ const Sale: React.FC<IProps> = ({
         const formatedSale = {
           id: sale.id,
           items: formatedItems,
+          nfce_url: sale.nfce_url,
           total,
         }
         ipcRenderer.send('sale:print', formatedSale)
@@ -97,7 +100,12 @@ const Sale: React.FC<IProps> = ({
             <ColHeader span={4}>
               <PrinterIcon onClick={() => onPrinter()} />
               {hasPermission && hasRemovePermission && (
-                <RemoveIcon onClick={() => onDelete(id)} />
+                <>
+                  <RemoveIcon onClick={() => onDelete(id)} />
+                  {!sale.nfce_url && (
+                    <NfceIcon onClick={() => setNfceModal(true)} />
+                  )}
+                </>
               )}
             </ColHeader>
           </Row>
@@ -147,6 +155,13 @@ const Sale: React.FC<IProps> = ({
           </Panel>
         </Container>
       </Panel>
+      {!sale.nfce_url && (
+        <NfeForm
+          modalState={nfceModal}
+          setModalState={setNfceModal}
+          sale={sale}
+        />
+      )}
     </Container>
   )
 }

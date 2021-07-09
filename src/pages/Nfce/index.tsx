@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import states from '../../../shared/utils/allBrazilStates'
+import axios from 'axios'
 import { onlyNumbers } from '../../../shared/utils/onlyNumber'
 import { cleanObject } from '../../../shared/utils/cleanObject'
 import { v4 } from 'uuid'
@@ -59,6 +59,30 @@ const Nfce: React.FC = () => {
     setNfe((oldValues) => ({ ...oldValues, [name]: value }))
   }
 
+  const handleCep = async (cep: string) => {
+    if (cep.length === 8) {
+      const {
+        data: { logradouro, bairro, localidade, uf },
+      } = await axios({
+        method: 'GET',
+        url: `https://viacep.com.br/ws/${cep}/json/`,
+      })
+      setNfe((oldValues) => ({
+        ...oldValues,
+        municipioDestinatario: localidade,
+        logradouroDestinatario: logradouro,
+        bairroDestinatario: bairro,
+        UFDestinatario: uf,
+      }))
+      form.setFieldsValue({
+        municipioDestinatario: localidade,
+        logradouroDestinatario: logradouro,
+        bairroDestinatario: bairro,
+        UFDestinatario: uf,
+      })
+    }
+  }
+
   const calculateTotal = (productsNfe: ProductNfe[]): number => {
     const total = productsNfe.reduce(
       (total, product) =>
@@ -115,7 +139,7 @@ const Nfce: React.FC = () => {
       idItem: product.product_id,
       codigo: product.product_id,
       descricao: product.name,
-      ncm: product.cod_ncm,
+      ncm: product.cod_ncm.toString(),
       cfop: product.cfop,
       unidadeComercial: product.unity_taxable?.toString(),
       quantidadeComercial: 1,
@@ -155,9 +179,12 @@ const Nfce: React.FC = () => {
     }
     const nfcePayload = {
       ...cleanObject(nfe),
+      informacoesAdicionaisFisco:
+        nfe.informacoesAdicionaisFisco || 'Sem informacoes adicionais',
       valorPagamento: calculateTotal(productsNfe),
-      produtos: productsNfe.map(({ id, ...props }) => ({
+      produtos: productsNfe.map(({ id, ...props }, index) => ({
         ...props,
+        idItem: index + 1,
         quantidadeTributavel: props.quantidadeComercial,
       })),
     }
@@ -172,6 +199,7 @@ const Nfce: React.FC = () => {
       }
     })
   }
+
   const handleUpdateProduct = (id: string, value: number) => {
     if (value <= 0) {
       handlerRemoveProduct(id)
@@ -192,17 +220,17 @@ const Nfce: React.FC = () => {
   }
 
   const formasPagamento = [
-    { id: 1, value: 'Dinheiro' },
-    { id: 2, value: 'Cheque' },
-    { id: 3, value: 'Cartão de Crédito' },
-    { id: 4, value: 'Cartão de Débito' },
-    { id: 5, value: 'Crédito Loja' },
-    { id: 10, value: 'Vale Alimentação' },
-    { id: 11, value: 'Vale Refeição' },
-    { id: 12, value: 'Vale Presente' },
-    { id: 13, value: 'Vale Combustível' },
-    { id: 15, value: 'Boleto Bancário' },
-    { id: 99, value: 'Outros' },
+    { id: '01', value: 'Dinheiro' },
+    { id: '02', value: 'Cheque' },
+    { id: '03', value: 'Cartão de Crédito' },
+    { id: '04', value: 'Cartão de Débito' },
+    { id: '05', value: 'Crédito Loja' },
+    { id: '10', value: 'Vale Alimentação' },
+    { id: '11', value: 'Vale Refeição' },
+    { id: '12', value: 'Vale Presente' },
+    { id: '13', value: 'Vale Combustível' },
+    { id: '15', value: 'Boleto Bancário' },
+    { id: '99', value: 'Outros' },
   ]
 
   const indicadoresFormaPagamento = [
@@ -249,7 +277,7 @@ const Nfce: React.FC = () => {
                 >
                   <Select
                     onChange={(value) =>
-                      handleUpdateNfe('formaPagamento', +value)
+                      handleUpdateNfe('formaPagamento', value)
                     }
                   >
                     {formasPagamento.map((formaPagamento) => (
@@ -285,7 +313,7 @@ const Nfce: React.FC = () => {
               Destinatário
             </Divider>
             <Row>
-              <Col span={12}>
+              <Col span={8}>
                 <FormItem
                   label="CPF"
                   name="CPFDestinatario"
@@ -305,7 +333,7 @@ const Nfce: React.FC = () => {
                   />
                 </FormItem>
               </Col>
-              <Col span={12}>
+              <Col span={8}>
                 <FormItem label="Nome" name="nomeDestinatario">
                   <Input
                     onChange={({ target: { value } }) =>
@@ -314,30 +342,45 @@ const Nfce: React.FC = () => {
                   />
                 </FormItem>
               </Col>
+              <Col span={8}>
+                <FormItem
+                  label="CEP"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
+                >
+                  <InputMask
+                    mask="99999-999"
+                    className="ant-input"
+                    onChange={({ target: { value } }) =>
+                      handleCep(onlyNumbers(value).toString())
+                    }
+                  />
+                </FormItem>
+              </Col>
             </Row>
             <Row>
               <Col span={12}>
                 <FormItem label="Municipio" name="municipioDestinatario">
-                  <Input
-                    onChange={({ target: { value } }) =>
-                      handleUpdateNfe('municipioDestinatario', value)
-                    }
-                  />
+                  <Input disabled />
                 </FormItem>
               </Col>
               <Col span={12}>
                 <FormItem label="Logradouro" name="logradouroDestinatario">
-                  <Input
-                    onChange={({ target: { value } }) =>
-                      handleUpdateNfe('logradouroDestinatario', value)
-                    }
-                  />
+                  <Input disabled />
                 </FormItem>
               </Col>
             </Row>
             <Row>
               <Col span={12}>
-                <FormItem label="Bairro" name="numeroDestinatario">
+                <FormItem label="Bairro" name="bairroDestinatario">
+                  <Input disabled />
+                </FormItem>
+              </Col>
+              <Col span={6}>
+                <FormItem label="Número" name="numeroDestinatario">
                   <Input
                     onChange={({ target: { value } }) =>
                       handleUpdateNfe('numeroDestinatario', value)
@@ -346,25 +389,8 @@ const Nfce: React.FC = () => {
                 </FormItem>
               </Col>
               <Col span={6}>
-                <FormItem label="Número" name="bairroDestinatario">
-                  <Input
-                    onChange={({ target: { value } }) =>
-                      handleUpdateNfe('bairroDestinatario', value)
-                    }
-                  />
-                </FormItem>
-              </Col>
-              <Col span={6}>
                 <FormItem label="UF" name="UFDestinatario">
-                  <Select
-                    onChange={(value) =>
-                      handleUpdateNfe('UFDestinatario', value)
-                    }
-                  >
-                    {states.map((state) => (
-                      <Option key={state}>{state}</Option>
-                    ))}
-                  </Select>
+                  <Input disabled />
                 </FormItem>
               </Col>
             </Row>
@@ -376,7 +402,6 @@ const Nfce: React.FC = () => {
                 <FormItem
                   label="Informações Adicionais"
                   name="informacoesAdicionaisFisco"
-                  rules={[{ required: true }]}
                 >
                   <Input.TextArea
                     rows={5}

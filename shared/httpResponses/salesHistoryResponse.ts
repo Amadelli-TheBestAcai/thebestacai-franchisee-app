@@ -5,9 +5,10 @@ export interface SalesHistory {
   type: number
   total_sold: number
   discount: string
-  nfce_ref?: string
   created_at: string
   deleted_at?: number
+  nfce_id?: number
+  nfce_url?: string
   payments: PaymentResponse[]
   item: ItemResponse[]
 }

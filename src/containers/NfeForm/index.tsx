@@ -1,8 +1,13 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import axios from 'axios'
 import { v4 } from 'uuid'
+import { onlyNumbers } from '../../../shared/utils/onlyNumber'
+import { cleanObject } from '../../../shared/utils/cleanObject'
 import { ipcRenderer } from 'electron'
 
-import { Divider, message, Button } from 'antd'
+import { Divider, message as messageAnt } from 'antd'
+
+import { Nfe } from '../../../shared/models/nfe'
 
 import {
   Container,
@@ -15,150 +20,180 @@ import {
   Option,
   RemoveIcon,
   InputMonetary,
+  InputMask,
 } from './styles'
 
 import { Product } from '../../models/product'
 import { ProductNfe } from '../../../shared/models/productNfe'
+import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 
 type IProps = {
   modalState: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
+  sale: SalesHistory
 }
-const NfeForm: React.FC<IProps> = ({ modalState, setModalState }) => {
+const NfeForm: React.FC<IProps> = ({ modalState, setModalState, sale }) => {
+  const [isValid, setIsValid] = useState(true)
+  const [emitingNfe, setEmitingNfe] = useState(false)
+  const [nfe, setNfe] = useState<Nfe | null>(null)
   const [productsNfe, setProductsNfe] = useState<ProductNfe[]>([])
-  const [products, setProducts] = useState<Product[]>([])
   const [form] = Form.useForm()
 
   useEffect(() => {
-    ipcRenderer.send('products:nfe')
-    ipcRenderer.once('products:nfe:response', (event, { error, content }) => {
-      if (error) {
-        message.error('Falha ao obter produtos para NFe')
-      }
-      setProducts(content)
-    })
-  }, [])
+    if (modalState) {
+      const products = sale.item.map((product, index) => ({
+        id: v4(),
+        idItem: index + 1,
+        codigo: +product.storeProduct.product_id,
+        descricao: product.storeProduct.product.name,
+        ncm: product.storeProduct.product.cod_ncm?.toString(),
+        cfop: +product.storeProduct.cfop,
+        unidadeComercial: product.storeProduct.unity_taxable?.toString(),
+        quantidadeComercial: +product.quantity,
+        valorUnitarioComercial: +product.storeProduct.price_unit,
+        unidadeTributaria: product.storeProduct.unity_taxable?.toString(),
+        quantidadeTributavel: +product.quantity,
+        valorUnitarioTributario: +product.storeProduct.price_unit,
+        origem: +product.storeProduct.icms_origin,
+        informacoesAdicionais: product.storeProduct.additional_information,
+        PISCOFINSST: false,
+        csosn: +product.storeProduct.icms_tax_situation,
+        cEAN: 'SEM GTIN',
+        cEANTrib: 'SEM GTIN',
+      }))
+      products.forEach((product) => {
+        const errors: string[] = []
+        if (!product.ncm) {
+          errors.push('NCM')
+        }
+        if (!product.cfop) {
+          errors.push('CFOP')
+        }
+        if (!product.unidadeComercial) {
+          errors.push('Unidade Tributável')
+        }
+        if (!product.valorUnitarioComercial) {
+          errors.push('Valor de Venda')
+        }
+        if (!product.origem && product.origem !== 0) {
+          errors.push('Origem')
+        }
+        if (!product.csosn) {
+          errors.push('Situação Tributária')
+        }
 
-  useEffect(() => {
-    setProductsNfe([...productsNfe, { id: v4() }])
-  }, [])
+        if (errors.length) {
+          setIsValid(false)
+          messageAnt.warning(
+            `O produto ${product.descricao} não possui os dados ${errors.join(
+              ', '
+            )}`
+          )
+        }
+      })
+      setProductsNfe(products)
+      form.setFieldsValue({
+        valorPagamento: sale.total_sold.toFixed(2).replace('.', ','),
+        troco: (+sale.change_amount).toFixed(2).replace('.', ','),
+      })
+      setNfe((oldValues) => ({
+        ...oldValues,
+        troco: +sale.change_amount,
+        valorPagamento: +sale.total_sold,
+      }))
+    }
+  }, [sale, modalState])
 
-  const handleSubmit = () => {
-    document.getElementById('mainContainer').focus()
-    setModalState(false)
+  const handleCep = async (cep: string) => {
+    if (cep.length === 8) {
+      const {
+        data: { logradouro, bairro, localidade, uf },
+      } = await axios({
+        method: 'GET',
+        url: `https://viacep.com.br/ws/${cep}/json/`,
+      })
+      setNfe((oldValues) => ({
+        ...oldValues,
+        municipioDestinatario: localidade,
+        logradouroDestinatario: logradouro,
+        bairroDestinatario: bairro,
+        UFDestinatario: uf,
+      }))
+      form.setFieldsValue({
+        municipioDestinatario: localidade,
+        logradouroDestinatario: logradouro,
+        bairroDestinatario: bairro,
+        UFDestinatario: uf,
+      })
+    }
   }
 
-  const calculateTotal = (productsNfe: ProductNfe[]) => {
-    const total = productsNfe.reduce(
-      (total, product) =>
-        +product.quantidadeComercial && +product.valorUnitarioComercial
-          ? +product.quantidadeComercial * +product.valorUnitarioComercial +
-            total
-          : total,
-      0
-    )
-    form.setFieldsValue({
-      valorPagamento: total.toFixed(2).replace('.', ','),
-    })
+  const handleUpdateNfe = (name, value) => {
+    setNfe((oldValues) => ({ ...oldValues, [name]: value }))
   }
 
-  const isValidProduct = (product: Product) => {
-    const errors: string[] = []
-    if (!product.cod_ncm) {
-      errors.push('NCM')
-    }
-    if (!product.cfop) {
-      errors.push('CFOP')
-    }
-    if (!product.unity_taxable) {
-      errors.push('Unidade Tributável')
-    }
-    if (!product.price_unit) {
-      errors.push('Valor de Venda')
-    }
-    if (!product.icms_origin && product.icms_origin !== 0) {
-      errors.push('Origem')
-    }
-    if (!product.icms_tax_situation) {
-      errors.push('Situação Tributária')
-    }
+  const formasPagamento = [
+    { id: '01', value: 'Dinheiro' },
+    { id: '02', value: 'Cheque' },
+    { id: '03', value: 'Cartão de Crédito' },
+    { id: '04', value: 'Cartão de Débito' },
+    { id: '05', value: 'Crédito Loja' },
+    { id: '10', value: 'Vale Alimentação' },
+    { id: '11', value: 'Vale Refeição' },
+    { id: '12', value: 'Vale Presente' },
+    { id: '13', value: 'Vale Combustível' },
+    { id: '15', value: 'Boleto Bancário' },
+    { id: '99', value: 'Outros' },
+  ]
 
-    if (errors.length) {
-      message.warning(
-        `O produto ${product.name} não possui os dados ${errors.join(', ')}`
-      )
-      return false
-    }
-    return true
-  }
+  const indicadoresFormaPagamento = [
+    { id: 0, value: 'À vista' },
+    { id: 1, value: 'À prazo' },
+    { id: 2, value: 'Outros' },
+  ]
 
-  const handleSelectProduct = (id, product: Product) => {
-    let _productsNfe = productsNfe
-    const indexToUpdate = _productsNfe.findIndex(
-      (productNfe) => productNfe.id === id
-    )
-    if (!isValidProduct(product)) {
-      _productsNfe = _productsNfe.filter((product) => product.id !== id)
-      if (!_productsNfe.length) {
-        setProductsNfe([{ id: v4() }])
-      } else {
-        setProductsNfe(_productsNfe)
-      }
+  const handleEmit = () => {
+    if (onlyNumbers(nfe.CPFDestinatario)?.toString().length !== 11) {
+      messageAnt.warning('Cpf inválido')
       return
     }
-    const productNfe: ProductNfe = {
-      id: v4(),
-      idItem: product.product_id,
-      codigo: product.product_id,
-      descricao: product.name,
-      ncm: product.cod_ncm,
-      cfop: product.cfop,
-      unidadeComercial: product.unity_taxable?.toString(),
-      quantidadeComercial: 1,
-      valorUnitarioComercial: product.price_unit,
-      unidadeTributaria: product.unity_taxable?.toString(),
-      quantidadeTributavel: 1,
-      valorUnitarioTributario: product.price_unit,
-      origem: product.icms_origin,
-      informacoesAdicionais: product.additional_information,
-      PISCOFINSST: false,
-      csosn: product.icms_tax_situation,
-      cEAN: 'SEM GTIN',
-      cEANTrib: 'SEM GTIN',
+    if (!productsNfe.length) {
+      messageAnt.warning('Adicione pelo menos um produto')
+      return
     }
-
-    _productsNfe[indexToUpdate] = productNfe
-    calculateTotal(_productsNfe)
-    setProductsNfe([..._productsNfe, { id: v4() }])
-  }
-
-  const handleUpdateProduct = (id, { name, value }) => {
-    const _productsNfe = productsNfe
-    const indexToUpdate = _productsNfe.findIndex(
-      (productNfe) => productNfe.id === id
-    )
-    _productsNfe[indexToUpdate][name] = +value
-    calculateTotal(_productsNfe)
-    setProductsNfe(_productsNfe)
-  }
-
-  const handlerRemoveProduct = (id: string) => {
-    setProductsNfe([
-      ...productsNfe.filter((productNfe) => productNfe.id !== id),
-    ])
+    const nfcePayload = {
+      ...cleanObject(nfe),
+      informacoesAdicionaisFisco:
+        nfe.informacoesAdicionaisFisco || 'Sem informacoes adicionais',
+      produtos: productsNfe.map(({ id, ...props }, index) => ({
+        ...props,
+        idItem: index + 1,
+        quantidadeTributavel: props.quantidadeComercial,
+      })),
+    }
+    setEmitingNfe(true)
+    ipcRenderer.send('sale:nfe', nfcePayload)
+    ipcRenderer.once('sale:nfe:response', (event, { error, message }) => {
+      setEmitingNfe(false)
+      if (error) {
+        messageAnt.error(message || 'Falha ao emitir NFCe, contate o suporte.')
+      } else {
+        setModalState(false)
+        messageAnt.success(message || 'NFCe emitida com sucesso')
+      }
+    })
   }
 
   return (
     <Container
       title="Nfe"
       visible={modalState}
-      onOk={handleSubmit}
+      onOk={handleEmit}
       closable={false}
-      onCancel={() => {
-        document.getElementById('mainContainer').focus()
-        setModalState(false)
-      }}
-      width={450}
+      onCancel={() => setModalState(false)}
+      width={650}
+      confirmLoading={emitingNfe}
+      okButtonProps={{ disabled: !isValid }}
       destroyOnClose={true}
     >
       <Form layout="vertical" form={form}>
@@ -166,21 +201,50 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState }) => {
           Pagamento
         </Divider>
         <Row>
-          <Col span={8}>
-            <FormItem label="Forma" name="formaPagamento">
-              <Input />
+          <Col span={5}>
+            <FormItem
+              label="Tipo"
+              name="indicadorFormaPagamento"
+              rules={[{ required: true }]}
+            >
+              <Select
+                onChange={(value) =>
+                  handleUpdateNfe('indicadorFormaPagamento', +value)
+                }
+              >
+                {indicadoresFormaPagamento.map((indicadorFormaPagamento) => (
+                  <Option key={indicadorFormaPagamento.id}>
+                    {indicadorFormaPagamento.value}
+                  </Option>
+                ))}
+              </Select>
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col span={9}>
+            <FormItem
+              label="Forma"
+              name="formaPagamento"
+              rules={[{ required: true }]}
+            >
+              <Select
+                onChange={(value) => handleUpdateNfe('formaPagamento', value)}
+              >
+                {formasPagamento.map((formaPagamento) => (
+                  <Option key={formaPagamento.id}>
+                    {formaPagamento.value}
+                  </Option>
+                ))}
+              </Select>
+            </FormItem>
+          </Col>
+          <Col span={5}>
             <FormItem label="Valor" name="valorPagamento">
               <Input disabled />
             </FormItem>
           </Col>
-          <Col span={8}>
+          <Col span={5}>
             <FormItem label="Troco" name="troco">
-              <InputMonetary
-                getValue={(value) => form.setFieldsValue({ troco: +value })}
-              />
+              <Input disabled />
             </FormItem>
           </Col>
         </Row>
@@ -188,43 +252,74 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState }) => {
           Destinatário
         </Divider>
         <Row>
+          <Col span={24}>
+            <FormItem label="Nome" name="nomeDestinatario">
+              <Input
+                onChange={({ target: { value } }) =>
+                  handleUpdateNfe('nomeDestinatario', value)
+                }
+              />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
           <Col span={12}>
-            <FormItem label="CPF" name="CPFDestinatario">
-              <Input />
+            <FormItem
+              label="CPF"
+              name="CPFDestinatario"
+              rules={[{ required: true }]}
+            >
+              <InputMask
+                mask="999.999.999-99"
+                className="ant-input"
+                onChange={({ target: { value } }) =>
+                  handleUpdateNfe('CPFDestinatario', value)
+                }
+              />
             </FormItem>
           </Col>
           <Col span={12}>
-            <FormItem label="Nome" name="nomeDestinatario">
-              <Input />
+            <FormItem label="CEP">
+              <InputMask
+                mask="99999-999"
+                className="ant-input"
+                onChange={({ target: { value } }) =>
+                  handleCep(onlyNumbers(value)?.toString())
+                }
+              />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span={12}>
             <FormItem label="Municipio" name="municipioDestinatario">
-              <Input />
+              <Input disabled />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem label="Logradouro" name="logradouroDestinatario">
-              <Input />
+              <Input disabled />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem label="Bairro" name="numeroDestinatario">
-              <Input />
+            <FormItem label="Bairro" name="bairroDestinatario">
+              <Input disabled />
             </FormItem>
           </Col>
           <Col span={6}>
-            <FormItem label="Número" name="bairroDestinatario">
-              <Input />
+            <FormItem label="Número" name="numeroDestinatario">
+              <Input
+                onChange={({ target: { value } }) =>
+                  handleUpdateNfe('numeroDestinatario', value)
+                }
+              />
             </FormItem>
           </Col>
           <Col span={6}>
             <FormItem label="UF" name="UFDestinatario">
-              <Input />
+              <Input disabled />
             </FormItem>
           </Col>
         </Row>
@@ -237,7 +332,11 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState }) => {
               label="Informações Adicionais"
               name="informacoesAdicionaisFisco"
             >
-              <Input />
+              <Input
+                onChange={({ target: { value } }) =>
+                  handleUpdateNfe('informacoesAdicionaisFisco', value)
+                }
+              />
             </FormItem>
           </Col>
         </Row>
@@ -247,69 +346,32 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState }) => {
         {productsNfe?.map((productNfe) => (
           <Row key={productNfe.id}>
             <Col span={12}>
-              <FormItem
-                label={
-                  <>
-                    Produto
-                    {productsNfe.length > 1 && (
-                      <RemoveIcon
-                        onClick={() => handlerRemoveProduct(productNfe.id)}
-                      />
-                    )}
-                  </>
-                }
-              >
-                <Select
-                  value={productNfe.descricao}
-                  onChange={(id) =>
-                    handleSelectProduct(
-                      productNfe.id,
-                      products.find((product) => product.id === id)
-                    )
-                  }
-                >
-                  {products.map((product) => (
-                    <Option key={product.id}>{product.name}</Option>
-                  ))}
-                </Select>
+              <FormItem label="Produto">
+                <Input disabled defaultValue={productNfe.descricao} />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="Valor">
                 <Input
+                  disabled
                   defaultValue={productNfe.valorUnitarioComercial
                     ?.toFixed(2)
                     .replace('.', ',')}
-                  name="valorUnitarioComercial"
-                  onChange={({ target }) =>
-                    handleUpdateProduct(productNfe.id, target)
-                  }
-                  disabled
                 />
               </FormItem>
             </Col>
             <Col span={6}>
               <FormItem label="Qtd.">
                 <Input
-                  defaultValue={productNfe.quantidadeComercial}
-                  name="quantidadeComercial"
-                  onChange={({ target }) =>
-                    handleUpdateProduct(productNfe.id, target)
-                  }
+                  disabled
+                  defaultValue={productNfe.quantidadeComercial
+                    ?.toFixed(2)
+                    .replace('.', ',')}
                 />
               </FormItem>
             </Col>
           </Row>
         ))}
-        <Row justify="end">
-          <Button
-            type="primary"
-            style={{ margin: '0px 5px' }}
-            onClick={() => setProductsNfe([...productsNfe, { id: v4() }])}
-          >
-            Novo
-          </Button>
-        </Row>
       </Form>
     </Container>
   )

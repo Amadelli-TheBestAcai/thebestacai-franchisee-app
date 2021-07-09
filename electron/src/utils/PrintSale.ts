@@ -79,10 +79,12 @@ export const printSale = async (sale): Promise<void> => {
       cols: 10,
     },
   ])
-  // printerFormater.drawLine()
-  // printerFormater.table(['REFERENCIA FISCAL', 'FX12YU1T21FJA12'])
-  // printerFormater.alignCenter()
-  // printerFormater.printQR('https://br.linkedin.com/public-profile/in/wirlley-delfino-09a326190?challengeId=AQF7tw3l2wIgCQAAAXerDkBzbRgyriDMD5hNJ8gLOwIkfiUKtnU01Z1ZlidCjuAi1gTgnG74wgiLLXGi0Sw8oaXUFAXG4OkCwA&submissionId=62ac1728-da3d-6416-958b-0feabf4b9264', { correction: 'M' })
+  if (sale.nfce_url) {
+    printerFormater.drawLine()
+    printerFormater.table(['QRCode NOTA FISCAL'])
+    printerFormater.alignCenter()
+    printerFormater.printQR(sale.nfce_url, { correction: 'M' })
+  }
   printerFormater.cut()
 
   Printer.printDirect({

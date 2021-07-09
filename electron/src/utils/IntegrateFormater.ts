@@ -12,6 +12,8 @@ type FormatedSale = {
   cash_code: string
   store_id: number
   cash_history_id: number
+  nfce_url?: string
+  nfce_id?: number
 }
 
 export const formatSalesToIntegrate = (
@@ -28,6 +30,8 @@ export const formatSalesToIntegrate = (
     cash_code: sale.cash_code,
     store_id: sale.store_id,
     cash_history_id: cash_history_id || sale.cash_history_id,
+    nfce_url: sale.nfce_url,
+    nfce_id: sale.nfce_id,
   }))
   return cleanDuplicatedValues<FormatedSale>(formatedSales, 'id')
 }
