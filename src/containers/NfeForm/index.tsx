@@ -18,21 +18,24 @@ import {
   FormItem,
   Select,
   Option,
-  RemoveIcon,
-  InputMonetary,
   InputMask,
 } from './styles'
 
-import { Product } from '../../models/product'
 import { ProductNfe } from '../../../shared/models/productNfe'
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 
 type IProps = {
   modalState: boolean
   setModalState: Dispatch<SetStateAction<boolean>>
+  setShouldSearch: Dispatch<SetStateAction<boolean>>
   sale: SalesHistory
 }
-const NfeForm: React.FC<IProps> = ({ modalState, setModalState, sale }) => {
+const NfeForm: React.FC<IProps> = ({
+  modalState,
+  setModalState,
+  sale,
+  setShouldSearch,
+}) => {
   const [isValid, setIsValid] = useState(true)
   const [emitingNfe, setEmitingNfe] = useState(false)
   const [nfe, setNfe] = useState<Nfe | null>(null)
@@ -46,8 +49,8 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState, sale }) => {
         idItem: index + 1,
         codigo: +product.storeProduct.product_id,
         descricao: product.storeProduct.product.name,
-        ncm: product.storeProduct.product.cod_ncm?.toString(),
-        cfop: +product.storeProduct.cfop,
+        ncm: '20091200', // product.storeProduct.product.cod_ncm?.toString(),
+        cfop: 5101, // +product.storeProduct.cfop,
         unidadeComercial: product.storeProduct.unity_taxable?.toString(),
         quantidadeComercial: +product.quantity,
         valorUnitarioComercial: +product.storeProduct.price_unit,
@@ -57,7 +60,7 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState, sale }) => {
         origem: +product.storeProduct.icms_origin,
         informacoesAdicionais: product.storeProduct.additional_information,
         PISCOFINSST: false,
-        csosn: +product.storeProduct.icms_tax_situation,
+        csosn: 300, // +product.storeProduct.icms_tax_situation,
         cEAN: 'SEM GTIN',
         cEANTrib: 'SEM GTIN',
       }))
@@ -172,13 +175,14 @@ const NfeForm: React.FC<IProps> = ({ modalState, setModalState, sale }) => {
       })),
     }
     setEmitingNfe(true)
-    ipcRenderer.send('sale:nfe', nfcePayload)
+    ipcRenderer.send('sale:nfe', { nfce: nfcePayload, sale_id: sale.id })
     ipcRenderer.once('sale:nfe:response', (event, { error, message }) => {
       setEmitingNfe(false)
       if (error) {
         messageAnt.error(message || 'Falha ao emitir NFCe, contate o suporte.')
       } else {
         setModalState(false)
+        setShouldSearch(true)
         messageAnt.success(message || 'NFCe emitida com sucesso')
       }
     })

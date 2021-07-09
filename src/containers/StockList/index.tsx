@@ -114,7 +114,6 @@ const StockList: React.FC<IProps> = ({
             const newProduct = products
             newProduct[productIndex].quantity =
               (+selectedProduct?.quantity || 0) - (newQuantity || 0)
-            console.log(newProduct)
             setProductsStock([...newProduct])
             setSelectedProduct(null)
             setLoading(false)

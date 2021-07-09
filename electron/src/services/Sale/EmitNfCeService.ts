@@ -1,3 +1,4 @@
+import api from '../../utils/Api'
 import apiNfe from '../../utils/ApiNfe'
 import { IItemsRepository } from '../../repositories/interfaces/IItemsRepository'
 import ItemsRepository from '../../repositories/ItemsRepository'
@@ -43,7 +44,10 @@ class EmitNfCeService {
     this._productRepository = productRepository
   }
 
-  async execute(nfe: Nfe): Promise<{ error: boolean; message: string }> {
+  async execute(
+    nfe: Nfe,
+    saleIdToUpdate?: number
+  ): Promise<{ error: boolean; message: string }> {
     const hasInternet = await checkInternet()
     if (!hasInternet) {
       return {
@@ -134,30 +138,44 @@ class EmitNfCeService {
 
     const saleResponse = await this._saleRepository.create(sale)
 
-    await Promise.all(
-      nfe.produtos.map(async (produto) => {
-        const product = await this._productRepository.getByProductId(
-          produto.idItem
-        )
+    if (!saleIdToUpdate) {
+      await Promise.all(
+        nfe.produtos.map(async (produto) => {
+          const product = await this._productRepository.getByProductId(
+            produto.idItem
+          )
 
-        const payload = {
-          name: product.name,
-          price_unit: +product.price_unit,
-          product_id: product.product_id,
-          product_store_id: product.product_store_id,
-          category_id: product.category_id,
-          quantity: produto.quantidadeComercial,
-          sale_id: saleResponse.id,
-          total: +product.price_unit * +produto.quantidadeComercial,
+          const payload = {
+            name: product.name,
+            price_unit: +product.price_unit,
+            product_id: product.product_id,
+            product_store_id: product.product_store_id,
+            category_id: product.category_id,
+            quantity: produto.quantidadeComercial,
+            sale_id: saleResponse.id,
+            total: +product.price_unit * +produto.quantidadeComercial,
+          }
+
+          await this._itemRepository.create({ ...payload })
+        })
+      )
+
+      await this._saleRepository.update(saleResponse.id, { to_integrate: true })
+
+      await IntegrateOnlineService.execute()
+    } else {
+      try {
+        await api.put(`/sales/${saleIdToUpdate}/update`, {
+          nfce_id: sale.nfce_id,
+          nfce_url: sale.nfce_url,
+        })
+      } catch {
+        return {
+          error: true,
+          message: `Nfce emita mas houve falha ao vincular na venda, solicite suporte informando a chave gerada: ${sale.nfce_id}`,
         }
-
-        await this._itemRepository.create({ ...payload })
-      })
-    )
-
-    await this._saleRepository.update(saleResponse.id, { to_integrate: true })
-
-    await IntegrateOnlineService.execute()
+      }
+    }
 
     return {
       error: false,
@@ -165,5 +183,5 @@ class EmitNfCeService {
     }
   }
 }
-// "id": 61
+
 export default new EmitNfCeService()

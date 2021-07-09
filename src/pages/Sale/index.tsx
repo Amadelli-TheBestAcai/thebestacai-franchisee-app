@@ -29,7 +29,8 @@ const { confirm } = Modal
 type IProps = RouteComponentProps
 
 const Sale: React.FC<IProps> = ({ history }) => {
-  const [isLoading, setIsLoading] = useState(true)
+  const [shouldSearch, setShouldSearch] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const [pendingSales, setPendingSales] = useState<number>(0)
   const [isIntegrating, setIsIntegrating] = useState<boolean>(false)
   const [hasPermission, setPermission] = useState(false)
@@ -38,42 +39,49 @@ const Sale: React.FC<IProps> = ({ history }) => {
   const [isConected, setIsConected] = useState<boolean>(true)
 
   useEffect(() => {
-    ipcRenderer.send('sale:api:get')
-    ipcRenderer.once(
-      'sale:api:get:response',
-      (event, { isConnected, data }) => {
+    const fetchData = () => {
+      setIsLoading(true)
+      ipcRenderer.send('sale:api:get')
+      ipcRenderer.once(
+        'sale:api:get:response',
+        (event, { isConnected, data }) => {
+          setIsLoading(false)
+          setIsConected(isConnected)
+          setSales(data)
+          ipcRenderer.send('user:get')
+        }
+      )
+      ipcRenderer.send('integrate:status')
+      ipcRenderer.once('integrate:status:response', (event, { sales }) => {
+        setPendingSales(sales.length)
+      })
+      ipcRenderer.once('user:get:response', (event, user) => {
+        const { role } = user
+        setPermission(
+          [
+            UserRoles.Master,
+            UserRoles.Administrador,
+            UserRoles.Franqueado,
+            UserRoles.Gerente,
+            UserRoles.Encarregado,
+          ].some((elem) => elem === role)
+        )
+        setRemovePermission(
+          [
+            UserRoles.Master,
+            UserRoles.Administrador,
+            UserRoles.Franqueado,
+            UserRoles.Gerente,
+          ].some((elem) => elem === role)
+        )
         setIsLoading(false)
-        setIsConected(isConnected)
-        setSales(data)
-        ipcRenderer.send('user:get')
-      }
-    )
-    ipcRenderer.send('integrate:status')
-    ipcRenderer.once('integrate:status:response', (event, { sales }) => {
-      setPendingSales(sales.length)
-    })
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-          UserRoles.Encarregado,
-        ].some((elem) => elem === role)
-      )
-      setRemovePermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-      setIsLoading(false)
-    })
-  }, [])
+      })
+      setShouldSearch(false)
+    }
+    if (shouldSearch) {
+      fetchData()
+    }
+  }, [shouldSearch])
 
   const onDelete = (id: number): void => {
     confirm({
@@ -179,6 +187,7 @@ const Sale: React.FC<IProps> = ({ history }) => {
                       onDelete={onDelete}
                       hasPermission={hasPermission}
                       hasRemovePermission={hasRemovePermission}
+                      setShouldSearch={setShouldSearch}
                     />
                   ))}
                 </SalesList>

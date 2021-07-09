@@ -189,9 +189,9 @@ ipcMain.on('sale:print', async (event, payload) => {
   printSale(payload)
 })
 
-ipcMain.on('sale:nfe', async (event, nfce) => {
+ipcMain.on('sale:nfe', async (event, { nfce, sale_id }) => {
   try {
-    const response = await EmitNfCeService.execute(nfce)
+    const response = await EmitNfCeService.execute(nfce, sale_id)
     event.reply('sale:nfe:response', response)
   } catch (err) {
     sendLog({

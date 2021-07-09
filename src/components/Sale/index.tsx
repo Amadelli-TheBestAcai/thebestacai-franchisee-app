@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { SetStateAction, Dispatch, useState } from 'react'
 import { ipcRenderer } from 'electron'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
@@ -22,6 +22,7 @@ type IProps = {
   onDelete: (id: number) => void
   hasPermission: boolean
   hasRemovePermission: boolean
+  setShouldSearch: Dispatch<SetStateAction<boolean>>
 }
 
 const Sale: React.FC<IProps> = ({
@@ -29,6 +30,7 @@ const Sale: React.FC<IProps> = ({
   onDelete,
   hasPermission,
   hasRemovePermission,
+  setShouldSearch,
 }) => {
   const [nfceModal, setNfceModal] = useState(false)
   const {
@@ -157,6 +159,7 @@ const Sale: React.FC<IProps> = ({
       </Panel>
       {!sale.nfce_url && (
         <NfeForm
+          setShouldSearch={setShouldSearch}
           modalState={nfceModal}
           setModalState={setNfceModal}
           sale={sale}

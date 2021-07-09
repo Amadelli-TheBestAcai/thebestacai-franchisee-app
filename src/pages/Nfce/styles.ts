@@ -65,6 +65,13 @@ export const ProductsContainer = styled.div`
   }
 `
 
+export const SpinContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+`
+
 export const ProductsHeader = styled.div`
   display: flex;
   align-items: center;
