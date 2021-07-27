@@ -113,14 +113,16 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
           onClick={() => handleClick('/sale')}
         />
       </IconContainer>
+      {/*
+      // TODO: ARGUARDAR FINALIZAÇÃO DA NOTAFISCAL
       <IconContainer
         style={{ background: isRoute('/nfce') ? '#FF9D0A' : 'black' }}
       >
         <NfceIcon
           style={{ color: isRoute('/nfce') ? 'black' : '#FF9D0A' }}
           onClick={() => handleClick('/nfce')}
-        />
       </IconContainer>
+        /> */}
     </Container>
   )
 }

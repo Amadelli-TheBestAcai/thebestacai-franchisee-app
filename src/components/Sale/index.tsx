@@ -105,7 +105,9 @@ const Sale: React.FC<IProps> = ({
                 <>
                   <RemoveIcon onClick={() => onDelete(id)} />
                   {!sale.nfce_url && (
-                    <NfceIcon onClick={() => setNfceModal(true)} />
+                    <></>
+                    // TODO: ARGUARDAR FINALIZAÇÃO DA NOTAFISCAL
+                    // <NfceIcon onClick={() => setNfceModal(true)} />
                   )}
                 </>
               )}

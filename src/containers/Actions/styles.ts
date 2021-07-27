@@ -4,7 +4,6 @@ import {
   ArrowFromLeft,
   ArrowFromRight,
   AddToQueue,
-  ClipboardNotes,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -74,16 +73,6 @@ export const CommandButton = styled.button`
   }
 `
 
-export const NfeButton = styled.button`
-  ${ButtonCSS};
-  background: #29cdde;
-
-  :hover {
-    background: #29cdde94;
-    transition: 0.5s;
-  }
-`
-
 const IconCSS = css`
   width: 26px;
   height: 26px;
@@ -105,9 +94,5 @@ export const OutIcon = styled(ArrowFromRight)`
 `
 
 export const CommandIcon = styled(AddToQueue)`
-  ${IconCSS};
-`
-
-export const NfeIcon = styled(ClipboardNotes)`
   ${IconCSS};
 `
