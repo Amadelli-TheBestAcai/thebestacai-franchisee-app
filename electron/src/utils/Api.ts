@@ -1,11 +1,8 @@
 import axios from 'axios'
 import GetSessionUserService from '../services/User/GetSessionUserService'
+require('../../../bootstrap')
 
-// const API_URL = 'http://localhost:5050'
-const API_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'https://hml-thebestacai-api.herokuapp.com'
-    : 'https://thebestacai-api.herokuapp.com'
+const API_URL = process.env.API_DASH
 
 console.log(API_URL)
 const api = axios.create({

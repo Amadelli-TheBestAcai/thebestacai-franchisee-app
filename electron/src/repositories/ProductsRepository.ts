@@ -12,7 +12,7 @@ class ProductsRepository implements IProductsRepository {
 
   async createMany(payload: DeepPartial<Product[]>): Promise<Product[]> {
     const products = await this.ormRepository.create(payload)
-    this.ormRepository.save(products)
+    await this.ormRepository.save(products)
     return products
   }
 

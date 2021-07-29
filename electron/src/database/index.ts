@@ -1,3 +1,4 @@
+import rimraf from 'rimraf'
 import { createConnection } from 'typeorm'
 
 import { entities } from './entities'
@@ -5,10 +6,12 @@ import { entities } from './entities'
 import { migrations } from './migrations'
 
 export const initializeDatabase = async (): Promise<void> => {
+  const database = `${process.env.AppData}/db.sqlite`
+
   await createConnection({
     name: 'default',
     type: 'sqlite',
-    database: `${process.env.AppData}/db.sqlite`,
+    database,
     entities,
     migrations,
     migrationsRun: true,

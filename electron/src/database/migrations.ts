@@ -1,29 +1,29 @@
-import { CreateUser1615943770893 } from './migrations/1615943770893-CreateUser'
-import { CreateSessionUser1615943956225 } from './migrations/1615943956225-CreateSessionUser'
-import { CreateSale1615943985377 } from './migrations/1615943985377-CreateSale'
-import { CreatePayment1615944009042 } from './migrations/1615944009042-CreatePayment'
-import { CreateItem1615944078899 } from './migrations/1615944078899-CreateItem'
-import { CreateProduct1615944152246 } from './migrations/1615944152246-CreateProduct'
-import { CreateCashHandler1615944183320 } from './migrations/1615944183320-CreateCashHandler'
-import { CreateSettings1615944534764 } from './migrations/1615944534764-CreateSettings'
-import { CreateStore1617144243177 } from './migrations/1617144243177-CreateStore'
-import { CreateStoreCashes1617145792700 } from './migrations/1617145792700-CreateStoreCashes'
-import { CreateItemOutCart1617317287530 } from './migrations/1617317287530-CreateItemOutCart'
-import { AddNfeFieldsToProducts1625183586246 } from './migrations/1625183586246-AddNfeFieldsToProducts'
-import { AddNfeToSale1625615760544 } from './migrations/1625615760544-AddNfeToSale'
+import { AddUser1627487321947 } from './migrations/1627487321947-AddUser'
+import { AddSessionUser1627487364210 } from './migrations/1627487364210-AddSessionUser'
+import { AddSales1627487942947 } from './migrations/1627487942947-AddSales'
+import { AddItem1627488091010 } from './migrations/1627488091010-AddItem'
+import { AddPayment1627488185466 } from './migrations/1627488185466-AddPayment'
+import { AddCashHandler1627488258732 } from './migrations/1627488258732-AddCashHandler'
+import { AddStore1627488288787 } from './migrations/1627488288787-AddStore'
+import { AddStoreCash1627488316214 } from './migrations/1627488316214-AddStoreCash'
+import { AddSettings1627488348052 } from './migrations/1627488348052-AddSettings'
+import { AddItemOutCart1627488382692 } from './migrations/1627488382692-AddItemOutCart'
+import { AddProductCategory1627488443548 } from './migrations/1627488443548-AddProductCategory'
+import { AddProductStore1627488863480 } from './migrations/1627488863480-AddProductStore'
+import { AddProduct1627490743930 } from './migrations/1627490743930-AddProduct'
 
 export const migrations = [
-  CreateUser1615943770893,
-  CreateSessionUser1615943956225,
-  CreateSale1615943985377,
-  CreatePayment1615944009042,
-  CreateItem1615944078899,
-  CreateProduct1615944152246,
-  CreateCashHandler1615944183320,
-  CreateSettings1615944534764,
-  CreateStore1617144243177,
-  CreateStoreCashes1617145792700,
-  CreateItemOutCart1617317287530,
-  AddNfeFieldsToProducts1625183586246,
-  AddNfeToSale1625615760544,
+  AddUser1627487321947,
+  AddSessionUser1627487364210,
+  AddSales1627487942947,
+  AddItem1627488091010,
+  AddPayment1627488185466,
+  AddCashHandler1627488258732,
+  AddStore1627488288787,
+  AddStoreCash1627488316214,
+  AddSettings1627488348052,
+  AddItemOutCart1627488382692,
+  AddProductCategory1627488443548,
+  AddProductStore1627488863480,
+  AddProduct1627490743930,
 ]

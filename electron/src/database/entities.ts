@@ -9,6 +9,8 @@ import ItemOutCart from '../models/entities/ItemOutCart'
 import Product from '../models/entities/Product'
 import Store from '../models/entities/Store'
 import StoreCash from '../models/entities/StoreCash'
+import ProductCategory from '../models/entities/ProductCategory'
+import ProductStore from '../models/entities/ProductStore'
 
 export const entities = [
   User,
@@ -22,4 +24,6 @@ export const entities = [
   Product,
   Store,
   StoreCash,
+  ProductCategory,
+  ProductStore,
 ]

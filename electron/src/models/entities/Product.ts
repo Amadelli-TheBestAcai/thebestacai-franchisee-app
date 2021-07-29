@@ -4,51 +4,96 @@ import {
   Column,
   DeleteDateColumn,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm'
+
+import ProductCategory from './ProductCategory'
+import ProductStore from './ProductStore'
 
 @Entity({ name: 'products' })
 class Product {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
-  product_id: number
-
-  @Column()
-  product_store_id: number
-
-  @Column()
-  category_id: number
-
-  @Column()
+  @Column({
+    nullable: true,
+    length: 100,
+  })
   name: string
 
-  @Column()
-  category_name: string
+  @Column({
+    nullable: true,
+  })
+  category_id: number
 
-  @Column('decimal', { precision: 10, scale: 2 })
-  price_unit: string
+  @ManyToOne((type) => ProductCategory, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: ProductCategory
 
-  @Column({ nullable: true })
-  unity_taxable: string
+  @Column({
+    nullable: true,
+  })
+  product_store_id: number
 
-  @Column({ nullable: true })
+  @ManyToOne((type) => ProductStore, { eager: false, onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'product_store_id' })
+  product_store: ProductStore
+
+  @Column('decimal', { precision: 8, scale: 2, nullable: true })
+  price_buy: number
+
+  @Column({
+    nullable: true,
+    default: false,
+  })
+  permission_store: boolean
+
+  @Column({
+    nullable: true,
+    default: false,
+  })
+  permission_order: boolean
+
+  @Column({
+    nullable: true,
+    default: false,
+  })
+  permission_purchase: boolean
+
+  @Column({
+    nullable: true,
+  })
+  cod_product: string
+
+  @Column({
+    nullable: true,
+  })
   cod_ncm: number
 
-  @Column({ nullable: true })
-  cfop: number
+  @Column({
+    nullable: true,
+  })
+  brand: string
 
-  @Column({ nullable: true })
-  price_taxable: number
+  @Column({
+    nullable: true,
+  })
+  unity: number
 
-  @Column({ nullable: true })
-  icms_tax_situation: number
+  @Column('decimal', { precision: 10, scale: 4, nullable: true })
+  weight: number
 
-  @Column({ nullable: true })
-  icms_origin: number
+  @Column('decimal', { precision: 8, scale: 2, nullable: true })
+  price_sell: number
 
-  @Column({ nullable: true })
-  additional_information: string
+  @Column({
+    nullable: true,
+  })
+  description: string
 
   @CreateDateColumn()
   created_at: Date

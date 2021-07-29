@@ -59,13 +59,11 @@ class Sale {
 
   @OneToMany(() => Item, (item) => item.sale, {
     eager: true,
-    cascade: ['soft-remove'],
   })
   items: Item[]
 
   @OneToMany(() => Payment, (payment) => payment.sale, {
     eager: true,
-    cascade: ['soft-remove'],
   })
   payments: Payment[]
 

@@ -3,6 +3,7 @@ import GetSessionUserService from '../services/User/GetSessionUserService'
 import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { checkInternet } from '../utils/InternetConnection'
+require('../../../bootstrap')
 
 const API_URL =
   process.env.NODE_ENV === 'development'

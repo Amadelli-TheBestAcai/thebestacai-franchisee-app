@@ -18,7 +18,7 @@ class Payment {
   @Column()
   sale_id: string
 
-  @ManyToOne(() => Sale)
+  @ManyToOne(() => Sale, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'sale_id' })
   sale: Sale
 

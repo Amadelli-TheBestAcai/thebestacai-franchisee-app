@@ -3,19 +3,32 @@ import { checkInternet } from '../../utils/InternetConnection'
 
 import { IStoreRepository } from '../../repositories/interfaces/IStoreRepository'
 import StoreRepository from '../../repositories/StoreRepository'
+
+import { IProductStoreRepository } from '../../repositories/interfaces/IProductStoreRepository'
+import ProductStoreRepository from '../../repositories/ProductStoreRepository'
 import { IProductsRepository } from '../../repositories/interfaces/IProductsRepository'
 import ProductsRepository from '../../repositories/ProductsRepository'
+import { IProductCategoryRepository } from '../../repositories/interfaces/IProductCategoryRepository'
+import ProductCategoryRepository from '../../repositories/ProductCategoryRepository'
+
+import moment from 'moment'
 
 class UpdateProductsFromApiService {
   private _storeRepository: IStoreRepository
-  private _productRepository: IProductsRepository
+  private _productStoreRepository: IProductStoreRepository
+  private _productCategoryRepository: IProductCategoryRepository
+  private _productsRepository: IProductsRepository
 
   constructor(
     storeRepository: IStoreRepository = new StoreRepository(),
-    productRepository: IProductsRepository = new ProductsRepository()
+    productStoreRepository: IProductStoreRepository = new ProductStoreRepository(),
+    productCategoryRepository: IProductCategoryRepository = new ProductCategoryRepository(),
+    productsRepository: IProductsRepository = new ProductsRepository()
   ) {
     this._storeRepository = storeRepository
-    this._productRepository = productRepository
+    this._productStoreRepository = productStoreRepository
+    this._productCategoryRepository = productCategoryRepository
+    this._productsRepository = productsRepository
   }
 
   async execute(): Promise<void> {
@@ -27,30 +40,61 @@ class UpdateProductsFromApiService {
     if (!store) {
       return
     }
-
     const {
       data: { content },
     } = await api.get(`products_store/store/${store.store_id}`)
 
-    const formatedProducts = content.map((productStore) => ({
-      product_store_id: productStore.id,
-      product_id: productStore.product_id,
-      name: productStore.product.name,
-      price_unit: productStore.price_unit,
-      category_id: productStore.product.category_id,
-      category_name: productStore.product.category.name,
-      unity_taxable: productStore.unity_taxable,
-      cod_ncm: productStore.product.cod_ncm,
-      cfop: productStore.cfop,
-      price_taxable: productStore.price_taxable,
-      icms_tax_situation: productStore.icms_tax_situation,
-      icms_origin: productStore.icms_origin,
-      additional_information: productStore.additional_information,
-    }))
+    const payload = {
+      product: [],
+      storeProduct: [],
+      category: [],
+    }
+    content.forEach((item) => {
+      const { product, ...storeProduct } = item
+      const { category, ...productProps } = product
+      payload.product = [
+        ...payload.product,
+        {
+          ...productProps,
+          product_store_id: +storeProduct.id,
+          created_at: moment(
+            productProps.created_at,
+            'DD/MM/YYYY hh:mm:ss'
+          ).toDate(),
+        },
+      ]
+      payload.storeProduct = [
+        ...payload.storeProduct,
+        {
+          ...storeProduct,
+          created_at: moment(
+            storeProduct.created_at,
+            'DD/MM/YYYY hh:mm:ss'
+          ).toDate(),
+        },
+      ]
+      payload.category = [
+        ...payload.category,
+        {
+          ...category,
+          created_at: moment(
+            category.created_at,
+            'DD/MM/YYYY hh:mm:ss'
+          ).toDate(),
+        },
+      ]
+    })
 
-    if (formatedProducts.length) {
-      await this._productRepository.deleteAll()
-      await this._productRepository.createMany(formatedProducts)
+    payload.category = Array.from(
+      new Set(payload.category.map((item) => item.id))
+    ).map((id) => {
+      return payload.category.find((item) => item.id === id)
+    })
+
+    if (content.length) {
+      await this._productStoreRepository.createMany(payload.storeProduct)
+      await this._productCategoryRepository.createMany(payload.category)
+      await this._productsRepository.createMany(payload.product)
     }
   }
 }

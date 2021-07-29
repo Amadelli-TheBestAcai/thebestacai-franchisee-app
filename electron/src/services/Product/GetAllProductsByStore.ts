@@ -1,7 +1,7 @@
 import { replaceSpecialChars } from '../../../../shared/utils/replaceSpecialChars'
 
-import { IProductsRepository } from '../../repositories/interfaces/IProductsRepository'
-import ProductsRepository from '../../repositories/ProductsRepository'
+import { IProductStoreRepository } from '../../repositories/interfaces/IProductStoreRepository'
+import ProductStoreRepository from '../../repositories/ProductStoreRepository'
 
 type Response = {
   category: string
@@ -17,24 +17,27 @@ type Response = {
   }[]
 }
 class GetAllProductsByStore {
-  private _productRepository: IProductsRepository
+  private _productStoreRepository: IProductStoreRepository
 
   constructor(
-    productRepository: IProductsRepository = new ProductsRepository()
+    productStoreRepository: IProductStoreRepository = new ProductStoreRepository()
   ) {
-    this._productRepository = productRepository
+    this._productStoreRepository = productStoreRepository
   }
 
   async execute(): Promise<Response[]> {
-    const products = await this._productRepository.getAll()
+    const products = await this._productStoreRepository.getAll()
 
     const ordenedProducts = products
       .map((product) => ({
         product_id: product.product_id,
-        product_store_id: product.product_store_id,
-        name: product.name,
+        product_store_id: product.id,
+        name: product.product.name,
         price_unit: +product.price_unit,
-        category: { id: product.category_id, name: product.category_name },
+        category: {
+          id: product.product.category_id,
+          name: product.product.category.name,
+        },
       }))
       .sort((firstProduct, secoundProduct) =>
         replaceSpecialChars(firstProduct.name) >

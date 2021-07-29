@@ -38,22 +38,11 @@ class LoginService {
           username: user.username,
           password: hashedPassword,
         })
+
+        // this.getTokenNFCe()
+
         await this._sessionUserRepository.create({ access_token })
 
-        try {
-          const {
-            data: { token },
-          } = await apiNfe.post('/login', {
-            email: 'thebestacailondrina@gmail.com',
-            password: 1234,
-          })
-          this._storeRepository.findCurrentAndUpdate({ token_nfce: token })
-        } catch (error) {
-          sendLog({
-            title: 'Erro ao obter token nfe',
-            payload: error.message,
-          })
-        }
         return true
       }
       return false
@@ -68,6 +57,23 @@ class LoginService {
     }
 
     return await compare(password, user.password)
+  }
+
+  async getTokenNFCe(): Promise<void> {
+    try {
+      const {
+        data: { token },
+      } = await apiNfe.post('/login', {
+        email: 'thebestacailondrina@gmail.com',
+        password: 1234,
+      })
+      this._storeRepository.findCurrentAndUpdate({ token_nfce: token })
+    } catch (error) {
+      sendLog({
+        title: 'Erro ao obter token nfe',
+        payload: error.message,
+      })
+    }
   }
 
   async onlineLogin({ username, password }): Promise<null | string> {

@@ -1,4 +1,5 @@
 import api from '../../utils/Api'
+import rabbitMQ from '../../utils/RabbitMQ'
 import { sendLog } from '../../utils/ApiLog'
 
 import { ISalesRepository } from '../../repositories/interfaces/ISalesRepository'
@@ -34,17 +35,39 @@ class IntegrateOfflineService {
     const currentUser = await GetDecodedTokenService.execute()
     await Promise.all(
       formatedSales.map(async ({ id, store_id, cash_code, ...payload }) => {
-        const items = await GetItemsToIntegrateService.execute(id, currentUser)
-        const quantity = getQuantityItems(items)
+        const {
+          newItemPayload,
+          oldItemPayload,
+        } = await GetItemsToIntegrateService.execute(id, currentUser)
+        const quantity = getQuantityItems(oldItemPayload)
         const payments = await GetPaymentsToIntegrateService.execute(id)
         const saleToIntegrate = {
           ...payload,
           quantity,
-          items,
+          oldItemPayload,
+          payments,
+        }
+        const saleToIntegrateInHandler = {
+          quantity,
+          change_amount: payload.change_amount,
+          type: payload.type,
+          discount: payload.discount,
+          nfce_ref: payload.nfce_id,
+          cash_id: payload.cash_id,
+          client_id: currentUser.id,
+          cash_history_id: payload.cash_history_id,
+          items: newItemPayload.map(({ id, ...item }) => ({
+            ...item,
+            product_id: item.productStore.product,
+          })),
           payments,
         }
         try {
           await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
+          await rabbitMQ.publishInQueue(
+            'sales-transfer',
+            JSON.stringify([saleToIntegrateInHandler])
+          )
           await this._saleRepository.update(id, { to_integrate: false })
         } catch (err) {
           sendLog({

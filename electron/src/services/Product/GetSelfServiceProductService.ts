@@ -1,5 +1,5 @@
-import { IProductsRepository } from '../../repositories/interfaces/IProductsRepository'
-import ProductsRepository from '../../repositories/ProductsRepository'
+import { IProductStoreRepository } from '../../repositories/interfaces/IProductStoreRepository'
+import ProductStoreRepository from '../../repositories/ProductStoreRepository'
 
 type Reponse = {
   product_id: number
@@ -13,24 +13,24 @@ type Reponse = {
 }
 
 class GetSelfServiceProductService {
-  private _productRepository: IProductsRepository
+  private _productStoreRepository: IProductStoreRepository
 
   constructor(
-    productRepository: IProductsRepository = new ProductsRepository()
+    productStoreRepository: IProductStoreRepository = new ProductStoreRepository()
   ) {
-    this._productRepository = productRepository
+    this._productStoreRepository = productStoreRepository
   }
 
   async execute(): Promise<Reponse> {
-    const serfService = await this._productRepository.getSelfService()
+    const serfService = await this._productStoreRepository.getSelfService()
     return {
       product_id: serfService?.product_id,
-      product_store_id: serfService?.product_store_id,
-      name: serfService?.name,
+      product_store_id: serfService?.id,
+      name: serfService?.product.name,
       price_unit: +serfService?.price_unit,
       category: {
-        id: serfService?.category_id,
-        name: serfService?.category_name,
+        id: serfService?.product.category_id,
+        name: serfService?.product.category.name,
       },
     }
   }

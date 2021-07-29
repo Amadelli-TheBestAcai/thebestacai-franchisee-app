@@ -69,11 +69,11 @@ class IntegrateOnlineService {
       const currentUser = await GetDecodedTokenService.execute()
       await Promise.all(
         formatedSales.map(async ({ id, cash_code, store_id, ...payload }) => {
-          const items = await GetItemsToIntegrateService.execute(
+          const { oldItemPayload } = await GetItemsToIntegrateService.execute(
             id,
             currentUser
           )
-          const quantity = getQuantityItems(items)
+          const quantity = getQuantityItems(oldItemPayload)
           const payments = await GetPaymentsToIntegrateService.execute(id)
           allPayments = [...payments, ...allPayments]
           const formatedPayments = payments.map((payment) => ({
@@ -83,7 +83,7 @@ class IntegrateOnlineService {
           const saleToIntegrate = {
             ...payload,
             quantity,
-            items,
+            oldItemPayload,
             formatedPayments,
           }
           try {

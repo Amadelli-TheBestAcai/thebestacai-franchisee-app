@@ -6,9 +6,11 @@ import {
   JoinColumn,
   DeleteDateColumn,
   CreateDateColumn,
+  OneToOne,
 } from 'typeorm'
 
 import Sale from './Sale'
+import ProductStore from './ProductStore'
 
 @Entity({ name: 'items' })
 class Item {
@@ -27,6 +29,12 @@ class Item {
   @Column()
   product_store_id: number
 
+  @OneToOne(() => ProductStore, (productStore) => productStore.id, {
+    eager: true,
+  })
+  @JoinColumn({ name: 'product_store_id' })
+  productStore: ProductStore
+
   @Column('decimal', { precision: 10, scale: 2 })
   price_unit: number
 
@@ -39,7 +47,7 @@ class Item {
   @Column()
   sale_id: string
 
-  @ManyToOne(() => Sale)
+  @ManyToOne(() => Sale, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'sale_id' })
   sale: Sale
 
