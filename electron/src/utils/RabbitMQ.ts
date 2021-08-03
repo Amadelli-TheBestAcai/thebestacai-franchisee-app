@@ -1,4 +1,5 @@
 import { Connection, Channel, connect, Message } from 'amqplib'
+import envConfig from '../../../env-config.js'
 require('../../../bootstrap')
 
 class RabbitServer {
@@ -46,4 +47,4 @@ class RabbitServer {
   }
 }
 
-export default new RabbitServer(process.env.RABBIT_SERVER)
+export default new RabbitServer(envConfig.RABBIT_SERVER)

@@ -1,23 +1,40 @@
+import { createConnection, getConnection } from 'typeorm'
 import rimraf from 'rimraf'
-import { createConnection } from 'typeorm'
 
 import { entities } from './entities'
 
 import { migrations } from './migrations'
 
-export const initializeDatabase = async (): Promise<void> => {
-  const database = `${process.env.AppData}/db.sqlite`
+export const databasePath = `${process.env.AppData}/db.sqlite`
 
+export const initializeDatabase = async (): Promise<void> => {
   await createConnection({
     name: 'default',
     type: 'sqlite',
-    database,
+    database: databasePath,
     entities,
     migrations,
     migrationsRun: true,
   })
     .then(() => console.log('Database Up'))
-    .catch((error) => console.error(error))
+    .catch(async () => {
+      rimraf(
+        databasePath,
+        (error) =>
+          error && console.log({ message: 'Database was not deleted', error })
+      )
+      console.log('Database was deleted')
+      await createConnection({
+        name: 'default',
+        type: 'sqlite',
+        database: databasePath,
+        entities,
+        migrations,
+        migrationsRun: true,
+      })
+        .then(() => console.log('Database Up'))
+        .catch((error) => console.log(error))
+    })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

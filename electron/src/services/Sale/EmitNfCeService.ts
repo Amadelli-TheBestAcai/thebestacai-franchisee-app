@@ -1,5 +1,7 @@
 import api from '../../utils/Api'
 import apiNfe from '../../utils/ApiNfe'
+import envConfig from '../../../../env-config.js'
+
 import { IItemsRepository } from '../../repositories/interfaces/IItemsRepository'
 import ItemsRepository from '../../repositories/ItemsRepository'
 
@@ -21,7 +23,7 @@ import IntegrateOnlineService from '../Integration/IntegrateOnlineService'
 
 import { Nfe } from '../../../../shared/models/nfe'
 
-const ambiente = process.env.NODE_ENV === 'development' ? 2 : 1
+const ambiente = envConfig.NFCe_AMBIENTE
 
 class EmitNfCeService {
   private _itemRepository: IItemsRepository

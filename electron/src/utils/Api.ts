@@ -1,8 +1,9 @@
 import axios from 'axios'
 import GetSessionUserService from '../services/User/GetSessionUserService'
+import envConfig from '../../../env-config.js'
 require('../../../bootstrap')
 
-const API_URL = process.env.API_DASH
+const API_URL = envConfig.API_DASH
 
 console.log(API_URL)
 const api = axios.create({

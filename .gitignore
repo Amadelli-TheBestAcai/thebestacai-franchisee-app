@@ -6,3 +6,4 @@ package-lock
 electron-builder.yml
 .bashrc
 .env
+env-config.js

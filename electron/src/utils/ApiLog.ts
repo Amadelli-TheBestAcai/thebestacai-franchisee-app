@@ -3,12 +3,10 @@ import GetSessionUserService from '../services/User/GetSessionUserService'
 import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { checkInternet } from '../utils/InternetConnection'
+import envConfig from '../../../env-config.js'
 require('../../../bootstrap')
 
-const API_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'https://hml-api-logs.herokuapp.com'
-    : 'https://thebestacai-api-logs.herokuapp.com'
+const API_URL = envConfig.API_LOG
 
 const api = axios.create({
   baseURL: API_URL,
