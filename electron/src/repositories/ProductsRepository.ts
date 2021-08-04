@@ -25,7 +25,7 @@ class ProductsRepository implements IProductsRepository {
   }
 
   async getAll(): Promise<Product[]> {
-    return await this.ormRepository.find()
+    return await this.ormRepository.find({ loadEagerRelations: true })
   }
 
   async getByProductId(product_id: number): Promise<Product> {

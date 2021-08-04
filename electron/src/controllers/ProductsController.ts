@@ -8,10 +8,15 @@ import GetAllProductsByStore from '../services/Product/GetAllProductsByStore'
 import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
 import { checkInternet } from '../utils/InternetConnection'
 import { sendLog } from '../utils/ApiLog'
+
 import { IProductsRepository } from '../repositories/interfaces/IProductsRepository'
 import ProductsRepository from '../repositories/ProductsRepository'
 
+import { IProductStoreRepository } from '../repositories/interfaces/IProductStoreRepository'
+import ProductStoreRepository from '../repositories/ProductStoreRepository'
+
 const productRepository: IProductsRepository = new ProductsRepository()
+const productStoreRepository: IProductStoreRepository = new ProductStoreRepository()
 
 ipcMain.on('products:get', async (event) => {
   try {
@@ -120,7 +125,7 @@ ipcMain.on('products:audit:get', async (event, { id, page, size }) => {
 
 ipcMain.on('products:nfe', async (event) => {
   try {
-    const content = await productRepository.getAll()
+    const content = await productStoreRepository.getAll()
     event.reply('products:nfe:response', { content, error: false })
   } catch (err) {
     sendLog({

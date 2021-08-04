@@ -13,6 +13,7 @@ import {
   Input as InputAnt,
   Select as SelectAnt,
   Button as ButtonAnt,
+  Tabs as TabsAnd,
 } from 'antd'
 
 export const Container = styled.div`
@@ -31,7 +32,7 @@ export const LeftContainer = styled.div`
   flex-direction: column;
 
   height: 100%;
-  width: 50%;
+  width: 35%;
 `
 export const RightContainer = styled.div`
   display: flex;
@@ -39,7 +40,7 @@ export const RightContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 85%;
-  width: 50%;
+  width: 65%;
 `
 
 export const ActionContainer = styled.div`
@@ -77,7 +78,7 @@ export const ProductsHeader = styled.div`
   align-items: center;
   justify-content: center;
   height: 15%;
-  width: 35%;
+  width: 100%;
   font-size: 22px;
   font-weight: bold;
 `
@@ -156,3 +157,72 @@ export const InfoIcon = styled(InfoCircle)`
   ${iconCSS}
 `
 export const Button = styled(ButtonAnt)``
+
+export const TabContainer = styled(TabsAnd)`
+  width: 100%;
+  height: 100%;
+  line-height: 0.2;
+  .ant-tabs-content {
+    height: 100%;
+  }
+  div.ant-tabs-nav {
+    background: var(--primary-orange);
+    margin-bottom: 0px;
+  }
+  div.ant-tabs-nav-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  .ant-tabs-tab-active {
+    .ant-tabs-tab-btn {
+      font-weight: bold !important;
+      color: black !important;
+    }
+  }
+  .ant-tabs-ink-bar {
+    position: absolute;
+    background: black;
+    pointer-events: none;
+  }
+`
+
+export const TabItem = styled(TabsAnd.TabPane)``
+
+export const ProductHeader = styled(RowAnt)`
+  display: flex;
+  justify-content: space-evenly;
+  background: black;
+  padding: 2% 0;
+  width: 100%;
+`
+
+export const ProductHeaderCol = styled(ColAnt)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const ProductHeaderDescription = styled.label`
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+`
+
+export const ProductList = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+`
+
+export const ProductContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border-bottom: 1px solid;
+  width: 100%;
+  height: 10%;
+`

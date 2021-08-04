@@ -10,7 +10,7 @@ import { Divider, message as messageAnt, Popover, Spin } from 'antd'
 import RouterDescription from '../../components/RouterDescription'
 import CashNotFound from '../../components/CashNotFound'
 
-import { Product as ProductModel } from '../../models/product'
+import ProductModel from '../../../electron/src/models/entities/ProductStore'
 import { Nfe } from '../../../shared/models/nfe'
 import { ProductNfe } from '../../../shared/models/productNfe'
 
@@ -38,6 +38,13 @@ import {
   ActionContainer,
   Button,
   SpinContainer,
+  TabContainer,
+  TabItem,
+  ProductHeader,
+  ProductHeaderCol,
+  ProductHeaderDescription,
+  ProductList,
+  ProductContainer,
 } from './styles'
 
 const Nfce: React.FC = () => {
@@ -52,6 +59,7 @@ const Nfce: React.FC = () => {
   useEffect(() => {
     ipcRenderer.send('products:nfe')
     ipcRenderer.once('products:nfe:response', (event, { error, content }) => {
+      console.log(content)
       if (error) {
         messageAnt.error('Falha ao obter produtos para NFe')
       }
@@ -114,7 +122,7 @@ const Nfce: React.FC = () => {
 
   const isValidProduct = (product: ProductModel) => {
     const errors: string[] = []
-    if (!product.cod_ncm) {
+    if (!product.product.cod_ncm) {
       errors.push('NCM')
     }
     if (!product.cfop) {
@@ -136,9 +144,9 @@ const Nfce: React.FC = () => {
     if (errors.length) {
       return {
         valid: false,
-        message: `O produto ${product.name} não possui os dados ${errors.join(
-          ', '
-        )}`,
+        message: `O produto ${
+          product.product.name
+        } não possui os dados ${errors.join(', ')}`,
       }
     }
     return { valid: true, message: null }
@@ -151,8 +159,8 @@ const Nfce: React.FC = () => {
       id: v4(),
       idItem: product.product_id,
       codigo: product.product_id,
-      descricao: product.name,
-      ncm: product.cod_ncm.toString(),
+      descricao: product.product.name,
+      ncm: product.product.cod_ncm.toString(),
       cfop: product.cfop,
       unidadeComercial: product.unity_taxable?.toString(),
       quantidadeComercial: 1,
@@ -163,7 +171,7 @@ const Nfce: React.FC = () => {
       origem: product.icms_origin,
       informacoesAdicionais: product.additional_information,
       PISCOFINSST: false,
-      csosn: product.icms_tax_situation,
+      csosn: +product.icms_tax_situation,
       cEAN: 'SEM GTIN',
       cEANTrib: 'SEM GTIN',
     }
@@ -232,6 +240,36 @@ const Nfce: React.FC = () => {
     setProductsNfe(updatedProducts)
   }
 
+  const productsFormater = (payload) => {
+    let categories = payload.map((product) => ({
+      id: product.product.category.id,
+      name: product.product.category.name,
+      products: [],
+    }))
+
+    categories = Array.from(
+      new Set(categories.map((category) => category.id))
+    ).map((id) => {
+      return categories.find((category) => category.id === id)
+    })
+
+    categories = categories.map((category) => {
+      const productsCategory = payload.filter(
+        (product) => product.product.category.id === category.id
+      )
+      return {
+        ...category,
+        products: productsCategory,
+      }
+    })
+
+    return categories as {
+      id: number
+      name: string
+      products: ProductModel[]
+    }[]
+  }
+
   const formasPagamento = [
     { id: '01', value: 'Dinheiro' },
     { id: '02', value: 'Cheque' },
@@ -253,11 +291,100 @@ const Nfce: React.FC = () => {
   ]
   return (
     <Container>
-      <RouterDescription description="NFCe" />
+      <RouterDescription description="NFC-e" />
       {!loading ? (
         <>
           {cashIsOpen ? (
             <Content>
+              <LeftContainer>
+                <ProductsContainer>
+                  <ProductsHeader>Produtos</ProductsHeader>
+                  <TabContainer defaultActiveKey="1">
+                    {productsFormater(products).map((item, index) => (
+                      <TabItem tab={item.name} key={index + 1}>
+                        <ProductHeader>
+                          <ProductHeaderCol span={8}>
+                            <ProductHeaderDescription>
+                              Produtos
+                            </ProductHeaderDescription>
+                          </ProductHeaderCol>
+                          <ProductHeaderCol span={6}>
+                            <ProductHeaderDescription>
+                              Preço
+                            </ProductHeaderDescription>
+                          </ProductHeaderCol>
+                          <ProductHeaderCol span={4}>
+                            <ProductHeaderDescription>
+                              Add
+                            </ProductHeaderDescription>
+                          </ProductHeaderCol>
+                        </ProductHeader>
+                        <ProductList>
+                          {item.products.map((product) => (
+                            <ProductContainer key={product.id}>
+                              {!productsNfe.some(
+                                (productNfe) =>
+                                  productNfe.idItem === product.product_id
+                              ) && (
+                                <>
+                                  <ProductHeaderCol
+                                    span={8}
+                                    style={{ textTransform: 'capitalize' }}
+                                  >
+                                    {product.product.name}
+                                  </ProductHeaderCol>
+                                  <ProductHeaderCol span={6}>
+                                    {product.price_unit
+                                      .toFixed(2)
+                                      .replace('.', ',')}
+                                  </ProductHeaderCol>
+                                  <ProductHeaderCol span={4}>
+                                    {isValidProduct(product).valid ? (
+                                      <AddIcon
+                                        onClick={() =>
+                                          handleSelectProduct(product)
+                                        }
+                                      />
+                                    ) : (
+                                      <Popover
+                                        content={
+                                          isValidProduct(product).message
+                                        }
+                                      >
+                                        <InfoIcon />
+                                      </Popover>
+                                    )}
+                                  </ProductHeaderCol>
+                                </>
+                              )}
+                            </ProductContainer>
+                          ))}
+                        </ProductList>
+                      </TabItem>
+                    ))}
+                  </TabContainer>
+                </ProductsContainer>
+                <ProductsList>
+                  <ProductsHeader>Produtos Selecionados</ProductsHeader>
+                  {productsNfe.map((product) => (
+                    <Product key={product.id}>
+                      <span>{product.descricao}</span>
+                      <Input
+                        type="number"
+                        defaultValue={product.quantidadeComercial}
+                        onChange={({ target: { value } }) =>
+                          handleUpdateProduct(product.id, +value)
+                        }
+                        style={{ width: '75px' }}
+                      />
+                      <RemoveIcon
+                        onClick={() => handlerRemoveProduct(product.id)}
+                      />
+                    </Product>
+                  ))}
+                </ProductsList>
+              </LeftContainer>
+
               <RightContainer>
                 <Form layout="vertical" form={form}>
                   <Divider orientation="left" plain>
@@ -442,50 +569,6 @@ const Nfce: React.FC = () => {
                   )}
                 </ActionContainer>
               </RightContainer>
-              <LeftContainer>
-                <ProductsContainer>
-                  <ProductsHeader>Produtos</ProductsHeader>
-                  {products.map((product) => (
-                    <React.Fragment key={product.id}>
-                      {!productsNfe.some(
-                        (productNfe) => productNfe.idItem === product.product_id
-                      ) && (
-                        <Product>
-                          <span>{product.name}</span>
-                          {isValidProduct(product).valid ? (
-                            <AddIcon
-                              onClick={() => handleSelectProduct(product)}
-                            />
-                          ) : (
-                            <Popover content={isValidProduct(product).message}>
-                              <InfoIcon />
-                            </Popover>
-                          )}
-                        </Product>
-                      )}
-                    </React.Fragment>
-                  ))}
-                </ProductsContainer>
-                <ProductsList>
-                  <ProductsHeader>Produtos Selecionados</ProductsHeader>
-                  {productsNfe.map((product) => (
-                    <Product key={product.id}>
-                      <span>{product.descricao}</span>
-                      <Input
-                        type="number"
-                        defaultValue={product.quantidadeComercial}
-                        onChange={({ target: { value } }) =>
-                          handleUpdateProduct(product.id, +value)
-                        }
-                        style={{ width: '75px' }}
-                      />
-                      <RemoveIcon
-                        onClick={() => handlerRemoveProduct(product.id)}
-                      />
-                    </Product>
-                  ))}
-                </ProductsList>
-              </LeftContainer>
             </Content>
           ) : (
             <CashNotFound />
