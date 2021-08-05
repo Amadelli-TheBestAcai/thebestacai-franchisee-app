@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import axios from 'axios'
 import { onlyNumbers } from '../../../shared/utils/onlyNumber'
 import { cleanObject } from '../../../shared/utils/cleanObject'
@@ -9,6 +9,8 @@ import { Divider, message as messageAnt, Popover, Spin } from 'antd'
 
 import RouterDescription from '../../components/RouterDescription'
 import CashNotFound from '../../components/CashNotFound'
+
+import Balance from '../../containers/Balance'
 
 import ProductModel from '../../../electron/src/models/entities/ProductStore'
 import { Nfe } from '../../../shared/models/nfe'
@@ -45,9 +47,40 @@ import {
   ProductHeaderDescription,
   ProductList,
   ProductContainer,
+  BalanceContainer,
+  BalanceContent,
+  TopContainer,
+  DisabledInput,
+  Text,
+  BottomContainer,
+  PriceContainer,
+  WeightContainer,
+  Price,
+  Weight,
+  ProductListContainer,
+  ProductListHeader,
+  ProductListRow,
+  FormContainer,
+  PriceTotalNfce,
 } from './styles'
 
-const Nfce: React.FC = () => {
+type IProps = {
+  addItem: (product: ProductModel, quantity?: number, total?: number) => void
+  shouldUseBalance: boolean
+  fetchingBalanceWeight: boolean
+  amount: number
+  setAmount: Dispatch<SetStateAction<number>>
+  selfService: ProductModel
+}
+
+const Nfce: React.FC<IProps> = ({
+  fetchingBalanceWeight,
+  shouldUseBalance,
+  amount,
+  setAmount,
+  selfService,
+  addItem,
+}) => {
   const [cashIsOpen, setCashIsOpen] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
   const [nfe, setNfe] = useState<Nfe | null>(null)
@@ -75,6 +108,28 @@ const Nfce: React.FC = () => {
       })
     })
   }, [])
+
+  const handleEnterToSubmit = () => {
+    if (!amount) {
+      return
+    }
+    document.getElementById('mainContainer').focus()
+    addItem(selfService, getQuantity(), amount)
+    setAmount(undefined)
+  }
+
+  const getQuantity = (): number => {
+    if (!amount) {
+      return 0
+    }
+    return +(+amount / +selfService.price_unit).toFixed(4)
+  }
+
+  const handlerEventKey = async (key: string): Promise<void> => {
+    if (shouldUseBalance && key === 'Enter') {
+      handleEnterToSubmit()
+    }
+  }
 
   const handleUpdateNfe = (name, value) => {
     setNfe((oldValues) => ({ ...oldValues, [name]: value }))
@@ -289,6 +344,7 @@ const Nfce: React.FC = () => {
     { id: 1, value: 'À prazo' },
     { id: 2, value: 'Outros' },
   ]
+
   return (
     <Container>
       <RouterDescription description="NFC-e" />
@@ -297,18 +353,63 @@ const Nfce: React.FC = () => {
           {cashIsOpen ? (
             <Content>
               <LeftContainer>
+                <BalanceContainer>
+                  <BalanceContent>
+                    <TopContainer>
+                      <Text>
+                        Preço total self-service{' '}
+                        {fetchingBalanceWeight && <Spin size="small" />}
+                      </Text>
+                      {shouldUseBalance ? (
+                        <DisabledInput
+                          id="balanceInput"
+                          value={amount?.toFixed(2).replace('.', ',') || '0,00'}
+                          autoFocus={true}
+                          className="ant-input"
+                          readOnly
+                        />
+                      ) : (
+                        <InputMonetary
+                          autoFocus={true}
+                          id="balanceInput"
+                          getValue={(value) => console.log(value)}
+                          onEnterPress={handleEnterToSubmit}
+                          onPressKey={handlerEventKey}
+                        />
+                      )}
+                    </TopContainer>
+
+                    <BottomContainer>
+                      <PriceContainer>
+                        <Text>Preço do KG</Text>
+                        <Price>
+                          R${' '}
+                          {selfService?.price_unit
+                            ?.toFixed(2)
+                            .replace('.', ',')}
+                        </Price>
+                      </PriceContainer>
+                      <WeightContainer>
+                        <Text>Peso</Text>
+                        <Weight>
+                          {' '}
+                          KG {getQuantity().toFixed(4).replace('.', ',')}
+                        </Weight>
+                      </WeightContainer>
+                    </BottomContainer>
+                  </BalanceContent>
+                </BalanceContainer>
                 <ProductsContainer>
-                  <ProductsHeader>Produtos</ProductsHeader>
                   <TabContainer defaultActiveKey="1">
                     {productsFormater(products).map((item, index) => (
                       <TabItem tab={item.name} key={index + 1}>
                         <ProductHeader>
-                          <ProductHeaderCol span={8}>
+                          <ProductHeaderCol span={15}>
                             <ProductHeaderDescription>
                               Produtos
                             </ProductHeaderDescription>
                           </ProductHeaderCol>
-                          <ProductHeaderCol span={6}>
+                          <ProductHeaderCol span={5}>
                             <ProductHeaderDescription>
                               Preço
                             </ProductHeaderDescription>
@@ -328,12 +429,12 @@ const Nfce: React.FC = () => {
                               ) && (
                                 <>
                                   <ProductHeaderCol
-                                    span={8}
+                                    span={15}
                                     style={{ textTransform: 'capitalize' }}
                                   >
                                     {product.product.name}
                                   </ProductHeaderCol>
-                                  <ProductHeaderCol span={6}>
+                                  <ProductHeaderCol span={5}>
                                     {product.price_unit
                                       .toFixed(2)
                                       .replace('.', ',')}
@@ -364,210 +465,272 @@ const Nfce: React.FC = () => {
                     ))}
                   </TabContainer>
                 </ProductsContainer>
-                <ProductsList>
-                  <ProductsHeader>Produtos Selecionados</ProductsHeader>
-                  {productsNfe.map((product) => (
-                    <Product key={product.id}>
-                      <span>{product.descricao}</span>
-                      <Input
-                        type="number"
-                        defaultValue={product.quantidadeComercial}
-                        onChange={({ target: { value } }) =>
-                          handleUpdateProduct(product.id, +value)
-                        }
-                        style={{ width: '75px' }}
-                      />
-                      <RemoveIcon
-                        onClick={() => handlerRemoveProduct(product.id)}
-                      />
-                    </Product>
-                  ))}
-                </ProductsList>
               </LeftContainer>
 
               <RightContainer>
-                <Form layout="vertical" form={form}>
-                  <Divider orientation="left" plain>
-                    Pagamento
-                  </Divider>
-                  <Row>
-                    <Col span={6}>
-                      <FormItem
-                        label="Tipo"
-                        name="indicadorFormaPagamento"
-                        rules={[{ required: true }]}
-                      >
-                        <Select
-                          onChange={(value) =>
-                            handleUpdateNfe('indicadorFormaPagamento', +value)
-                          }
+                <ProductListContainer>
+                  <ProductListHeader>
+                    <ProductListRow>
+                      <ProductHeaderCol span={9}>
+                        <ProductHeaderDescription>
+                          Produtos
+                        </ProductHeaderDescription>
+                      </ProductHeaderCol>
+                      <ProductHeaderCol span={5}>
+                        <ProductHeaderDescription>
+                          Qtd.
+                        </ProductHeaderDescription>
+                      </ProductHeaderCol>
+                      <ProductHeaderCol span={5}>
+                        <ProductHeaderDescription>
+                          Valor Unit.
+                        </ProductHeaderDescription>
+                      </ProductHeaderCol>
+                      <ProductHeaderCol span={5}>
+                        <ProductHeaderDescription>
+                          Valor Total.
+                        </ProductHeaderDescription>
+                      </ProductHeaderCol>
+                    </ProductListRow>
+                  </ProductListHeader>
+
+                  <ProductsList>
+                    {productsNfe.map((product) => (
+                      <Product key={product.id}>
+                        <ProductHeaderCol
+                          span={9}
+                          style={{ textTransform: 'capitalize' }}
                         >
-                          {indicadoresFormaPagamento.map(
-                            (indicadorFormaPagamento) => (
-                              <Option key={indicadorFormaPagamento.id}>
-                                {indicadorFormaPagamento.value}
+                          {product.descricao}
+                        </ProductHeaderCol>
+                        <ProductHeaderCol span={5}>
+                          <Input
+                            type="number"
+                            defaultValue={product.quantidadeComercial}
+                            onChange={({ target: { value } }) =>
+                              handleUpdateProduct(product.id, +value)
+                            }
+                            style={{ width: '75px' }}
+                          />
+                        </ProductHeaderCol>
+                        <ProductHeaderCol span={5}>
+                          {product.valorUnitarioComercial
+                            .toFixed(2)
+                            .replace('.', ',')}
+                        </ProductHeaderCol>
+                        <ProductHeaderCol span={5}>
+                          {(
+                            product.valorUnitarioComercial *
+                            product.quantidadeComercial
+                          )
+                            .toFixed(2)
+                            .replace('.', ',')}
+                        </ProductHeaderCol>
+
+                        <ProductHeaderCol span={2}>
+                          {/* <RemoveIcon
+                            onClick={() => handlerRemoveProduct(product.id)}
+                          /> */}
+                        </ProductHeaderCol>
+                      </Product>
+                    ))}
+                  </ProductsList>
+                </ProductListContainer>
+
+                <FormContainer>
+                  <Form layout="vertical" form={form}>
+                    <Divider orientation="left" plain>
+                      Pagamento
+                    </Divider>
+                    <Row>
+                      <Col span={6}>
+                        <FormItem
+                          label="Tipo"
+                          name="indicadorFormaPagamento"
+                          rules={[{ required: true }]}
+                        >
+                          <Select
+                            onChange={(value) =>
+                              handleUpdateNfe('indicadorFormaPagamento', +value)
+                            }
+                          >
+                            {indicadoresFormaPagamento.map(
+                              (indicadorFormaPagamento) => (
+                                <Option key={indicadorFormaPagamento.id}>
+                                  {indicadorFormaPagamento.value}
+                                </Option>
+                              )
+                            )}
+                          </Select>
+                        </FormItem>
+                      </Col>
+                      <Col span={8}>
+                        <FormItem
+                          label="Forma"
+                          name="formaPagamento"
+                          rules={[{ required: true }]}
+                        >
+                          <Select
+                            onChange={(value) =>
+                              handleUpdateNfe('formaPagamento', value)
+                            }
+                          >
+                            {formasPagamento.map((formaPagamento) => (
+                              <Option key={formaPagamento.id}>
+                                {formaPagamento.value}
                               </Option>
-                            )
-                          )}
-                        </Select>
-                      </FormItem>
-                    </Col>
-                    <Col span={8}>
-                      <FormItem
-                        label="Forma"
-                        name="formaPagamento"
-                        rules={[{ required: true }]}
-                      >
-                        <Select
-                          onChange={(value) =>
-                            handleUpdateNfe('formaPagamento', value)
-                          }
+                            ))}
+                          </Select>
+                        </FormItem>
+                      </Col>
+                      <Col span={6}>
+                        <FormItem
+                          label="Valor"
+                          name="valorPagamento"
+                          rules={[{ required: true }]}
                         >
-                          {formasPagamento.map((formaPagamento) => (
-                            <Option key={formaPagamento.id}>
-                              {formaPagamento.value}
-                            </Option>
-                          ))}
-                        </Select>
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem
-                        label="Valor"
-                        name="valorPagamento"
-                        rules={[{ required: true }]}
-                      >
-                        <Input disabled />
-                      </FormItem>
-                    </Col>
-                    <Col span={4}>
-                      <FormItem
-                        label="Troco"
-                        name="troco"
-                        rules={[{ required: true }]}
-                      >
-                        <InputMonetary
-                          getValue={(value) => handleUpdateNfe('troco', +value)}
-                        />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                  <Divider orientation="left" plain>
-                    Destinatário
-                  </Divider>
-                  <Row>
-                    <Col span={8}>
-                      <FormItem
-                        label="CPF"
-                        name="CPFDestinatario"
-                        rules={[
-                          {
-                            required: true,
-                            message: 'O campo CPF é obrigatório',
-                          },
-                        ]}
-                      >
-                        <InputMask
-                          mask="999.999.999-99"
-                          className="ant-input"
-                          onChange={({ target: { value } }) =>
-                            handleUpdateNfe('CPFDestinatario', value)
-                          }
-                        />
-                      </FormItem>
-                    </Col>
-                    <Col span={8}>
-                      <FormItem label="Nome" name="nomeDestinatario">
-                        <Input
-                          onChange={({ target: { value } }) =>
-                            handleUpdateNfe('nomeDestinatario', value)
-                          }
-                        />
-                      </FormItem>
-                    </Col>
-                    <Col span={8}>
-                      <FormItem
-                        label="CEP"
-                        rules={[
-                          {
-                            required: true,
-                          },
-                        ]}
-                      >
-                        <InputMask
-                          mask="99999-999"
-                          className="ant-input"
-                          onChange={({ target: { value } }) =>
-                            handleCep(onlyNumbers(value).toString())
-                          }
-                        />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <FormItem label="Municipio" name="municipioDestinatario">
-                        <Input disabled />
-                      </FormItem>
-                    </Col>
-                    <Col span={12}>
-                      <FormItem
-                        label="Logradouro"
-                        name="logradouroDestinatario"
-                      >
-                        <Input disabled />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col span={12}>
-                      <FormItem label="Bairro" name="bairroDestinatario">
-                        <Input disabled />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="Número" name="numeroDestinatario">
-                        <Input
-                          onChange={({ target: { value } }) =>
-                            handleUpdateNfe('numeroDestinatario', value)
-                          }
-                        />
-                      </FormItem>
-                    </Col>
-                    <Col span={6}>
-                      <FormItem label="UF" name="UFDestinatario">
-                        <Input disabled />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                  <Divider orientation="left" plain>
-                    Adicionais
-                  </Divider>
-                  <Row>
-                    <Col span={24}>
-                      <FormItem
-                        label="Informações Adicionais"
-                        name="informacoesAdicionaisFisco"
-                      >
-                        <Input.TextArea
-                          rows={5}
-                          onChange={({ target: { value } }) =>
-                            handleUpdateNfe('informacoesAdicionaisFisco', value)
-                          }
-                        />
-                      </FormItem>
-                    </Col>
-                  </Row>
-                </Form>
-                <ActionContainer>
-                  {emitingNfe ? (
-                    <Spin />
-                  ) : (
-                    <Button type="primary" onClick={() => handleEmit()}>
-                      Emitir
-                    </Button>
-                  )}
-                </ActionContainer>
+                          <Input disabled />
+                        </FormItem>
+                      </Col>
+                      <Col span={4}>
+                        <FormItem
+                          label="Troco"
+                          name="troco"
+                          rules={[{ required: true }]}
+                        >
+                          <InputMonetary
+                            getValue={(value) =>
+                              handleUpdateNfe('troco', +value)
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                    </Row>
+
+                    <Divider orientation="left" plain>
+                      Destinatário
+                    </Divider>
+
+                    <Row>
+                      <Col span={4}>
+                        <FormItem
+                          label="CPF"
+                          name="CPFDestinatario"
+                          rules={[
+                            {
+                              required: true,
+                              message: 'O campo CPF é obrigatório',
+                            },
+                          ]}
+                        >
+                          <InputMask
+                            mask="999.999.999-99"
+                            className="ant-input"
+                            onChange={({ target: { value } }) =>
+                              handleUpdateNfe('CPFDestinatario', value)
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                      <Col span={6}>
+                        <FormItem label="Nome" name="nomeDestinatario">
+                          <Input
+                            onChange={({ target: { value } }) =>
+                              handleUpdateNfe('nomeDestinatario', value)
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                      <Col span={4}>
+                        <FormItem
+                          label="CEP"
+                          rules={[
+                            {
+                              required: true,
+                            },
+                          ]}
+                        >
+                          <InputMask
+                            mask="99999-999"
+                            className="ant-input"
+                            onChange={({ target: { value } }) =>
+                              handleCep(onlyNumbers(value).toString())
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                      <Col span={4}>
+                        <FormItem
+                          label="Municipio"
+                          name="municipioDestinatario"
+                        >
+                          <Input disabled />
+                        </FormItem>
+                      </Col>
+                      <Col span={6}>
+                        <FormItem
+                          label="Logradouro"
+                          name="logradouroDestinatario"
+                        >
+                          <Input disabled />
+                        </FormItem>
+                      </Col>
+                      <Col span={12}>
+                        <FormItem label="Bairro" name="bairroDestinatario">
+                          <Input disabled />
+                        </FormItem>
+                      </Col>
+                      <Col span={6}>
+                        <FormItem label="Número" name="numeroDestinatario">
+                          <Input
+                            onChange={({ target: { value } }) =>
+                              handleUpdateNfe('numeroDestinatario', value)
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                      <Col span={6}>
+                        <FormItem label="UF" name="UFDestinatario">
+                          <Input disabled />
+                        </FormItem>
+                      </Col>
+                    </Row>
+
+                    <Divider orientation="left" plain>
+                      Adicionais
+                    </Divider>
+                    <Row>
+                      <Col span={24}>
+                        <FormItem
+                          label="Informações Adicionais"
+                          name="informacoesAdicionaisFisco"
+                        >
+                          <Input.TextArea
+                            rows={2}
+                            onChange={({ target: { value } }) =>
+                              handleUpdateNfe(
+                                'informacoesAdicionaisFisco',
+                                value
+                              )
+                            }
+                          />
+                        </FormItem>
+                      </Col>
+                    </Row>
+                  </Form>
+                  <ActionContainer>
+                    {emitingNfe ? (
+                      <Spin />
+                    ) : (
+                      <>
+                        <PriceTotalNfce>R$ 100,00</PriceTotalNfce>
+                        <Button type="primary" onClick={() => handleEmit()}>
+                          Emitir
+                        </Button>
+                      </>
+                    )}
+                  </ActionContainer>
+                </FormContainer>
               </RightContainer>
             </Content>
           ) : (
