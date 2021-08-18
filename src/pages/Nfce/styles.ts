@@ -25,7 +25,7 @@ export const Container = styled.div`
 export const Content = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 95%;
 `
 export const LeftContainer = styled.div`
   display: flex;
@@ -38,6 +38,7 @@ export const BalanceContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 25%;
+  padding: 0 5px;
 `
 
 export const BalanceContent = styled.div`
@@ -119,7 +120,7 @@ export const PriceContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
-  width: 50%;
+  width: 100%;
   height: 80%;
   margin: 5px 10px 5px 10px;
   color: #9a9a9a;

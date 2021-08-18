@@ -44,7 +44,7 @@ class IntegrateOfflineService {
         const saleToIntegrate = {
           ...payload,
           quantity,
-          oldItemPayload,
+          items: oldItemPayload,
           payments,
         }
         const saleToIntegrateInHandler = {

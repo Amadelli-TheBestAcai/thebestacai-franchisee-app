@@ -28,8 +28,8 @@ class ProductsRepository implements IProductsRepository {
     return await this.ormRepository.find({ loadEagerRelations: true })
   }
 
-  async getByProductId(product_id: number): Promise<Product> {
-    return await this.ormRepository.findOne({ where: { product_id } })
+  async getByProductId(id: number): Promise<Product> {
+    return await this.ormRepository.findOne({ where: { id } })
   }
 }
 

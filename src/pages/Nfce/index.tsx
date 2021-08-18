@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { onlyNumbers } from '../../../shared/utils/onlyNumber'
 import { cleanObject } from '../../../shared/utils/cleanObject'
@@ -9,8 +9,6 @@ import { Divider, message as messageAnt, Popover, Spin } from 'antd'
 
 import RouterDescription from '../../components/RouterDescription'
 import CashNotFound from '../../components/CashNotFound'
-
-import Balance from '../../containers/Balance'
 
 import ProductModel from '../../../electron/src/models/entities/ProductStore'
 import { Nfe } from '../../../shared/models/nfe'
@@ -26,15 +24,12 @@ import {
   FormItem,
   Input,
   InputMonetary,
-  RemoveIcon,
   Row,
   ProductsContainer,
   ProductsList,
   Product,
   AddIcon,
   InfoIcon,
-  ProductsHeader,
-  Select,
   Option,
   InputMask,
   ActionContainer,
@@ -50,38 +45,22 @@ import {
   BalanceContainer,
   BalanceContent,
   TopContainer,
-  DisabledInput,
   Text,
   BottomContainer,
   PriceContainer,
-  WeightContainer,
   Price,
-  Weight,
   ProductListContainer,
   ProductListHeader,
   ProductListRow,
   FormContainer,
   PriceTotalNfce,
+  RemoveIcon,
+  Select,
 } from './styles'
 
-type IProps = {
-  addItem: (product: ProductModel, quantity?: number, total?: number) => void
-  shouldUseBalance: boolean
-  fetchingBalanceWeight: boolean
-  amount: number
-  setAmount: Dispatch<SetStateAction<number>>
-  selfService: ProductModel
-}
-
-const Nfce: React.FC<IProps> = ({
-  fetchingBalanceWeight,
-  shouldUseBalance,
-  amount,
-  setAmount,
-  selfService,
-  addItem,
-}) => {
+const Nfce: React.FC = () => {
   const [cashIsOpen, setCashIsOpen] = useState<boolean>(false)
+  const [selfServiceAmount, setSelfServiceAmount] = useState(0)
   const [loading, setLoading] = useState<boolean>(true)
   const [nfe, setNfe] = useState<Nfe | null>(null)
   const [emitingNfe, setEmitingNfe] = useState(false)
@@ -109,26 +88,16 @@ const Nfce: React.FC<IProps> = ({
     })
   }, [])
 
+  const findSelfService = (products: ProductModel[]): ProductModel => {
+    return products.find((product) => product.product.category_id === 1)
+  }
+
   const handleEnterToSubmit = () => {
-    if (!amount) {
-      return
-    }
-    document.getElementById('mainContainer').focus()
-    addItem(selfService, getQuantity(), amount)
-    setAmount(undefined)
-  }
+    const selfService = findSelfService(products)
 
-  const getQuantity = (): number => {
-    if (!amount) {
-      return 0
-    }
-    return +(+amount / +selfService.price_unit).toFixed(4)
-  }
+    const quantity = +(selfServiceAmount / selfService.price_unit).toFixed(4)
 
-  const handlerEventKey = async (key: string): Promise<void> => {
-    if (shouldUseBalance && key === 'Enter') {
-      handleEnterToSubmit()
-    }
+    handleSelectProduct(selfService, selfServiceAmount, quantity)
   }
 
   const handleUpdateNfe = (name, value) => {
@@ -159,7 +128,7 @@ const Nfce: React.FC<IProps> = ({
     }
   }
 
-  const calculateTotal = (productsNfe: ProductNfe[]): number => {
+  const calculateTotal = (productsNfe: ProductNfe[]): string => {
     const total = productsNfe.reduce(
       (total, product) =>
         +product.quantidadeComercial && +product.valorUnitarioComercial
@@ -172,7 +141,7 @@ const Nfce: React.FC<IProps> = ({
       valorPagamento: total.toFixed(2).replace('.', ','),
     })
 
-    return +total
+    return total.toFixed(2).replace('.', ',')
   }
 
   const isValidProduct = (product: ProductModel) => {
@@ -207,7 +176,11 @@ const Nfce: React.FC<IProps> = ({
     return { valid: true, message: null }
   }
 
-  const handleSelectProduct = (product: ProductModel) => {
+  const handleSelectProduct = (
+    product: ProductModel,
+    price?: number,
+    quantity?: number
+  ) => {
     let _productsNfe = productsNfe
 
     const productNfe: ProductNfe = {
@@ -218,20 +191,29 @@ const Nfce: React.FC<IProps> = ({
       ncm: product.product.cod_ncm.toString(),
       cfop: product.cfop,
       unidadeComercial: product.unity_taxable?.toString(),
-      quantidadeComercial: 1,
+      quantidadeComercial: quantity || 1,
       valorUnitarioComercial: product.price_unit,
       unidadeTributaria: product.unity_taxable?.toString(),
-      quantidadeTributavel: 1,
-      valorUnitarioTributario: product.price_unit,
+      quantidadeTributavel: quantity || 1,
+      valorUnitarioTributario: price || product.price_unit,
       origem: product.icms_origin,
       informacoesAdicionais: product.additional_information,
       PISCOFINSST: false,
-      csosn: +product.icms_tax_situation,
+      csosn: 102,
       cEAN: 'SEM GTIN',
       cEANTrib: 'SEM GTIN',
     }
 
-    _productsNfe = [..._productsNfe, productNfe]
+    if (product.product.category_id === 1) {
+      _productsNfe = [
+        ..._productsNfe.filter(
+          (productNfe) => productNfe.idItem !== product.product_id
+        ),
+        productNfe,
+      ]
+    } else {
+      _productsNfe = [..._productsNfe, productNfe]
+    }
     calculateTotal(_productsNfe)
     setProductsNfe(_productsNfe)
   }
@@ -257,13 +239,15 @@ const Nfce: React.FC<IProps> = ({
       ...cleanObject(nfe),
       informacoesAdicionaisFisco:
         nfe.informacoesAdicionaisFisco || 'Sem informacoes adicionais',
-      valorPagamento: calculateTotal(productsNfe),
+      valorPagamento: +calculateTotal(productsNfe).replace(',', '.'),
       produtos: productsNfe.map(({ id, ...props }, index) => ({
         ...props,
         idItem: index + 1,
         quantidadeTributavel: props.quantidadeComercial,
       })),
     }
+
+    console.log(JSON.stringify(nfcePayload))
     setEmitingNfe(true)
     ipcRenderer.send('sale:nfe', { nfce: nfcePayload })
     ipcRenderer.once('sale:nfe:response', (event, { error, message }) => {
@@ -318,6 +302,8 @@ const Nfce: React.FC<IProps> = ({
       }
     })
 
+    categories = categories.filter((category) => category.id !== 1)
+
     return categories as {
       id: number
       name: string
@@ -356,27 +342,13 @@ const Nfce: React.FC<IProps> = ({
                 <BalanceContainer>
                   <BalanceContent>
                     <TopContainer>
-                      <Text>
-                        Preço total self-service{' '}
-                        {fetchingBalanceWeight && <Spin size="small" />}
-                      </Text>
-                      {shouldUseBalance ? (
-                        <DisabledInput
-                          id="balanceInput"
-                          value={amount?.toFixed(2).replace('.', ',') || '0,00'}
-                          autoFocus={true}
-                          className="ant-input"
-                          readOnly
-                        />
-                      ) : (
-                        <InputMonetary
-                          autoFocus={true}
-                          id="balanceInput"
-                          getValue={(value) => console.log(value)}
-                          onEnterPress={handleEnterToSubmit}
-                          onPressKey={handlerEventKey}
-                        />
-                      )}
+                      <Text>Preço total self-service</Text>
+                      <InputMonetary
+                        autoFocus={true}
+                        id="balanceInput"
+                        getValue={(value) => setSelfServiceAmount(+value)}
+                        onEnterPress={handleEnterToSubmit}
+                      />
                     </TopContainer>
 
                     <BottomContainer>
@@ -384,18 +356,11 @@ const Nfce: React.FC<IProps> = ({
                         <Text>Preço do KG</Text>
                         <Price>
                           R${' '}
-                          {selfService?.price_unit
-                            ?.toFixed(2)
+                          {findSelfService(products)
+                            .price_unit?.toFixed(2)
                             .replace('.', ',')}
                         </Price>
                       </PriceContainer>
-                      <WeightContainer>
-                        <Text>Peso</Text>
-                        <Weight>
-                          {' '}
-                          KG {getQuantity().toFixed(4).replace('.', ',')}
-                        </Weight>
-                      </WeightContainer>
                     </BottomContainer>
                   </BalanceContent>
                 </BalanceContainer>
@@ -423,41 +388,39 @@ const Nfce: React.FC<IProps> = ({
                         <ProductList>
                           {item.products.map((product) => (
                             <ProductContainer key={product.id}>
-                              {!productsNfe.some(
-                                (productNfe) =>
-                                  productNfe.idItem === product.product_id
-                              ) && (
-                                <>
-                                  <ProductHeaderCol
-                                    span={15}
-                                    style={{ textTransform: 'capitalize' }}
-                                  >
-                                    {product.product.name}
-                                  </ProductHeaderCol>
-                                  <ProductHeaderCol span={5}>
-                                    {product.price_unit
-                                      .toFixed(2)
-                                      .replace('.', ',')}
-                                  </ProductHeaderCol>
-                                  <ProductHeaderCol span={4}>
-                                    {isValidProduct(product).valid ? (
+                              <ProductHeaderCol
+                                span={15}
+                                style={{ textTransform: 'capitalize' }}
+                              >
+                                {product.product.name}
+                              </ProductHeaderCol>
+                              <ProductHeaderCol span={5}>
+                                {product.price_unit
+                                  .toFixed(2)
+                                  .replace('.', ',')}
+                              </ProductHeaderCol>
+                              <ProductHeaderCol span={4}>
+                                {isValidProduct(product).valid ? (
+                                  <>
+                                    {!productsNfe.some(
+                                      (productNfe) =>
+                                        productNfe.idItem === product.product_id
+                                    ) && (
                                       <AddIcon
                                         onClick={() =>
                                           handleSelectProduct(product)
                                         }
                                       />
-                                    ) : (
-                                      <Popover
-                                        content={
-                                          isValidProduct(product).message
-                                        }
-                                      >
-                                        <InfoIcon />
-                                      </Popover>
                                     )}
-                                  </ProductHeaderCol>
-                                </>
-                              )}
+                                  </>
+                                ) : (
+                                  <Popover
+                                    content={isValidProduct(product).message}
+                                  >
+                                    <InfoIcon />
+                                  </Popover>
+                                )}
+                              </ProductHeaderCol>
                             </ProductContainer>
                           ))}
                         </ProductList>
@@ -471,12 +434,12 @@ const Nfce: React.FC<IProps> = ({
                 <ProductListContainer>
                   <ProductListHeader>
                     <ProductListRow>
-                      <ProductHeaderCol span={9}>
+                      <ProductHeaderCol span={6}>
                         <ProductHeaderDescription>
                           Produtos
                         </ProductHeaderDescription>
                       </ProductHeaderCol>
-                      <ProductHeaderCol span={5}>
+                      <ProductHeaderCol span={4}>
                         <ProductHeaderDescription>
                           Qtd.
                         </ProductHeaderDescription>
@@ -488,7 +451,12 @@ const Nfce: React.FC<IProps> = ({
                       </ProductHeaderCol>
                       <ProductHeaderCol span={5}>
                         <ProductHeaderDescription>
-                          Valor Total.
+                          Valor Total
+                        </ProductHeaderDescription>
+                      </ProductHeaderCol>
+                      <ProductHeaderCol span={4}>
+                        <ProductHeaderDescription>
+                          Ação
                         </ProductHeaderDescription>
                       </ProductHeaderCol>
                     </ProductListRow>
@@ -498,20 +466,24 @@ const Nfce: React.FC<IProps> = ({
                     {productsNfe.map((product) => (
                       <Product key={product.id}>
                         <ProductHeaderCol
-                          span={9}
+                          span={6}
                           style={{ textTransform: 'capitalize' }}
                         >
                           {product.descricao}
                         </ProductHeaderCol>
-                        <ProductHeaderCol span={5}>
-                          <Input
-                            type="number"
-                            defaultValue={product.quantidadeComercial}
-                            onChange={({ target: { value } }) =>
-                              handleUpdateProduct(product.id, +value)
-                            }
-                            style={{ width: '75px' }}
-                          />
+                        <ProductHeaderCol span={4}>
+                          {product.idItem === 1 ? (
+                            <span>{product.quantidadeComercial}KG</span>
+                          ) : (
+                            <Input
+                              type="number"
+                              defaultValue={product.quantidadeComercial}
+                              onChange={({ target: { value } }) =>
+                                handleUpdateProduct(product.id, +value)
+                              }
+                              style={{ width: '75px' }}
+                            />
+                          )}
                         </ProductHeaderCol>
                         <ProductHeaderCol span={5}>
                           {product.valorUnitarioComercial
@@ -527,10 +499,10 @@ const Nfce: React.FC<IProps> = ({
                             .replace('.', ',')}
                         </ProductHeaderCol>
 
-                        <ProductHeaderCol span={2}>
-                          {/* <RemoveIcon
+                        <ProductHeaderCol span={4}>
+                          <RemoveIcon
                             onClick={() => handlerRemoveProduct(product.id)}
-                          /> */}
+                          />
                         </ProductHeaderCol>
                       </Product>
                     ))}
@@ -543,7 +515,7 @@ const Nfce: React.FC<IProps> = ({
                       Pagamento
                     </Divider>
                     <Row>
-                      <Col span={6}>
+                      <Col span={9}>
                         <FormItem
                           label="Tipo"
                           name="indicadorFormaPagamento"
@@ -564,7 +536,7 @@ const Nfce: React.FC<IProps> = ({
                           </Select>
                         </FormItem>
                       </Col>
-                      <Col span={8}>
+                      <Col span={9}>
                         <FormItem
                           label="Forma"
                           name="formaPagamento"
@@ -583,7 +555,7 @@ const Nfce: React.FC<IProps> = ({
                           </Select>
                         </FormItem>
                       </Col>
-                      <Col span={6}>
+                      <Col span={0}>
                         <FormItem
                           label="Valor"
                           name="valorPagamento"
@@ -592,7 +564,7 @@ const Nfce: React.FC<IProps> = ({
                           <Input disabled />
                         </FormItem>
                       </Col>
-                      <Col span={4}>
+                      <Col span={6}>
                         <FormItem
                           label="Troco"
                           name="troco"
@@ -723,7 +695,9 @@ const Nfce: React.FC<IProps> = ({
                       <Spin />
                     ) : (
                       <>
-                        <PriceTotalNfce>R$ 100,00</PriceTotalNfce>
+                        <PriceTotalNfce>
+                          {calculateTotal(productsNfe)}R$
+                        </PriceTotalNfce>
                         <Button type="primary" onClick={() => handleEmit()}>
                           Emitir
                         </Button>

@@ -1,16 +1,13 @@
 import axios from 'axios'
-import GetCurrentStoreService from '../services/Store/GetCurrentStoreService'
+import envConfig from '../../../env-config.js'
 
 const api = axios.create({
-  baseURL: 'https://thebestnotas.zumer.app/api',
+  baseURL: 'http://15.228.10.51/api',
   responseType: 'json',
 })
 
 api.interceptors.request.use(async (config) => {
-  const store = await GetCurrentStoreService.execute()
-  if (store && store.token_nfce) {
-    config.headers.Authorization = `Bearer ${store.token_nfce}`
-  }
+  config.headers.Authorization = `Bearer ${envConfig.NFCe_Token}`
   return config
 })
 

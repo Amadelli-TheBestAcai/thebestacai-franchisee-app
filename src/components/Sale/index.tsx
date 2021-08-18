@@ -104,9 +104,9 @@ const Sale: React.FC<IProps> = ({
               {hasPermission && hasRemovePermission && (
                 <>
                   <RemoveIcon onClick={() => onDelete(id)} />
-                  {!sale.nfce_url && (
+                  {/* {!sale.nfce_url && (
                     <NfceIcon onClick={() => setNfceModal(true)} />
-                  )}
+                  )} */}
                 </>
               )}
             </ColHeader>

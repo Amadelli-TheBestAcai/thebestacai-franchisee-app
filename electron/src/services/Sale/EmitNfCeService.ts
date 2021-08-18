@@ -105,6 +105,7 @@ class EmitNfCeService {
         },
       } = await apiNfe.post('/emitirNFCe', {
         ambiente,
+        idEmpresa: store.store_id,
         ...nfe,
       })
 
@@ -127,7 +128,7 @@ class EmitNfCeService {
         nfce_url,
       }
     } catch (err) {
-      console.log(err)
+      console.log(err.message)
       return {
         error: true,
         message: err?.response?.data?.mensagem.includes('XML')
@@ -139,32 +140,37 @@ class EmitNfCeService {
     }
 
     const saleResponse = await this._saleRepository.create(sale)
-
     if (!saleIdToUpdate) {
-      await Promise.all(
-        nfe.produtos.map(async (produto) => {
-          const product = await this._productRepository.getByProductId(
-            produto.idItem
-          )
+      try {
+        await Promise.all(
+          nfe.produtos.map(async (produto) => {
+            const product = await this._productRepository.getByProductId(
+              produto.codigo
+            )
 
-          const payload = {
-            name: product.name,
-            price_unit: +product.price_unit,
-            product_id: product.product_id,
-            product_store_id: product.product_store_id,
-            category_id: product.category_id,
-            quantity: produto.quantidadeComercial,
-            sale_id: saleResponse.id,
-            total: +product.price_unit * +produto.quantidadeComercial,
-          }
+            const payload = {
+              name: product.name,
+              price_unit: +product.price_sell,
+              product_id: product.id,
+              product_store_id: product.product_store_id,
+              category_id: product.category_id,
+              quantity: produto.quantidadeComercial,
+              sale_id: saleResponse.id,
+              total: +product.price_sell * +produto.quantidadeComercial,
+            }
 
-          await this._itemRepository.create({ ...payload })
+            await this._itemRepository.create({ ...payload })
+          })
+        )
+
+        await this._saleRepository.update(saleResponse.id, {
+          to_integrate: true,
         })
-      )
 
-      await this._saleRepository.update(saleResponse.id, { to_integrate: true })
-
-      await IntegrateOnlineService.execute()
+        await IntegrateOnlineService.execute()
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       try {
         await api.put(`/sales/${saleIdToUpdate}/update`, {

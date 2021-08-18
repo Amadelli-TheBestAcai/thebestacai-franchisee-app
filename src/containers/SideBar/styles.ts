@@ -8,7 +8,7 @@ import {
   Cashapp,
   HomeAlt,
   BoxOpen,
-  ClipboardNotes,
+  FileInvoice,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -70,6 +70,6 @@ export const BoxIcon = styled(BoxOpen)`
   ${IconCSS}
 `
 
-export const NfceIcon = styled(ClipboardNotes)`
+export const NfceIcon = styled(FileInvoice)`
   ${IconCSS}
 `
