@@ -44,13 +44,13 @@ const NfeForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (modalState) {
-      const products = sale.item.map((product, index) => ({
+      const products = sale.item.map((product) => ({
         id: v4(),
-        idItem: index + 1,
+        idItem: product.storeProduct.product_id,
         codigo: +product.storeProduct.product_id,
         descricao: product.storeProduct.product.name,
-        ncm: '20091200', // product.storeProduct.product.cod_ncm?.toString(),
-        cfop: 5101, // +product.storeProduct.cfop,
+        ncm: product.storeProduct.product.cod_ncm?.toString(),
+        cfop: product.storeProduct.cfop,
         unidadeComercial: product.storeProduct.unity_taxable?.toString(),
         quantidadeComercial: +product.quantity,
         valorUnitarioComercial: +product.storeProduct.price_unit,
@@ -60,10 +60,11 @@ const NfeForm: React.FC<IProps> = ({
         origem: +product.storeProduct.icms_origin,
         informacoesAdicionais: product.storeProduct.additional_information,
         PISCOFINSST: false,
-        csosn: 300, // +product.storeProduct.icms_tax_situation,
+        csosn: 102,
         cEAN: 'SEM GTIN',
         cEANTrib: 'SEM GTIN',
       }))
+
       products.forEach((product) => {
         const errors: string[] = []
         if (!product.ncm) {
@@ -156,10 +157,6 @@ const NfeForm: React.FC<IProps> = ({
   ]
 
   const handleEmit = () => {
-    if (onlyNumbers(nfe.CPFDestinatario)?.toString().length !== 11) {
-      messageAnt.warning('Cpf inválido')
-      return
-    }
     if (!productsNfe.length) {
       messageAnt.warning('Adicione pelo menos um produto')
       return
@@ -268,11 +265,7 @@ const NfeForm: React.FC<IProps> = ({
         </Row>
         <Row>
           <Col span={12}>
-            <FormItem
-              label="CPF"
-              name="CPFDestinatario"
-              rules={[{ required: true }]}
-            >
+            <FormItem label="CPF" name="CPFDestinatario">
               <InputMask
                 mask="999.999.999-99"
                 className="ant-input"

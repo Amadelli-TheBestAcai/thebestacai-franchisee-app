@@ -51,7 +51,7 @@ export const TopContainer = styled.div`
   justify-content: center;
   flex-direction: column;
   background: white;
-  height: 65%;
+  height: 50%;
   font-size: 20px;
   color: black;
   justify-content: center;
@@ -110,7 +110,7 @@ export const InputMonetary = styled(MonetaryInput)``
 
 export const BottomContainer = styled.div`
   width: 100%;
-  height: 35%;
+  height: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -122,7 +122,7 @@ export const PriceContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 80%;
-  margin: 5px 10px 5px 10px;
+  margin: 5px 0px;
   color: #9a9a9a;
 `
 
@@ -235,6 +235,7 @@ export const FormContainer = styled.div`
   height: 70%;
   width: 100%;
   margin-top: 10px;
+  overflow-y: scroll;
   background: var(--mainBackground);
 `
 

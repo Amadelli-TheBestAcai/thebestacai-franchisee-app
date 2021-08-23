@@ -585,16 +585,7 @@ const Nfce: React.FC = () => {
 
                     <Row>
                       <Col span={4}>
-                        <FormItem
-                          label="CPF"
-                          name="CPFDestinatario"
-                          rules={[
-                            {
-                              required: true,
-                              message: 'O campo CPF é obrigatório',
-                            },
-                          ]}
-                        >
+                        <FormItem label="CPF" name="CPFDestinatario">
                           <InputMask
                             mask="999.999.999-99"
                             className="ant-input"
@@ -689,21 +680,34 @@ const Nfce: React.FC = () => {
                         </FormItem>
                       </Col>
                     </Row>
+                    <Row>
+                      <Col span={24}>
+                        <FormItem>
+                          <ActionContainer>
+                            <PriceTotalNfce>
+                              {calculateTotal(productsNfe)}R$
+                            </PriceTotalNfce>
+                            <>
+                              {emitingNfe ? (
+                                <PriceTotalNfce
+                                  style={{ background: '#f4f4f4' }}
+                                >
+                                  <Spin />
+                                </PriceTotalNfce>
+                              ) : (
+                                <Button
+                                  type="primary"
+                                  onClick={() => handleEmit()}
+                                >
+                                  Emitir
+                                </Button>
+                              )}
+                            </>
+                          </ActionContainer>
+                        </FormItem>
+                      </Col>
+                    </Row>
                   </Form>
-                  <ActionContainer>
-                    {emitingNfe ? (
-                      <Spin />
-                    ) : (
-                      <>
-                        <PriceTotalNfce>
-                          {calculateTotal(productsNfe)}R$
-                        </PriceTotalNfce>
-                        <Button type="primary" onClick={() => handleEmit()}>
-                          Emitir
-                        </Button>
-                      </>
-                    )}
-                  </ActionContainer>
                 </FormContainer>
               </RightContainer>
             </Content>
