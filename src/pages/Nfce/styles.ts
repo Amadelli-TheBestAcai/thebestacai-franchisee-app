@@ -355,23 +355,19 @@ export const ActionContainer = styled.div`
 
 export const PriceTotalNfce = styled.div`
   display: flex;
-  width: 20%;
-  height: 100%;
+  width: 100%;
   background: var(--primary-orange);
   align-items: center;
   justify-content: center;
   color: black;
   font-weight: bold;
-  font-size: 31px;
+  font-size: 15px;
 `
 
 export const Button = styled(ButtonAnt)`
   background: black;
-  height: 100%;
-  width: 20%;
-  margin-left: 15px;
+  width: 75%;
   border: none;
-  font-size: 25px;
   text-transform: uppercase;
 
   :hover {

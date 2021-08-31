@@ -139,6 +139,7 @@ const Nfce: React.FC = () => {
     )
     form.setFieldsValue({
       valorPagamento: total.toFixed(2).replace('.', ','),
+      totalProdutos: total.toFixed(2).replace('.', ','),
     })
 
     return total.toFixed(2).replace('.', ',')
@@ -195,7 +196,7 @@ const Nfce: React.FC = () => {
       valorUnitarioComercial: product.price_unit,
       unidadeTributaria: product.unity_taxable?.toString(),
       quantidadeTributavel: quantity || 1,
-      valorUnitarioTributario: price || product.price_unit,
+      valorUnitarioTributario: product.price_unit,
       origem: product.icms_origin,
       informacoesAdicionais: product.additional_information,
       PISCOFINSST: false,
@@ -227,10 +228,6 @@ const Nfce: React.FC = () => {
   }
 
   const handleEmit = () => {
-    if (onlyNumbers(nfe.CPFDestinatario)?.toString().length !== 11) {
-      messageAnt.warning('Cpf inválido')
-      return
-    }
     if (!productsNfe.length) {
       messageAnt.warning('Adicione pelo menos um produto')
       return
@@ -515,7 +512,7 @@ const Nfce: React.FC = () => {
                       Pagamento
                     </Divider>
                     <Row>
-                      <Col span={9}>
+                      <Col span={5}>
                         <FormItem
                           label="Tipo"
                           name="indicadorFormaPagamento"
@@ -536,7 +533,7 @@ const Nfce: React.FC = () => {
                           </Select>
                         </FormItem>
                       </Col>
-                      <Col span={9}>
+                      <Col span={5}>
                         <FormItem
                           label="Forma"
                           name="formaPagamento"
@@ -564,7 +561,7 @@ const Nfce: React.FC = () => {
                           <Input disabled />
                         </FormItem>
                       </Col>
-                      <Col span={6}>
+                      <Col span={4}>
                         <FormItem
                           label="Troco"
                           name="troco"
@@ -577,6 +574,49 @@ const Nfce: React.FC = () => {
                           />
                         </FormItem>
                       </Col>
+                      <Col span={5}>
+                        <FormItem label="Total" name="totalProdutos">
+                          <Input
+                            disabled
+                            style={{
+                              background: 'orange',
+                              color: 'white',
+                              fontWeight: 'bolder',
+                            }}
+                          />
+                        </FormItem>
+                      </Col>
+                      <>
+                        {emitingNfe ? (
+                          <Col
+                            span={4}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'flex-end',
+                              justifyContent: 'center',
+                              margin: '5px',
+                            }}
+                          >
+                            <PriceTotalNfce style={{ background: '#f4f4f4' }}>
+                              <Spin />
+                            </PriceTotalNfce>
+                          </Col>
+                        ) : (
+                          <Col
+                            span={4}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'flex-end',
+                              justifyContent: 'center',
+                              margin: '5px',
+                            }}
+                          >
+                            <Button type="primary" onClick={() => handleEmit()}>
+                              Emitir
+                            </Button>
+                          </Col>
+                        )}
+                      </>
                     </Row>
 
                     <Divider orientation="left" plain>
@@ -677,33 +717,6 @@ const Nfce: React.FC = () => {
                               )
                             }
                           />
-                        </FormItem>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <FormItem>
-                          <ActionContainer>
-                            <PriceTotalNfce>
-                              {calculateTotal(productsNfe)}R$
-                            </PriceTotalNfce>
-                            <>
-                              {emitingNfe ? (
-                                <PriceTotalNfce
-                                  style={{ background: '#f4f4f4' }}
-                                >
-                                  <Spin />
-                                </PriceTotalNfce>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  onClick={() => handleEmit()}
-                                >
-                                  Emitir
-                                </Button>
-                              )}
-                            </>
-                          </ActionContainer>
                         </FormItem>
                       </Col>
                     </Row>

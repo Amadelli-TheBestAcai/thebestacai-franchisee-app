@@ -95,6 +95,13 @@ class EmitNfCeService {
     }
 
     try {
+      console.log({
+        nfce_payload: {
+          ambiente,
+          idEmpresa: store.store_id,
+          ...nfe,
+        },
+      })
       const {
         data: {
           erro: nfe_erro,
@@ -109,6 +116,7 @@ class EmitNfCeService {
         ...nfe,
       })
 
+      console.log({ nfe_erro })
       if (nfe_erro || nfe_erros?.length) {
         return {
           error: true,
@@ -127,14 +135,14 @@ class EmitNfCeService {
         nfce_id,
         nfce_url,
       }
-    } catch (err) {
-      console.log(err.message)
+    } catch (error) {
+      console.log({ message: error.message, error })
       return {
         error: true,
-        message: err?.response?.data?.mensagem.includes('XML')
+        message: error?.response?.data?.mensagem.includes('XML')
           ? 'Produtos com dados tributários inválidos ou serviço indisponível. Contate o suporte'
-          : err?.response?.data?.mensagem
-          ? err.response.data.mensagem
+          : error?.response?.data?.mensagem
+          ? error.response.data.mensagem
           : 'Serviço temporariamente indisponível. Tente novamente mais tarde',
       }
     }
