@@ -63,11 +63,8 @@ class IntegrateOfflineService {
           payments,
         }
         try {
+          console.log(JSON.stringify(saleToIntegrate))
           await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
-          await rabbitMQ.publishInQueue(
-            'sales-transfer',
-            JSON.stringify([saleToIntegrateInHandler])
-          )
           await this._saleRepository.update(id, { to_integrate: false })
         } catch (err) {
           sendLog({

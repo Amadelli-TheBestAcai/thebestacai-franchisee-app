@@ -60,14 +60,6 @@ class EmitNfCeService {
 
     const store = await this._storeRepository.findCurrent()
 
-    if (!store || !store.token_nfce) {
-      return {
-        error: true,
-        message:
-          'Sessão não autenticada para emissão de NFCe. Refaça o login e tente novamente',
-      }
-    }
-
     const storeCash = await this._storeCashRepository.getOne()
 
     if (!storeCash || !storeCash.is_opened) {

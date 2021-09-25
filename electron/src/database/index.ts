@@ -15,26 +15,25 @@ export const initializeDatabase = async (): Promise<void> => {
     entities,
     migrations,
     migrationsRun: true,
-  })
-    .then(() => console.log('Database Up'))
-    .catch(async () => {
-      rimraf(
-        databasePath,
-        (error) =>
-          error && console.log({ message: 'Database was not deleted', error })
-      )
-      console.log('Database was deleted')
-      await createConnection({
-        name: 'default',
-        type: 'sqlite',
-        database: databasePath,
-        entities,
-        migrations,
-        migrationsRun: true,
-      })
-        .then(() => console.log('Database Up'))
-        .catch((error) => console.log(error))
-    })
+  }).then(() => console.log('Database Up'))
+  // .catch(async () => {
+  //   rimraf(
+  //     databasePath,
+  //     (error) =>
+  //       error && console.log({ message: 'Database was not deleted', error })
+  //   )
+  //   console.log('Database was deleted')
+  //   await createConnection({
+  //     name: 'default',
+  //     type: 'sqlite',
+  //     database: databasePath,
+  //     entities,
+  //     migrations,
+  //     migrationsRun: true,
+  //   })
+  //     .then(() => console.log('Database Up'))
+  //     .catch((error) => console.log(error))
+  // })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
