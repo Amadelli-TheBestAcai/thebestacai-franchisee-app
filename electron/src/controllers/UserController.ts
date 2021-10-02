@@ -1,6 +1,8 @@
 import { ipcMain } from 'electron'
 import LoginService from '../services/User/LoginService'
 import GetDecodedTokenService from '../services/User/GetDecodedTokenService'
+import { getManager } from 'typeorm'
+
 import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('user:login', async (event, user) => {
@@ -28,6 +30,20 @@ ipcMain.on('user:get', async (event) => {
       payload: err.message,
     })
     console.error(err)
-    event.reply('user:get:response', null)
+    event.reply('user:query:response', null)
+  }
+})
+
+ipcMain.on('user:query', async (event, query) => {
+  try {
+    const response = await getManager().query(query)
+    event.reply('user:query:response', response)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao executar query',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('user:get:response', err)
   }
 })

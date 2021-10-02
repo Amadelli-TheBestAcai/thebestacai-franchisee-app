@@ -3,7 +3,7 @@ import React, { useState, Dispatch, SetStateAction } from 'react'
 import InputForm from '../InputForm'
 import DiscountForm from '../DiscountForm'
 import InOutForm from '../InOutForm'
-import NfeForm from '../NfeForm'
+import ChatForm from '../ChatForm'
 
 import { message } from 'antd'
 
@@ -17,6 +17,7 @@ import {
   EntryIcon,
   OutIcon,
   CommandIcon,
+  ChatIcon,
 } from './styles'
 
 type IProps = {
@@ -37,6 +38,7 @@ const Actions: React.FC<IProps> = ({
   const [commandState, setCommandState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
   const [handlerOutState, setHandlerOutState] = useState(false)
+  const [openChat, setOpenChat] = useState(false)
 
   const handleCommand = () => {
     if (!haveItensOnSale) {
@@ -66,6 +68,11 @@ const Actions: React.FC<IProps> = ({
         COMANDA
         <CommandIcon />
       </CommandButton>
+      <CommandButton onClick={() => setOpenChat(!openChat)}>
+        Chat
+        <ChatIcon />
+      </CommandButton>
+
       <InputForm
         placeHolder="Digite o nome do cliente"
         onFinish={addToQueue}
@@ -87,6 +94,7 @@ const Actions: React.FC<IProps> = ({
         modalState={handlerOutState}
         setModalState={setHandlerOutState}
       />
+      <ChatForm isVisible={openChat} setIsVisible={setOpenChat} />
     </Container>
   )
 }

@@ -113,6 +113,7 @@
     "react-router-dom": "^5.2.0",
     "reflect-metadata": "^0.1.13",
     "serialport": "^9.0.4",
+    "socket.io-client": "^4.2.0",
     "sqlite3": "^5.0.0",
     "styled-components": "^5.1.1",
     "styled-icons": "^10.21.0",
