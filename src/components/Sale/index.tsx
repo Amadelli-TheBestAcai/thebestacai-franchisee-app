@@ -1,5 +1,6 @@
 import React, { SetStateAction, Dispatch, useState } from 'react'
 import { ipcRenderer } from 'electron'
+import currentUser from '../../helpers/currentUser'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
@@ -20,18 +21,10 @@ import {
 type IProps = {
   sale: SalesHistory
   onDelete: (id: number) => void
-  hasPermission: boolean
-  hasRemovePermission: boolean
   setShouldSearch: Dispatch<SetStateAction<boolean>>
 }
 
-const Sale: React.FC<IProps> = ({
-  sale,
-  onDelete,
-  hasPermission,
-  hasRemovePermission,
-  setShouldSearch,
-}) => {
+const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
   const [nfceModal, setNfceModal] = useState(false)
   const {
     id,
@@ -101,13 +94,11 @@ const Sale: React.FC<IProps> = ({
             <ColHeader span={4}>{getType(type)}</ColHeader>
             <ColHeader span={4}>
               <PrinterIcon onClick={() => onPrinter()} />
-              {hasPermission && hasRemovePermission && (
-                <>
-                  <RemoveIcon onClick={() => onDelete(id)} />
-                  {!sale.nfce_url && (
-                    <NfceIcon onClick={() => setNfceModal(true)} />
-                  )}
-                </>
+              {currentUser.hasPermission('sales.remove_sale') && (
+                <RemoveIcon onClick={() => onDelete(id)} />
+              )}
+              {currentUser.hasPermission('sales.emit_nfce') && (
+                <NfceIcon onClick={() => setNfceModal(true)} />
               )}
             </ColHeader>
           </Row>

@@ -33,8 +33,6 @@ const Sale: React.FC<IProps> = ({ history }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [pendingSales, setPendingSales] = useState<number>(0)
   const [isIntegrating, setIsIntegrating] = useState<boolean>(false)
-  const [hasPermission, setPermission] = useState(false)
-  const [hasRemovePermission, setRemovePermission] = useState(false)
   const [sales, setSales] = useState<SalesHistory[]>([])
   const [isConected, setIsConected] = useState<boolean>(true)
 
@@ -185,8 +183,6 @@ const Sale: React.FC<IProps> = ({ history }) => {
                       key={sale.id}
                       sale={sale}
                       onDelete={onDelete}
-                      hasPermission={hasPermission}
-                      hasRemovePermission={hasRemovePermission}
                       setShouldSearch={setShouldSearch}
                     />
                   ))}

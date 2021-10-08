@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { ipcRenderer } from 'electron'
 import { UserRoles } from '../../models/enums/userRole'
+import currentUser from '../../helpers/currentUser'
 
 import {
   Container,
@@ -20,7 +21,6 @@ import {
 type IProps = RouteComponentProps
 
 const SideBar: React.FC<IProps> = ({ history, location }) => {
-  const [hasPermission, setPermission] = useState(false)
   const handleClick = (route: string): void => {
     history.push(route)
   }
@@ -28,22 +28,6 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
   const isRoute = (route: string): boolean => {
     return location.pathname === route
   }
-
-  useEffect(() => {
-    ipcRenderer.send('user:get')
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Encarregado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-    })
-  }, [])
 
   return (
     <Container>
@@ -95,7 +79,7 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
           onClick={() => handleClick('/stock')}
         />
       </IconContainer>
-      {hasPermission && (
+      {currentUser.hasPermission('balance.balance_access') && (
         <IconContainer
           style={{ background: isRoute('/balance') ? '#FF9D0A' : 'black' }}
         >

@@ -14,14 +14,11 @@ import {
   Container,
 } from './styles'
 
-import { UserRoles } from '../../models/enums/userRole'
-
 type ComponentProps = RouteComponentProps
 
 const UserInfo: React.FC<ComponentProps> = ({ history }) => {
   const [store, setStore] = useState<string>()
   const [cash, setCash] = useState<string>()
-  const [hasPermission, setPermission] = useState(false)
 
   useEffect(() => {
     ipcRenderer.send('store:get')
@@ -37,21 +34,6 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
       }
     })
   }, [history.location])
-
-  useEffect(() => {
-    ipcRenderer.send('user:get')
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-    })
-  }, [])
 
   return store && cash ? (
     <Container>
@@ -69,11 +51,7 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
         </Description>
       </UserContent>
       <AvatarContent>
-        <Dropdown
-          overlay={MenuAvatar(history, hasPermission)}
-          placement="bottomRight"
-          arrow
-        >
+        <Dropdown overlay={MenuAvatar(history)} placement="bottomRight" arrow>
           <Avatar>
             <UserIcon />
           </Avatar>

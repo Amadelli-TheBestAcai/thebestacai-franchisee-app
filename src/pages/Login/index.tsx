@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form, Modal, Row, Progress } from 'antd'
 import { ipcRenderer } from 'electron'
+import currentUser from '../../helpers/currentUser'
 
 import {
   Container,
@@ -58,6 +59,7 @@ const Login: React.FC<IProps> = ({ history }) => {
     ipcRenderer.once('user:login', (event, { isValid, user }) => {
       setLoading(false)
       if (isValid) {
+        currentUser.logIn(user)
         ipcRenderer.send('balance:connect')
         ipcRenderer.send('integrate:checkAppVersion')
         ipcRenderer.once(

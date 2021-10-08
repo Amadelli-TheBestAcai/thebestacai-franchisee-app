@@ -1,5 +1,5 @@
 import React from 'react'
-
+import currentUser from '../../helpers/currentUser'
 import {
   Actions,
   LogOutCircleIcon,
@@ -12,7 +12,7 @@ const redirect = (history: any, route?: string) => {
   return history.push(`/${route}`)
 }
 
-const MenuAvatar = (history: any, hasPermission: boolean) => {
+const MenuAvatar = (history: any) => {
   return (
     <Menu>
       <Menu.Item>
@@ -24,7 +24,7 @@ const MenuAvatar = (history: any, hasPermission: boolean) => {
           <LogOutCircleIcon />
           <Actions>Log out</Actions>
         </ActionsContent>
-        {hasPermission && (
+        {currentUser.hasPermission('config.config_access') && (
           <ActionsContent
             onClick={() => {
               redirect(history, 'settings')

@@ -1,6 +1,4 @@
-import api from '../../utils/Api'
-import apiNfe from '../../utils/ApiNfe'
-import { sendLog } from '../../utils/ApiLog'
+import api from '../../utils/ApiAuth'
 import { compare, hash } from '../../utils/Bcrypt'
 import { checkInternet } from '../../utils/InternetConnection'
 import { LoginUserDTO } from '../../models/dtos/user/LoginUserDTO'
@@ -55,7 +53,7 @@ class LoginService {
   async onlineLogin({ username, password }): Promise<null | string> {
     const {
       data: { access_token },
-    } = await api.post('auth/login', { username, password })
+    } = await api.post('user/login', { username, password })
     if (!access_token) {
       return null
     }

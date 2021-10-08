@@ -2,21 +2,16 @@ import React from 'react'
 
 import { Container, Column, Description, RemoveIcon } from './styles'
 
+import currentUser from '../../helpers/currentUser'
+
 import { Handler as HandlerModel } from '../../models/handler'
 
 type IProps = {
   handler: HandlerModel
   onDelete: (id: number) => void
-  hasPermission: boolean
-  hasRemovePermission: boolean
 }
 
-const HandlerItem: React.FC<IProps> = ({
-  handler,
-  onDelete,
-  hasPermission,
-  hasRemovePermission,
-}) => {
+const HandlerItem: React.FC<IProps> = ({ handler, onDelete }) => {
   const { id, type, amount, created_at, reason } = handler
   const time = created_at.split(' ')[1]
   return (
@@ -36,7 +31,7 @@ const HandlerItem: React.FC<IProps> = ({
       <Column span={4}>
         <Description>{reason}</Description>
       </Column>
-      {hasPermission && hasRemovePermission && (
+      {currentUser.hasPermission('handler.delete_handler') && (
         <Column span={4}>
           <RemoveIcon onClick={() => onDelete(id)} />
         </Column>

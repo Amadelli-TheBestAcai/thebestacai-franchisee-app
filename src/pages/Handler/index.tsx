@@ -12,8 +12,6 @@ import { Handler as HandlerModel } from '../../models/handler'
 
 import { Empty, message, Modal } from 'antd'
 
-import { UserRoles } from '../../models/enums/userRole'
-
 import {
   Container,
   HandlersContainer,
@@ -27,8 +25,6 @@ const { confirm } = Modal
 
 const Handler: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const [hasPermission, setPermission] = useState(false)
-  const [hasRemovePermission, setRemovePermission] = useState(false)
   const [handlers, setHandlers] = useState<HandlerModel[]>([])
   const [isConected, setIsConected] = useState(true)
 
@@ -39,31 +35,9 @@ const Handler: React.FC = () => {
       (event, { isConnected, data }) => {
         setIsConected(isConnected)
         setHandlers(data || [])
-        ipcRenderer.send('user:get')
+        setIsLoading(false)
       }
     )
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Encarregado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-      setRemovePermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-
-      setIsLoading(false)
-    })
   }, [])
 
   const onDelete = (id: number): void => {
@@ -124,8 +98,6 @@ const Handler: React.FC = () => {
                 <HandlerItem
                   key={handler.id}
                   handler={handler}
-                  hasPermission={hasPermission}
-                  hasRemovePermission={hasRemovePermission}
                   onDelete={onDelete}
                 />
               ))}
