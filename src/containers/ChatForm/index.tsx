@@ -2,15 +2,22 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
 import config from '../../../env-config.js'
 import axios from 'axios'
+
+import moment from 'moment'
+
+import currentUser from '../../helpers/currentUser'
+
 import { message as messageAnt } from 'antd'
 import {
   Modal,
   Container,
   ChatContainer,
   ActionContainer,
-  Button,
   Input,
   MessageContainer,
+  MessageContent,
+  MessageBalloon,
+  ButtonSend,
 } from './styles'
 import { Socket, io } from 'socket.io-client'
 
@@ -57,6 +64,7 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
               email: email,
             },
           })
+
           _socket.on('userMessage', async (response) => {
             setUserMessage(response)
           })
@@ -112,6 +120,8 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
   }
   return (
     <Modal
+      title="Chat Suporte"
+      centered
       visible={isVisible}
       onCancel={() => setIsVisible(false)}
       onOk={() => setIsVisible(false)}
@@ -124,12 +134,25 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
             {userMessage?.messages.map((message) => (
               <>
                 {message.type === 'text' ? (
-                  <p key={message.id}>
-                    <label>
-                      {message.created_by} <span> {message.created_at}</span>:{' '}
-                    </label>
-                    {message.content}
-                  </p>
+                  <MessageContent
+                    user_message={message.created_by}
+                    user_login={currentUser.getUser().name}
+                  >
+                    <MessageBalloon
+                      user_message={message.created_by}
+                      user_login={currentUser.getUser().name}
+                    >
+                      <label>{message.created_by}</label>
+                      {message.content}
+
+                      <span>
+                        {' '}
+                        {moment(message.created_at).format(
+                          'DD/MM/YYYY hh:mm'
+                        )}{' '}
+                      </span>
+                    </MessageBalloon>
+                  </MessageContent>
                 ) : (
                   <p
                     key={message.id}
@@ -162,9 +185,9 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
             />
           )}
           <Input type="file" onChange={(e) => uploadFile(e.target.files[0])} />
-          <Button type="primary" onClick={handleMessage}>
-            Enviar
-          </Button>
+          <ButtonSend type="primary" onClick={handleMessage}>
+            ENVIAR
+          </ButtonSend>
         </ActionContainer>
       </Container>
     </Modal>
