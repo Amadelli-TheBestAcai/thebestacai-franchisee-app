@@ -101,7 +101,7 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
     payload.append('created_by', user.name)
     await axios({
       method: 'POST',
-      url: 'http://localhost:6565/message',
+      url: `${config.CHAT_DASH}/message`,
       data: payload,
     })
   }
@@ -131,47 +131,49 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
       <Container>
         <ChatContainer>
           <MessageContainer>
-            {userMessage?.messages.map((message) => (
-              <>
-                {message.type === 'text' ? (
-                  <MessageContent
-                    user_message={message.created_by}
-                    user_login={currentUser.getUser().name}
-                  >
-                    <MessageBalloon
+            {userMessage?.messages
+              .sort((message1, message2) => message1.id - message2.id)
+              .map((message) => (
+                <>
+                  {message.type === 'text' ? (
+                    <MessageContent
                       user_message={message.created_by}
                       user_login={currentUser.getUser().name}
                     >
-                      <label>{message.created_by}</label>
-                      {message.content}
+                      <MessageBalloon
+                        user_message={message.created_by}
+                        user_login={currentUser.getUser().name}
+                      >
+                        <label>{message.created_by}</label>
+                        {message.content}
 
-                      <span>
-                        {' '}
-                        {moment(message.created_at).format(
-                          'DD/MM/YYYY hh:mm'
-                        )}{' '}
-                      </span>
-                    </MessageBalloon>
-                  </MessageContent>
-                ) : (
-                  <p
-                    key={message.id}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() =>
-                      urltoFile(
-                        message.content,
-                        `file_${message.id}.${message.type.split('/')[1]}`
-                      )
-                    }
-                  >
-                    <label>
-                      {message.created_by} <span> {message.created_at}</span>:{' '}
-                    </label>
-                    Clique para baixar
-                  </p>
-                )}
-              </>
-            ))}
+                        <span>
+                          {' '}
+                          {moment(message.created_at).format(
+                            'DD/MM/YYYY hh:mm'
+                          )}{' '}
+                        </span>
+                      </MessageBalloon>
+                    </MessageContent>
+                  ) : (
+                    <p
+                      key={message.id}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        urltoFile(
+                          message.content,
+                          `file_${message.id}.${message.type.split('/')[1]}`
+                        )
+                      }
+                    >
+                      <label>
+                        {message.created_by} <span> {message.created_at}</span>:{' '}
+                      </label>
+                      Clique para baixar
+                    </p>
+                  )}
+                </>
+              ))}
           </MessageContainer>
         </ChatContainer>
         <ActionContainer>

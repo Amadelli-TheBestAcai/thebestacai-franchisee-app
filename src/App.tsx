@@ -12,18 +12,10 @@ mainElement.setAttribute('id', 'root')
 document.body.appendChild(mainElement)
 
 const App = () => {
-  const [loading, setLoading] = useState(true)
-  useEffect(() => {
-    ipcRenderer.send('user:get')
-    ipcRenderer.once('user:get:response', (event, user) => {
-      currentUser.logIn(user)
-      setLoading(false)
-    })
-  }, [])
   return (
     <BrowserRouter>
       <GlobalStyle />
-      {loading ? <div>Inicializando App.ts</div> : <Routes />}
+      <Routes />
     </BrowserRouter>
   )
 }
