@@ -1,4 +1,4 @@
-import api from '../../utils/Api'
+import api from '../../utils/ApiAuth'
 import { checkInternet } from '../../utils/InternetConnection'
 
 type Response = {
@@ -11,11 +11,12 @@ class FindAllStoresByUser {
     const isOnline = await checkInternet()
     if (isOnline) {
       const {
-        data: { data },
-      } = await api.get(`/user_store/${userId}`)
-      const formatedStores = data?.map((store) => ({
-        id: store.store_id,
-        name: store.store,
+        data: { content },
+      } = await api.get(`/companyUser/${userId}/user`)
+
+      const formatedStores = content?.map((company) => ({
+        id: company.company_id,
+        name: company.company.company_name,
       }))
       return formatedStores
     } else {

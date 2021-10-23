@@ -1,4 +1,4 @@
-import api from '../../utils/Api'
+import api from '../../utils/ApiAuth'
 import { checkInternet } from '../../utils/InternetConnection'
 
 import { IStoreRepository } from '../../repositories/interfaces/IStoreRepository'
@@ -17,9 +17,14 @@ class CreateStoreService {
       if (!store) {
         const {
           data: {
-            data: { id: store_id, cnpj, company_name, token_nfce_production },
+            content: {
+              id: store_id,
+              cnpj,
+              company_name,
+              token_nfce_production,
+            },
           },
-        } = await api.get(`/stores?id=${storeId}`)
+        } = await api.get(`/company/${storeId}`)
 
         await this._storeRepository.create({
           store_id,
