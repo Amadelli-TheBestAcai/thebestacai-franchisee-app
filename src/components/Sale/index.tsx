@@ -34,7 +34,7 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
     quantity,
     change_amount,
     discount,
-    item,
+    items,
     payments,
   } = sale
   const time = created_at.split(' ')[1]
@@ -56,9 +56,9 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
       okType: 'default',
       cancelText: 'Não',
       async onOk() {
-        const formatedItems = sale.item.map((item) => ({
-          category_id: +item.storeProduct.product.category_id,
-          name: item.storeProduct.product.name,
+        const formatedItems = sale.items.map((item) => ({
+          category_id: +item.product.category_id,
+          name: item.product.name,
           quantity: +item.quantity,
           price_unit: +item.storeProduct.price_unit,
         }))
@@ -80,15 +80,22 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
     })
   }
 
+  const getTotalSold = (sale: SalesHistory) => {
+    return (
+      sale.payments.reduce((total, payment) => total + +payment.amount, 0) -
+      +sale.discount -
+      +sale.change_amount
+    )
+      .toFixed(2)
+      .replace('.', ',')
+  }
   return (
     <Container>
       <Panel
         header={
           <Row>
             <ColHeader span={4}>{id}</ColHeader>
-            <ColHeader span={4}>
-              {Math.abs(total_sold).toFixed(2).replace('.', ',')}R$
-            </ColHeader>
+            <ColHeader span={4}>{getTotalSold(sale)}R$</ColHeader>
             <ColHeader span={4}>{quantity}</ColHeader>
             <ColHeader span={4}>{time}</ColHeader>
             <ColHeader span={4}>{getType(type)}</ColHeader>
@@ -117,26 +124,24 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
             R$
           </Col>
         </Row>
-        {item.length > 0 && (
+        {items?.length > 0 && (
           <Container>
             <Panel header="Itens" key="itens">
-              {item.map(
-                ({ id, product_id: { name: ProductName }, quantity }) => (
-                  <Row key={id}>
-                    <Col span={12}>{ProductName}</Col>
-                    <Col span={12}>
-                      <Description>Quantidade: </Description>{' '}
-                      {quantity.replace('.', ',')}
-                    </Col>
-                  </Row>
-                )
-              )}
+              {items.map((item) => (
+                <Row key={item?.id}>
+                  <Col span={12}>{item.product?.name}</Col>
+                  <Col span={12}>
+                    <Description>Quantidade: </Description>{' '}
+                    {item?.quantity?.toString().replace('.', ',')}
+                  </Col>
+                </Row>
+              ))}
             </Panel>
           </Container>
         )}
         <Container>
           <Panel header="Pagamentos" key="payments">
-            {payments.map(({ id, amount, type }) => (
+            {payments?.map(({ id, amount, type }) => (
               <Row key={id}>
                 <Col span={12}>{PaymentType[type]}</Col>
                 <Col span={12}>

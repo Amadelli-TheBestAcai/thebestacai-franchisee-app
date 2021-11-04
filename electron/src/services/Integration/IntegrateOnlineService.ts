@@ -1,5 +1,5 @@
 import api from '../../utils/Api'
-import rabbitMQ from '../../utils/RabbitMQ'
+import ApiSalesHandler from '../../utils/ApiSalesHandler'
 import { sendLog } from '../../utils/ApiLog'
 
 import { ISalesRepository } from '../../repositories/interfaces/ISalesRepository'
@@ -54,17 +54,22 @@ class IntegrateOfflineService {
           discount: payload.discount,
           nfce_ref: payload.nfce_id,
           cash_id: payload.cash_id,
-          client_id: currentUser.id,
+          user_id: currentUser.id,
           cash_history_id: payload.cash_history_id,
-          items: newItemPayload.map(({ id, ...item }) => ({
-            ...item,
-            product_id: item.productStore.product,
-          })),
+          items: newItemPayload.map(
+            ({ id, productStore: { product, ...storeProduct }, ...item }) => ({
+              ...item,
+              store_product_id: item.product_store_id,
+              storeProduct,
+              product: product,
+              update_stock: item.category_id !== 1,
+            })
+          ),
           payments,
         }
         try {
-          console.log(JSON.stringify(saleToIntegrate))
           await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
+          await ApiSalesHandler.post('/sales', [saleToIntegrateInHandler])
           await this._saleRepository.update(id, { to_integrate: false })
         } catch (err) {
           sendLog({

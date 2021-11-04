@@ -16,6 +16,10 @@ class CheckAppIsUpdatedService {
         data: { version },
       },
     } = await api.get('/version')
+    console.log({
+      gestor_version: pkg.version,
+      current_version: version,
+    })
     if (pkg.version === version) {
       return true
     }

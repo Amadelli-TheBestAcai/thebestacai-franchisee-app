@@ -46,33 +46,11 @@ const Sale: React.FC<IProps> = ({ history }) => {
           setIsLoading(false)
           setIsConected(isConnected)
           setSales(data)
-          ipcRenderer.send('user:get')
         }
       )
       ipcRenderer.send('integrate:status')
       ipcRenderer.once('integrate:status:response', (event, { sales }) => {
-        setPendingSales(sales.length)
-      })
-      ipcRenderer.once('user:get:response', (event, user) => {
-        const { role } = user
-        setPermission(
-          [
-            UserRoles.Master,
-            UserRoles.Administrador,
-            UserRoles.Franqueado,
-            UserRoles.Gerente,
-            UserRoles.Encarregado,
-          ].some((elem) => elem === role)
-        )
-        setRemovePermission(
-          [
-            UserRoles.Master,
-            UserRoles.Administrador,
-            UserRoles.Franqueado,
-            UserRoles.Gerente,
-          ].some((elem) => elem === role)
-        )
-        setIsLoading(false)
+        setPendingSales(sales?.length)
       })
       setShouldSearch(false)
     }
@@ -123,7 +101,7 @@ const Sale: React.FC<IProps> = ({ history }) => {
       } else {
         message.error('Houve um erro na tentativa de integrar as vendas.')
       }
-      setPendingSales(sales.length)
+      setPendingSales(sales?.length)
     })
   }
 
@@ -155,7 +133,7 @@ const Sale: React.FC<IProps> = ({ history }) => {
             </Row>
           )}
           <>
-            {sales.length ? (
+            {sales?.length ? (
               <SalesContainer>
                 <SalesHeader>
                   <Column span={4}>
