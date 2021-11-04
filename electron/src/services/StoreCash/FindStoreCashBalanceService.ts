@@ -1,4 +1,4 @@
-import api from '../../utils/Api'
+import api from '../../utils/ApiSalesHandler'
 import { checkInternet } from '../../utils/InternetConnection'
 import { Balance } from '../../../../shared/models/balance'
 import { IStoreCashRepository } from '../../repositories/interfaces/IStoreCashRepository'
@@ -37,13 +37,9 @@ class FindStoreCashBalanceService {
       return
     }
 
-    const {
-      data: {
-        data: { sales },
-      },
-    } = await api.get(`/current_sales_history/${store_id}-${code}`)
+    const { data } = await api.get(`/sales/${store_id}-${code}/history`)
 
-    const balance = getBalance(sales)
+    const balance = getBalance(data)
     return {
       isConnected,
       balance,

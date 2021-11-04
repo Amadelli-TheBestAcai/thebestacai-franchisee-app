@@ -1,4 +1,4 @@
-import api from '../../utils/Api'
+import api from '../../utils/ApiSalesHandler'
 import apiNfe from '../../utils/ApiNfe'
 import envConfig from '../../../../env-config.js'
 
@@ -173,7 +173,7 @@ class EmitNfCeService {
       }
     } else {
       try {
-        await api.put(`/sales/${saleIdToUpdate}/update`, {
+        await api.put(`/sales/${saleIdToUpdate}`, {
           nfce_id: sale.nfce_id,
           nfce_url: sale.nfce_url,
         })

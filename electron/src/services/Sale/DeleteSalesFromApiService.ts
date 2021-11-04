@@ -1,4 +1,4 @@
-import api from '../../utils/Api'
+import api from '../../utils/ApiSalesHandler'
 import { checkInternet } from '../../utils/InternetConnection'
 
 import { IStoreCashRepository } from '../../repositories/interfaces/IStoreCashRepository'
@@ -28,7 +28,7 @@ class DeleteSalesFromApiService {
       return false
     }
 
-    await api.delete(`/sales/${id}?storeId=${store_id}`)
+    await api.delete(`/sales/${id}`)
 
     return true
   }
