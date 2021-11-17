@@ -56,6 +56,8 @@ class IntegrateOfflineService {
           cash_id: payload.cash_id,
           user_id: currentUser.id,
           cash_history_id: payload.cash_history_id,
+          nfce_id: payload.nfce_id,
+          nfce_url: payload.nfce_url,
           items: newItemPayload.map(
             ({ id, productStore: { product, ...storeProduct }, ...item }) => ({
               ...item,
@@ -68,7 +70,7 @@ class IntegrateOfflineService {
           payments,
         }
         try {
-          await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
+          // await api.post(`/sales/${store_id}-${cash_code}`, [saleToIntegrate])
           await ApiSalesHandler.post('/sales', [saleToIntegrateInHandler])
           await this._saleRepository.update(id, { to_integrate: false })
         } catch (err) {

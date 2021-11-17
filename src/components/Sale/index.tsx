@@ -37,8 +37,8 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
     items,
     payments,
   } = sale
+  console.log(sale)
   const time = created_at.split(' ')[1]
-
   const getType = (type: number): string => {
     if (type === 0) return 'Loja'
     if (type === 1) return 'IFOOD'
@@ -104,9 +104,10 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
               {currentUser.hasPermission('sales.remove_sale') && (
                 <RemoveIcon onClick={() => onDelete(id)} />
               )}
-              {currentUser.hasPermission('sales.emit_nfce') && (
-                <NfceIcon onClick={() => setNfceModal(true)} />
-              )}
+              {currentUser.hasPermission('sales.emit_nfce') &&
+                !sale.nfce_id && (
+                  <NfceIcon onClick={() => setNfceModal(true)} />
+                )}
             </ColHeader>
           </Row>
         }
@@ -153,14 +154,12 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
           </Panel>
         </Container>
       </Panel>
-      {!sale.nfce_url && (
-        <NfeForm
-          setShouldSearch={setShouldSearch}
-          modalState={nfceModal}
-          setModalState={setNfceModal}
-          sale={sale}
-        />
-      )}
+      <NfeForm
+        setShouldSearch={setShouldSearch}
+        modalState={nfceModal}
+        setModalState={setNfceModal}
+        sale={sale}
+      />
     </Container>
   )
 }

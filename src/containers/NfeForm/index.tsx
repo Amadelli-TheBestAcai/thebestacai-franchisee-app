@@ -44,12 +44,12 @@ const NfeForm: React.FC<IProps> = ({
 
   useEffect(() => {
     if (modalState) {
-      const products = sale.item.map((product) => ({
+      const products = sale.items.map((product) => ({
         id: v4(),
         idItem: product.storeProduct.product_id,
         codigo: +product.storeProduct.product_id,
-        descricao: product.storeProduct.product.name,
-        ncm: product.storeProduct.product.cod_ncm?.toString(),
+        descricao: product.product.name,
+        ncm: product.product.cod_ncm?.toString(),
         cfop: product.storeProduct.cfop,
         unidadeComercial: product.storeProduct.unity_taxable?.toString(),
         quantidadeComercial: +product.quantity,
@@ -95,9 +95,20 @@ const NfeForm: React.FC<IProps> = ({
           )
         }
       })
+
+      const getTotalSold = (sale: SalesHistory) => {
+        return (
+          sale.payments.reduce((total, payment) => total + +payment.amount, 0) -
+          +sale.discount -
+          +sale.change_amount
+        )
+          .toFixed(2)
+          .replace('.', ',')
+      }
+
       setProductsNfe(products)
       form.setFieldsValue({
-        valorPagamento: sale.total_sold.toFixed(2).replace('.', ','),
+        valorPagamento: getTotalSold(sale),
         troco: (+sale.change_amount).toFixed(2).replace('.', ','),
       })
       setNfe((oldValues) => ({
