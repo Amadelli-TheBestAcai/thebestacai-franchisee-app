@@ -1,5 +1,6 @@
 import api from '../../utils/Api'
-
+import apiSalesHandler from '../../utils/ApiSalesHandler'
+import GetDecodedTokenService from '../User/GetDecodedTokenService'
 import { IStoreCashRepository } from '../../repositories/interfaces/IStoreCashRepository'
 import StoreCashRepository from '../../repositories/StoreCashRepository'
 
@@ -14,7 +15,7 @@ class IntegrateAppSalesService {
 
   async execute(salesToIntegrate, appSalesId): Promise<void> {
     const currentCash = await this._storeCashRepository.getOne()
-
+    const currentUser = await GetDecodedTokenService.execute()
     if (!currentCash || !currentCash?.is_opened) {
       throw new Error('Caixa fechado')
     }
@@ -29,13 +30,18 @@ class IntegrateAppSalesService {
       throw new Error('Histórico não encontrado')
     }
 
-    salesToIntegrate.reduce((previousPromise, nextSale) => {
-      return previousPromise.then(async () => {
-        return await api.post(`/sales/${store_id}-${currentCash.code}`, [
-          nextSale,
-        ])
+    await Promise.all(
+      salesToIntegrate.map(async (sale) => {
+        const payload = {
+          ...sale,
+          user_id: currentUser.id,
+          nfce_id: null,
+          nfce_url: null,
+          nfce_ref: null,
+        }
+        await apiSalesHandler.post('/sales', [payload])
       })
-    }, Promise.resolve())
+    )
 
     await api.post('/app_sale/integrate', {
       historyId: history_id,
