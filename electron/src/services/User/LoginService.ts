@@ -20,7 +20,9 @@ class LoginService {
     this._sessionUserRepository = sessionUserRepository
   }
 
-  async execute(user: LoginUserDTO): Promise<boolean> {
+  async execute(
+    user: LoginUserDTO
+  ): Promise<{ isValid: boolean; token?: string }> {
     const isConnected = await checkInternet()
     if (isConnected) {
       const access_token = await this.onlineLogin(user)
@@ -34,20 +36,24 @@ class LoginService {
 
         await this._sessionUserRepository.create({ access_token })
 
-        return true
+        return { isValid: true, token: access_token }
       }
-      return false
+      return { isValid: false, token: null }
     }
     return await this.offlineLogin(user)
   }
 
-  async offlineLogin({ username, password }): Promise<boolean> {
+  async offlineLogin({
+    username,
+    password,
+  }): Promise<{ isValid: boolean; token?: string }> {
     const user = await this._userRepository.findByUsername(username)
     if (!user) {
-      return false
+      return { isValid: false, token: null }
     }
 
-    return await compare(password, user.password)
+    const isValid = await compare(password, user.password)
+    return { isValid, token: null }
   }
 
   async onlineLogin({ username, password }): Promise<null | string> {

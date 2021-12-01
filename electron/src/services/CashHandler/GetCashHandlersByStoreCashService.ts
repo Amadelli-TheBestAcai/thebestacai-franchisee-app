@@ -5,14 +5,17 @@ import api from '../../utils/Api'
 import { checkInternet } from '../../utils/InternetConnection'
 
 type Response = {
-  id: number
-  type: number
-  reason: string
-  amount: string
-  verified: boolean
-  order_id?: number
-  created_at: string
-  deleted_at?: string
+  history_id?: number
+  handlers: {
+    id: number
+    type: number
+    reason: string
+    amount: string
+    verified: boolean
+    order_id?: number
+    created_at: string
+    deleted_at?: string
+  }[]
 }
 class GetCashHandlersByStoreCashService {
   private _storeCashRepository: IStoreCashRepository
@@ -22,26 +25,38 @@ class GetCashHandlersByStoreCashService {
     this._storeCashRepository = storeCashRepository
   }
 
-  async execute(): Promise<Response[]> {
+  async execute(): Promise<Response> {
     const isConnected = await checkInternet()
     if (!isConnected) {
-      return []
+      return {
+        history_id: null,
+        handlers: [],
+      }
     }
 
     const currentCash = await this._storeCashRepository.getOne()
     if (!currentCash || !currentCash.is_opened) {
-      return []
+      return {
+        history_id: null,
+        handlers: [],
+      }
     }
 
     const { store_id, code } = currentCash
     if (!store_id || !code) {
-      return []
+      return {
+        history_id: null,
+        handlers: [],
+      }
     }
     const {
       data: { data },
     } = await api.get(`/cash_handler/${store_id}-${code}`)
 
-    return data
+    return {
+      history_id: currentCash.history_id,
+      handlers: data,
+    }
   }
 }
 

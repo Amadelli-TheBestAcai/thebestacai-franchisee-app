@@ -7,9 +7,9 @@ import { sendLog } from '../utils/ApiLog'
 
 ipcMain.on('user:login', async (event, user) => {
   try {
-    const response = await LoginService.execute(user)
+    const { isValid, token } = await LoginService.execute(user)
     const currentUser = await GetDecodedTokenService.execute()
-    event.reply('user:login', { isValid: response, user: currentUser })
+    event.reply('user:login', { isValid, user: currentUser, token })
   } catch (err) {
     sendLog({
       title: 'Erro ao realizar login',

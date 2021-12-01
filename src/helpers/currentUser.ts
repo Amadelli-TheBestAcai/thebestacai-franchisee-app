@@ -3,6 +3,7 @@ interface User {
   name: string
   email: string
   level: number
+  token: string
   permissions: string[]
 }
 
@@ -12,6 +13,7 @@ class CurrentUser {
   private email: string
   private level: number
   private permissions: string[]
+  private token: string
 
   logIn(_user: User): void {
     this.id = _user?.id
@@ -19,6 +21,7 @@ class CurrentUser {
     this.email = _user?.email
     this.level = _user?.level
     this.permissions = _user?.permissions
+    this.token = _user?.token
   }
 
   hasPermission(_permission: string): boolean {
@@ -32,6 +35,7 @@ class CurrentUser {
       email: this.email,
       level: this.level,
       permissions: this.permissions,
+      token: this.token,
     }
   }
 }

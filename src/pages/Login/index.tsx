@@ -56,10 +56,10 @@ const Login: React.FC<IProps> = ({ history }) => {
   const onLogin = async () => {
     setLoading(true)
     ipcRenderer.send('user:login', user)
-    ipcRenderer.once('user:login', (event, { isValid, user }) => {
+    ipcRenderer.once('user:login', (event, { isValid, user, token }) => {
       setLoading(false)
       if (isValid) {
-        currentUser.logIn(user)
+        currentUser.logIn({ ...user, token })
         ipcRenderer.send('balance:connect')
         ipcRenderer.send('integrate:checkAppVersion')
         ipcRenderer.once(
