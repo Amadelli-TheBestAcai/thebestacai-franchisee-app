@@ -37,6 +37,7 @@ const Handler: React.FC = () => {
       'handler:api:get:response',
       (event, { isConnected, data }) => {
         const { handlers, history_id } = data
+        console.log(handlers)
         setHistoryId(history_id)
         setIsConected(isConnected)
         setHandlers(handlers || [])

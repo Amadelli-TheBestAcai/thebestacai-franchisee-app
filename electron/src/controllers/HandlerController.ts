@@ -3,6 +3,7 @@ import CreateCashHandlerService from '../services/CashHandler/CreateCashHandlerS
 import IntegrateOnlineCashHandlersService from '../services/Integration/IntegrateOnlineCashHandlersService'
 import GetCashHandlersByStoreCashService from '../services/CashHandler/GetCashHandlersByStoreCashService'
 import DeleteCashHandlerFromApiService from '../services/CashHandler/DeleteCashHandlerFromApiService'
+import { printHandler } from '../utils/PrintHandler'
 import { sendLog } from '../utils/ApiLog'
 import { checkInternet } from '../utils/InternetConnection'
 
@@ -59,4 +60,8 @@ ipcMain.on('handler:delete', async (event, id) => {
     })
     console.error(err)
   }
+})
+
+ipcMain.on('handler:print', async (event, payload) => {
+  printHandler(payload)
 })

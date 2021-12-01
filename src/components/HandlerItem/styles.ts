@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Trash } from '../../styles/Icons'
+import { Trash, Printer } from '../../styles/Icons'
 
 import { Row, Col } from 'antd'
 
@@ -23,6 +23,14 @@ export const RemoveIcon = styled(Trash)`
   width: 25px;
   height: 25px;
   color: red;
+  padding: 1% 0;
+  cursor: pointer;
+`
+
+export const PrinterIcon = styled(Printer)`
+  width: 25px;
+  height: 25px;
+  color: black;
   padding: 1% 0;
   cursor: pointer;
 `
