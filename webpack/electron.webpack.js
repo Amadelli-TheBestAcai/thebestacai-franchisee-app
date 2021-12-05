@@ -10,8 +10,11 @@ module.exports = {
   entry: path.resolve(rootPath, 'electron', 'main.ts'),
   target: 'electron-main',
   externals: {
+    serialport: 'commonjs serialport',
     knex: 'commonjs knex',
     bcrypt: 'commonjs bcrypt',
+    printer: 'commonjs printer',
+    typeorm: 'commonjs typeorm'
   },
   module: {
     rules: [
@@ -35,4 +38,7 @@ module.exports = {
     path: path.resolve(rootPath, 'dist'),
     filename: '[name].js',
   },
+  optimization: {
+    minimize: false
+  }
 }

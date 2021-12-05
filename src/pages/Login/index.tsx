@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { message, Form, Modal, Row, Progress } from 'antd'
 import { ipcRenderer } from 'electron'
+import currentUser from '../../helpers/currentUser'
 
 import {
   Container,
@@ -55,68 +56,40 @@ const Login: React.FC<IProps> = ({ history }) => {
   const onLogin = async () => {
     setLoading(true)
     ipcRenderer.send('user:login', user)
-    ipcRenderer.once('user:login', (event, { isValid, user }) => {
+    ipcRenderer.once('user:login', (event, { isValid, user, token }) => {
       setLoading(false)
       if (isValid) {
+        currentUser.logIn({ ...user, token })
+        ipcRenderer.send('balance:connect')
         ipcRenderer.send('integrate:checkAppVersion')
         ipcRenderer.once(
           'integrate:checkAppVersion:response',
           (event, alreadyUpdated) => {
-            if (!alreadyUpdated) {
-              ipcRenderer.send('integrate:shouldUpdateApp')
-              ipcRenderer.once(
-                'integrate:shouldUpdateApp:response',
-                (event, shouldUpdateApp) => {
-                  if (shouldUpdateApp) {
-                    if (user.role < 4) {
-                      Modal.confirm({
-                        title: 'Há uma nova versão do APP',
-                        content:
-                          'Selecione Instalar para iniciar o download da nova versão.',
-                        okText: 'Instalar',
-                        cancelText: 'Mais Tarde',
-                        onOk() {
-                          ipcRenderer.send('check_for_update')
-                          ipcRenderer.once('update-available', () => {
-                            setShouldApplyNewVersion(true)
-                            ipcRenderer.on(
-                              'download-progress',
-                              (event, percent) => {
-                                setPercentDownloaded(+percent.slice(0, 2))
-                              }
-                            )
-                          })
-                        },
-                      })
-                    } else {
-                      Modal.info({
-                        title: 'Há uma nova versão do APP',
-                        content:
-                          'É necessário permissão para aplicar a atualização.',
-                      })
-                    }
-                  } else {
-                    Modal.info({
-                      title: 'Há uma nova versão do APP',
-                      content:
-                        'Para aplica-la feche o caixa atual e faça o login novamente.',
-                    })
+            if (alreadyUpdated) {
+              if (haveStore) {
+                initializeApp()
+              } else {
+                setStep(2)
+                ipcRenderer.send('store:getAll', store)
+                ipcRenderer.once(
+                  'store:getAll:response',
+                  (event, { stores }) => {
+                    setStores(stores)
+                    setLoadingStores(false)
                   }
-                }
-              )
+                )
+              }
+            } else {
+              setShouldApplyNewVersion(true)
+              ipcRenderer.send('check_for_update')
+              ipcRenderer.once('update-available', () => {
+                ipcRenderer.on('download-progress', (event, percent) => {
+                  setPercentDownloaded(+percent.slice(0, 2))
+                })
+              })
             }
           }
         )
-        if (haveStore) {
-          initializeApp()
-        } else {
-          setStep(2)
-          ipcRenderer.send('store:getAll', store)
-          ipcRenderer.once('store:getAll:response', (event, { stores }) => {
-            setStores(stores)
-            setLoadingStores(false)
-          })
-        }
       } else {
         message.error('Credenciais inválidas')
       }
@@ -141,7 +114,6 @@ const Login: React.FC<IProps> = ({ history }) => {
     ipcRenderer.send('products:refresh', store)
     ipcRenderer.once('products:refresh:response', (event, { success }) => {
       if (success) {
-        ipcRenderer.send('integrate:online')
         message.success(`Bem vindo ${user.username}`)
         return history.push('/home')
       } else {
@@ -223,9 +195,12 @@ const Login: React.FC<IProps> = ({ history }) => {
                 onChange={handleSelect}
                 loading={loadingStores}
                 placeholder="Selecione uma loja"
+                style={{ textTransform: 'uppercase' }}
               >
                 {stores.map((store) => (
-                  <Option key={store.id}>{store.name}</Option>
+                  <Option style={{ textTransform: 'uppercase' }} key={store.id}>
+                    {store.name}
+                  </Option>
                 ))}
               </Select>
             </FormItem>

@@ -5,8 +5,10 @@ import { Input } from './styles'
 type IProps = {
   getValue
   onEnterPress?
+  onPressKey?: (key: string) => void
   defaultValue?: number
   id?: string
+  autoFocus?: boolean
 }
 
 const currencyConfig = {
@@ -28,6 +30,8 @@ const MonetaryInput: React.FC<IProps> = ({
   onEnterPress,
   defaultValue,
   id,
+  onPressKey,
+  autoFocus,
 }) => {
   const [amount, setAmount] = useState<number>(defaultValue || 0)
 
@@ -49,6 +53,9 @@ const MonetaryInput: React.FC<IProps> = ({
       onEnterPress()
       setAmount(0)
     }
+    if (onPressKey) {
+      onPressKey(event.key)
+    }
   }
 
   return (
@@ -56,7 +63,7 @@ const MonetaryInput: React.FC<IProps> = ({
       id={id}
       value={amount}
       currency="BRL"
-      autoFocus={true}
+      autoFocus={autoFocus}
       className="ant-input"
       config={currencyConfig}
       onChange={handleChange}

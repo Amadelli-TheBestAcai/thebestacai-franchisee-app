@@ -1,9 +1,12 @@
 import styled from 'styled-components'
 
+import { Modal as ModalAnt, Input as InputAnt, Row as RowAnt } from 'antd'
+
 export const Container = styled.div`
   display: flex;
   justify-content: space-around;
   height: 100%;
+  width: 100%;
 `
 
 export const InfoContainer = styled.div`
@@ -12,7 +15,7 @@ export const InfoContainer = styled.div`
   align-items: center;
   flex-direction: column;
 
-  width: 16%;
+  width: 15%;
   height: 100%;
   margin: 0 5px;
 `
@@ -39,3 +42,11 @@ export const Value = styled.label`
   font-weight: bold;
   font-size: 26px;
 `
+
+export const Row = styled(RowAnt)`
+  width: 100%;
+`
+
+export const Modal = styled(ModalAnt)``
+
+export const Input = styled(InputAnt.TextArea)``

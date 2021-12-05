@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { ipcRenderer } from 'electron'
 import { UserRoles } from '../../models/enums/userRole'
+import currentUser from '../../helpers/currentUser'
 
 import {
   Container,
@@ -13,12 +14,13 @@ import {
   Money,
   Home,
   IconContainer,
+  BoxIcon,
+  NfceIcon,
 } from './styles'
 
 type IProps = RouteComponentProps
 
 const SideBar: React.FC<IProps> = ({ history, location }) => {
-  const [hasPermission, setPermission] = useState(false)
   const handleClick = (route: string): void => {
     history.push(route)
   }
@@ -26,21 +28,6 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
   const isRoute = (route: string): boolean => {
     return location.pathname === route
   }
-
-  useEffect(() => {
-    ipcRenderer.send('user:get')
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
-      )
-    })
-  }, [])
 
   return (
     <Container>
@@ -84,7 +71,15 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
           onClick={() => handleClick('/handler')}
         />
       </IconContainer>
-      {hasPermission && (
+      <IconContainer
+        style={{ background: isRoute('/stock') ? '#FF9D0A' : 'black' }}
+      >
+        <BoxIcon
+          style={{ color: isRoute('/stock') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/stock')}
+        />
+      </IconContainer>
+      {currentUser.hasPermission('balance.balance_access') && (
         <IconContainer
           style={{ background: isRoute('/balance') ? '#FF9D0A' : 'black' }}
         >
@@ -100,6 +95,15 @@ const SideBar: React.FC<IProps> = ({ history, location }) => {
         <Money
           style={{ color: isRoute('/sale') ? 'black' : '#FF9D0A' }}
           onClick={() => handleClick('/sale')}
+        />
+      </IconContainer>
+
+      <IconContainer
+        style={{ background: isRoute('/nfce') ? '#FF9D0A' : 'black' }}
+      >
+        <NfceIcon
+          style={{ color: isRoute('/nfce') ? 'black' : '#FF9D0A' }}
+          onClick={() => handleClick('/nfce')}
         />
       </IconContainer>
     </Container>

@@ -1,5 +1,6 @@
 import { Handler } from '../models/Handler'
-import { Sale } from '../models/Sale'
+import { Sale, CashHandler } from '../models/entities'
+import { SalesTypes } from '../models/enums/SalesTypes'
 import { IntegratePaymentsDTO } from '../models/dtos/payments/IntegratePaymentsDTO'
 
 type FormatedSale = {
@@ -11,6 +12,8 @@ type FormatedSale = {
   cash_code: string
   store_id: number
   cash_history_id: number
+  nfce_url?: string
+  nfce_id?: number
 }
 
 export const formatSalesToIntegrate = (
@@ -21,12 +24,14 @@ export const formatSalesToIntegrate = (
   const formatedSales = sales.map((sale) => ({
     id: sale.id,
     change_amount: sale.change_amount,
-    type: sale.type,
+    type: SalesTypes[sale.type],
     discount: sale.discount,
     cash_id: cash_id || sale.cash_id,
     cash_code: sale.cash_code,
     store_id: sale.store_id,
     cash_history_id: cash_history_id || sale.cash_history_id,
+    nfce_url: sale.nfce_url,
+    nfce_id: sale.nfce_id,
   }))
   return cleanDuplicatedValues<FormatedSale>(formatedSales, 'id')
 }
@@ -40,10 +45,11 @@ type FormatedHandler = {
   cash_code: string
   store_id: number
   cash_history_id: number
+  order_id: number
 }
 
 export const formatHandlesToIntegrate = (
-  handlers: Handler[],
+  handlers: CashHandler[],
   cash_id?: number,
   cash_history_id?: number
 ): FormatedHandler[] => {
@@ -56,6 +62,7 @@ export const formatHandlesToIntegrate = (
     cash_id: cash_id || handler.cash_id,
     cash_code: handler.cash_code,
     cash_history_id: cash_history_id || handler.cash_history_id,
+    order_id: handler.order_id,
   }))
   return cleanDuplicatedValues<FormatedHandler>(formatedHandlers, 'id')
 }
@@ -72,7 +79,7 @@ export const getQuantityItems = (
 }
 
 export const getInOutHandlers = (
-  handlers: Handler[]
+  handlers: CashHandler[]
 ): { amount_in: number; amount_out: number } => {
   const amount_in = handlers.reduce((total, handler) => {
     if (handler.type === 'entrada') {

@@ -8,5 +8,6 @@ export interface CreateHandlerDTO {
   reason: string
   amount: number
   created_at: string
-  to_integrate: boolean
+  to_integrate: boolean,
+  order_id?: number
 }

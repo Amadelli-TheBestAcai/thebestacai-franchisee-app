@@ -60,12 +60,12 @@ export const PaymentsContainer = styled.div`
 export const PaymentsTypesContainer = styled.div`
   display: flex;
   flex-direction: column;
-  width: 60%;
+  width: 70%;
   height: 100%;
 `
 
 export const FinishContainer = styled.div`
   display: flex;
-  width: 40%;
+  width: 30%;
   height: 100%;
 `

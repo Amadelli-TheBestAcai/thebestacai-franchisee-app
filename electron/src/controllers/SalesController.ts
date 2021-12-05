@@ -1,41 +1,72 @@
 import { ipcMain } from 'electron'
-import SalesService from '../services/SalesService'
-import CashierService from '../services/CashierService'
+import { getCustomRepository } from 'typeorm'
+import GetCurrentStoreCashService from '../services/StoreCash/GetCurrentStoreCashService'
+import CreateSaleService from '../services/Sale/CreateSaleService'
+import GetSalesFromApiService from '../services/Sale/GetSalesFromApiService'
+import DeleteSalesFromApiService from '../services/Sale/DeleteSalesFromApiService'
+import TransferCommandItems from '../services/Sale/TransferCommandItems'
+import GetAppSalesToIntegrateService from '../services/Sale/GetAppSalesToIntegrateService'
+import IntegrateAppSalesService from '../services/Sale/IntegrateAppSalesService'
+import FinishSaleService from '../services/Sale/FinishSaleService'
+import FinishDeliverySaleService from '../services/Sale/FinishDeliverySaleService'
+import GetCurrentSaleService from '../services/Sale/GetCurrentSaleService'
+import EmitNfCeService from '../services/Sale/EmitNfCeService'
+import { sendLog } from '../utils/ApiLog'
+import { printSale } from '../utils/PrintSale'
+import SalesRepository from '../repositories/SalesRepository'
+
+const _salesRepository = getCustomRepository(SalesRepository)
 
 ipcMain.on('sale:create', async (event) => {
   try {
-    const sale = await SalesService.create()
+    const sale = await CreateSaleService.execute()
     event.reply('sale:create:response', sale)
   } catch (err) {
+    sendLog({
+      title: 'Erro criar venda',
+      payload: err.message,
+    })
     console.error(err)
   }
 })
 
-ipcMain.on('sale:add', async (event, sale) => {
+ipcMain.on('sale:addDelivery', async (event, { sale, payment }) => {
   try {
-    await SalesService.finishSale(sale)
-    event.reply('sale:add:response', true)
+    await FinishDeliverySaleService.execute(sale, payment)
+    event.reply('sale:addDelivery:response', true)
   } catch (err) {
-    event.reply('sale:add:response', false)
+    sendLog({
+      title: 'Erro ao finalizar venda',
+      payload: { err: err.message, sale },
+    })
+    event.reply('sale:addDelivery:response', false)
     console.error(err)
   }
 })
 
 ipcMain.on('sale:getCurrent', async (event) => {
   try {
-    const { sale, items, payments } = await SalesService.getCurrentSale()
-    const cashier = await CashierService.getCurrentCashier()
+    const { sale, items, payments } = await GetCurrentSaleService.execute()
+    const cashier = await GetCurrentStoreCashService.execute()
     event.reply('sale:getCurrent:response', { sale, items, payments, cashier })
   } catch (err) {
+    sendLog({
+      title: 'Erro ao obter venda atual',
+      payload: err.message,
+    })
     console.error(err)
   }
 })
 
 ipcMain.on('sale:command:get', async (event) => {
   try {
-    const sales = await SalesService.getSalesCommands()
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:get:response', sales)
   } catch (err) {
+    sendLog({
+      title: 'Erro ao obter comandas',
+      payload: err.message,
+    })
     console.error(err)
     event.reply('sale:command:get:response', [])
   }
@@ -43,54 +74,69 @@ ipcMain.on('sale:command:get', async (event) => {
 
 ipcMain.on('sale:command:create', async (event, { id, name }) => {
   try {
-    const sale = await SalesService.createCommand(id, name)
+    await _salesRepository.createCommand(id, name)
+    const sale = await CreateSaleService.execute()
     event.reply('sale:command:create:response', sale)
   } catch (err) {
+    sendLog({
+      title: 'Erro ao criar comanda',
+      payload: { err: err.message, params: { id, name } },
+    })
     console.error(err)
   }
 })
 
-ipcMain.on('sale:finish', async (event, sale) => {
-  await SalesService.finishSale(sale)
-  const { sale: newSale } = await SalesService.getCurrentSale()
-  event.reply('sale:finish:response', newSale)
+ipcMain.on('sale:finish', async (event, { sale, saleOptions }) => {
+  try {
+    await FinishSaleService.execute({ ...sale }, saleOptions)
+    const { sale: newSale } = await GetCurrentSaleService.execute()
+    event.reply('sale:finish:response', newSale)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao finalizar venda',
+      payload: { err: err.message, params: { sale } },
+    })
+    console.error(err)
+  }
 })
 
 ipcMain.on('sale:command:transfer', async (event, sale) => {
   try {
-    await SalesService.transferItemsCommand(sale)
-    const sales = await SalesService.getSalesCommands()
+    await TransferCommandItems.execute(sale)
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:transfer:response', sales)
   } catch (err) {
+    sendLog({
+      title: 'Erro ao obter items da comanda',
+      payload: { err: err.message, params: { sale } },
+    })
     console.error(err)
   }
 })
 
 ipcMain.on('sale:command:remove', async (event, sale) => {
   try {
-    await SalesService.delete(sale)
-    const sales = await SalesService.getSalesCommands()
+    await _salesRepository.deleteById(sale)
+    const sales = await _salesRepository.getCommands()
     event.reply('sale:command:remove:response', sales)
   } catch (err) {
-    console.error(err)
-  }
-})
-
-ipcMain.on('sale:integrate:pending', async (event, { cash, amount }) => {
-  try {
-    await SalesService.integratePending(amount, cash)
-    event.reply('sale:integrate:pending:response', true)
-  } catch (err) {
-    event.reply('sale:integrate:pending:response', false)
+    sendLog({
+      title: 'Erro ao remover comanda',
+      payload: { err: err.message, params: { sale } },
+    })
     console.error(err)
   }
 })
 
 ipcMain.on('sale:api:get', async (event) => {
   try {
-    const { isConnected, data } = await SalesService.getFromApi()
-    event.reply('sale:api:get:response', { isConnected, data })
+    const { isConnected, sales } = await GetSalesFromApiService.execute()
+    event.reply('sale:api:get:response', { isConnected, data: sales })
   } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas da api',
+      payload: err.message,
+    })
     event.reply('sale:api:get:response', { isConnected: false, data: [] })
     console.error(err)
   }
@@ -98,10 +144,60 @@ ipcMain.on('sale:api:get', async (event) => {
 
 ipcMain.on('sale:api:delete', async (event, id) => {
   try {
-    const { success, data } = await SalesService.deleteFromApi(id)
-    event.reply('sale:api:delete:response', { success, data })
+    const success = await DeleteSalesFromApiService.execute(id)
+    const { sales } = await GetSalesFromApiService.execute()
+    event.reply('sale:api:delete:response', { success, data: sales })
   } catch (err) {
+    sendLog({
+      title: 'Erro ao remover vendas da api',
+      payload: { err: err.message, params: { id } },
+    })
     event.reply('sale:api:delete:response', { success: false, data: [] })
     console.error(err)
+  }
+})
+
+ipcMain.on('appSale:get', async (event) => {
+  try {
+    const { hasInternet, sales } = await GetAppSalesToIntegrateService.execute()
+    event.reply('appSale:get:response', { hasInternet, sales })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas do APP',
+      payload: { err: err.message },
+    })
+    event.reply('appSale:get:response', { hasInternet: false, sales: [] })
+    console.error(err)
+  }
+})
+
+ipcMain.on('appSale:integrate', async (event, { sales, appSalesIds }) => {
+  try {
+    await IntegrateAppSalesService.execute(sales, appSalesIds)
+    event.reply('appSale:integrate:response', true)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao integrar vendas do app',
+      payload: { err: err.message },
+    })
+    event.reply('appSale:integrate:response', false)
+    console.error(err)
+  }
+})
+
+ipcMain.on('sale:print', async (event, payload) => {
+  printSale(payload)
+})
+
+ipcMain.on('sale:nfe', async (event, { nfce, sale_id }) => {
+  try {
+    const response = await EmitNfCeService.execute(nfce, sale_id)
+    event.reply('sale:nfe:response', response)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao emitir nfce',
+      payload: { err: err.message, payload: nfce },
+    })
+    event.reply('sale:nfe:response', { error: true })
   }
 })

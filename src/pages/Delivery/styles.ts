@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 
-import { Radio as RadioAnt } from 'antd'
+import { Radio as RadioAnt, Row as RowAnt, Col as ColAnt } from 'antd'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
@@ -26,7 +26,7 @@ export const PlatformContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 10vh;
+  height: 10%;
   background: #f3f3f3;
   border: 1px solid #dbdbdb;
   box-sizing: border-box;
@@ -154,7 +154,6 @@ export const UberEatsIcon = styled(Ubereats)`
 export const TelefoneIcon = styled(TelephoneFill)`
   ${PlatformIconCss}
 `
-
 const PaymentIconCss = css`
   width: 20px;
   height: 20px;
@@ -178,4 +177,81 @@ export const DebitIcon = styled(CreditCard)`
 export const CheckOnline = styled(CheckCircleFill)`
   color: #009a7e;
   ${PaymentIconCss};
+`
+
+export const SalesContainer = styled.div`
+  display: flex;
+  height: 45%;
+  padding: 10px;
+`
+
+export const SalesTable = styled.div`
+  display: flex;
+  height: 100%;
+  width: 80%;
+  flex-direction: column;
+  overflow-y: scroll;
+`
+
+export const SalesListHeader = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  background: var(--primary-orange);
+`
+
+export const SalesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  height: 90%;
+  overflow-y: scroll;
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+`
+
+export const SalesDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 20%;
+  span {
+    font-size: 14px;
+    font-weight: bold;
+    color: #00000052;
+  }
+  label {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00000052;
+  }
+  button {
+    span {
+      color: white;
+    }
+  }
+`
+
+export const Column = styled(ColAnt)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+
+export const Title = styled.span`
+  font-size: 16px;
+  font-weight: bold;
+`
+
+export const SalesInfoContainer = styled.div`
+  font-size: 16px;
+  font-weight: bold;
 `

@@ -1,41 +1,69 @@
 import { ipcMain } from 'electron'
-import IntegrateService from '../services/IntegrateService'
+import { getCustomRepository } from 'typeorm'
+import IntegrateOfflineService from '../services/Integration/IntegrateOfflineService'
+import IntegrateOnlineService from '../services/Integration/IntegrateOnlineService'
+import CheckAppIsUpdatedService from '../services/app/CheckAppIsUpdatedService'
+import { sendLog } from '../utils/ApiLog'
+
+import SalesRepository from '../repositories/SalesRepository'
+import CashHandlerRepository from '../repositories/CashHandlerRepository'
+
+const _saleRepository = getCustomRepository(SalesRepository)
+const _cashHandlerRepository = getCustomRepository(CashHandlerRepository)
 
 ipcMain.on('integrate:offline', async (event, { code, amount_on_close }) => {
   try {
-    await IntegrateService.integrateOffline(code, amount_on_close)
+    await IntegrateOfflineService.execute(code, amount_on_close)
     event.reply('integrate:offline:response', true)
   } catch (err) {
+    sendLog({
+      title: 'Erro ao integrar vendas offline',
+      payload: { err: err.message, cashToClose: { code, amount_on_close } },
+    })
     console.error(err)
     event.reply('integrate:offline:response', false)
   }
 })
 
-let SHOULD_INTEGRATE = true
-
-ipcMain.on('integrate:online', async () => {
-  if (SHOULD_INTEGRATE) {
-    SHOULD_INTEGRATE = false
-    await IntegrateService.integrateOnline()
-  }
-})
-
-ipcMain.on('integrate:shouldUpdateApp', async (event) => {
-  try {
-    const response = await IntegrateService.shouldUpdateApp()
-    event.reply('integrate:shouldUpdateApp:response', response)
-  } catch (err) {
-    console.error(err)
-    event.reply('integrate:shouldUpdateApp:response', false)
-  }
-})
-
 ipcMain.on('integrate:checkAppVersion', async (event) => {
   try {
-    const response = await IntegrateService.appAlreadyUpdated()
+    const response = await CheckAppIsUpdatedService.execute()
     event.reply('integrate:checkAppVersion:response', response)
   } catch (err) {
+    sendLog({
+      title: 'Erro ao checkar nova versão para o APP',
+      payload: err.message,
+    })
     console.error(err)
     event.reply('integrate:checkAppVersion:response', false)
+  }
+})
+
+ipcMain.on('integrate:status', async (event) => {
+  try {
+    const sales = await _saleRepository.getOnline()
+    const handlers = await _cashHandlerRepository.getOnlineHandlers()
+    event.reply('integrate:status:response', { sales, handlers })
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas e movimentações feitas no modo online',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('integrate:status:response', { sales: [], handlers: [] })
+  }
+})
+
+ipcMain.on('integrate:integrate', async (event) => {
+  try {
+    await IntegrateOnlineService.execute()
+    event.reply('integrate:integrate:response', true)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter vendas e movimentações feitas no modo online',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('integrate:integrate:response', false)
   }
 })

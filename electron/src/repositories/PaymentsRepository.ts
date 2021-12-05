@@ -1,22 +1,37 @@
-import knex from '../database'
-import { Payment } from '../models/Payment'
+import {
+  Repository,
+  getRepository,
+  DeepPartial,
+  EntityRepository,
+} from 'typeorm'
+import { IPaymentsRepository } from './interfaces/IPaymentsRepository'
+import { Payment } from '../models/entities'
 
-class PaymentsRepository {
-  async create(payments: Payment) {
-    return await knex('payments').insert(payments)
+@EntityRepository(Payment)
+class PaymentsRepository implements IPaymentsRepository {
+  private ormRepository: Repository<Payment>
+
+  constructor() {
+    this.ormRepository = getRepository(Payment)
+  }
+
+  async create(payload: DeepPartial<Payment>): Promise<Payment> {
+    const payments = await this.ormRepository.create(payload)
+    await this.ormRepository.save(payments)
+    return payments
   }
 
   async getBySale(sale_id: string): Promise<Payment[]> {
-    return await knex('payments').where({ sale_id })
+    return await this.ormRepository.find({ where: { sale_id } })
   }
 
   async deleteById(id: string): Promise<void> {
-    await knex('payments').where({ id }).del()
+    await this.ormRepository.softDelete({ id })
   }
 
   async deleteBySale(sale_id: string): Promise<void> {
-    await knex('payments').where({ sale_id }).del()
+    await this.ormRepository.softDelete({ sale_id })
   }
 }
 
-export default new PaymentsRepository()
+export default PaymentsRepository

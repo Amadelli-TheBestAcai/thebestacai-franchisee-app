@@ -1,4 +1,7 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron'
+/* eslint-disable import/first */
+require('../bootstrap')
+import 'reflect-metadata'
+import { app, BrowserWindow, screen, ipcMain, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import * as url from 'url'
@@ -8,10 +11,14 @@ import installExtension, {
 } from 'electron-devtools-installer'
 
 import { inicializeControllers } from './src'
+import { initializeDatabase } from './src/database'
 
 let mainWindow: Electron.BrowserWindow | null
 
-function createWindow() {
+async function createWindow() {
+  await initializeDatabase()
+  inicializeControllers()
+
   const { width, height } = screen.getPrimaryDisplay().workAreaSize
   mainWindow = new BrowserWindow({
     width,
@@ -32,7 +39,17 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:4000')
   } else {
-    // mainWindow.removeMenu()
+    const menu = Menu.buildFromTemplate([
+      {
+        label: 'Ajustar Layout',
+        submenu: [
+          { role: 'resetZoom', label: 'Remover Zoom' },
+          { role: 'zoomIn', label: 'Aumentar Zoom' },
+          { role: 'zoomOut', label: 'Diminuir Zoom' },
+        ],
+      },
+    ])
+    mainWindow.setMenu(menu)
     mainWindow.loadURL(
       url.format({
         pathname: path.join(__dirname, 'renderer/index.html'),
@@ -84,7 +101,6 @@ app
   .on('ready', createWindow)
   .whenReady()
   .then(() => {
-    inicializeControllers()
     if (process.env.NODE_ENV === 'development') {
       installExtension(REACT_DEVELOPER_TOOLS)
         .then((name) => console.log(`Added Extension:  ${name}`))

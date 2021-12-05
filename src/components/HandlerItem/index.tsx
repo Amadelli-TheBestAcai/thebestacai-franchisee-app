@@ -1,22 +1,30 @@
 import React from 'react'
+import { ipcRenderer } from 'electron'
 
-import { Container, Column, Description, RemoveIcon } from './styles'
+import {
+  Container,
+  Column,
+  Description,
+  RemoveIcon,
+  PrinterIcon,
+} from './styles'
+
+import currentUser from '../../helpers/currentUser'
 
 import { Handler as HandlerModel } from '../../models/handler'
 
 type IProps = {
   handler: HandlerModel
   onDelete: (id: number) => void
-  hasPermission: boolean
 }
 
-const HandlerItem: React.FC<IProps> = ({
-  handler,
-  onDelete,
-  hasPermission,
-}) => {
+const HandlerItem: React.FC<IProps> = ({ handler, onDelete }) => {
   const { id, type, amount, created_at, reason } = handler
   const time = created_at.split(' ')[1]
+
+  const onPrint = (_handler: HandlerModel) => {
+    ipcRenderer.send('handler:print', _handler)
+  }
   return (
     <Container>
       <Column span={4}>
@@ -34,11 +42,14 @@ const HandlerItem: React.FC<IProps> = ({
       <Column span={4}>
         <Description>{reason}</Description>
       </Column>
-      {hasPermission && (
+      <>
         <Column span={4}>
-          <RemoveIcon onClick={() => onDelete(id)} />
+          {currentUser.hasPermission('handler.delete_handler') && (
+            <RemoveIcon onClick={() => onDelete(id)} />
+          )}
+          <PrinterIcon onClick={() => onPrint(handler)} />
         </Column>
-      )}
+      </>
     </Container>
   )
 }

@@ -1,4 +1,4 @@
 export interface IntegratePaymentsDTO {
-  type: string
+  type: number
   amount: number
 }

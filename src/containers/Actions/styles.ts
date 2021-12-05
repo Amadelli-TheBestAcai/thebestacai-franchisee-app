@@ -4,6 +4,7 @@ import {
   ArrowFromLeft,
   ArrowFromRight,
   AddToQueue,
+  Chat,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -94,5 +95,9 @@ export const OutIcon = styled(ArrowFromRight)`
 `
 
 export const CommandIcon = styled(AddToQueue)`
+  ${IconCSS};
+`
+
+export const ChatIcon = styled(Chat)`
   ${IconCSS};
 `

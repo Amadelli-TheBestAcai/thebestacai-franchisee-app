@@ -1,42 +1,28 @@
-import knex from '../database'
-import { User } from '../models/User'
+import { Repository, getRepository, DeepPartial } from 'typeorm'
+import User from '../models/entities/User'
 
-class UserRepository {
-  async create(payload) {
-    return await knex('users').insert(payload)
+import { IUserRepository } from './interfaces/IUserRepository'
+
+class UserRepository implements IUserRepository {
+  private ormRepository: Repository<User>
+
+  constructor() {
+    this.ormRepository = getRepository(User)
+  }
+
+  async create(payload: DeepPartial<User>): Promise<User> {
+    const user = await this.ormRepository.create(payload)
+    await this.ormRepository.save(user)
+    return user
   }
 
   async findByUsername(username: string): Promise<User> {
-    const users = await knex('users').where({
-      username,
-    })
-    return users[0]
+    return await this.ormRepository.findOne({ where: { username } })
   }
 
-  async deleteById(id: number) {
-    return await knex('users')
-      .where({
-        id,
-      })
-      .del()
-  }
-
-  async deleteSessionUser(id: string) {
-    await knex('session_user')
-      .where({
-        id,
-      })
-      .del()
-  }
-
-  async getSessionUser() {
-    const response = await knex('session_user')
-    return response[0]
-  }
-
-  async updateSessionUser(payload) {
-    return await knex('session_user').insert(payload)
+  async deleteById(id: string): Promise<void> {
+    await this.ormRepository.delete({ id })
   }
 }
 
-export default new UserRepository()
+export default UserRepository

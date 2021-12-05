@@ -1,5 +1,5 @@
 export interface Sale {
-  id: string
+  id?: string
   cash_code?: string
   store_id?: number
   cash_id?: number
@@ -12,5 +12,5 @@ export interface Sale {
   quantity: number
   to_integrate: boolean
   is_current: boolean
-  created_at: string
+  created_at: Date
 }

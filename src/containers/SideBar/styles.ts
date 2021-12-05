@@ -7,6 +7,8 @@ import {
   BarChart,
   Cashapp,
   HomeAlt,
+  BoxOpen,
+  FileInvoice,
 } from '../../styles/Icons'
 
 export const Container = styled.div`
@@ -61,5 +63,13 @@ export const Money = styled(Cashapp)`
 `
 
 export const Home = styled(HomeAlt)`
+  ${IconCSS}
+`
+
+export const BoxIcon = styled(BoxOpen)`
+  ${IconCSS}
+`
+
+export const NfceIcon = styled(FileInvoice)`
   ${IconCSS}
 `

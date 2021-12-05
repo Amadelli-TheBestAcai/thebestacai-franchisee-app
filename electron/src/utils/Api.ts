@@ -1,18 +1,20 @@
 import axios from 'axios'
-import UserService from '../services/UserService'
+import GetSessionUserService from '../services/User/GetSessionUserService'
+import envConfig from '../../../env-config.js'
+require('../../../bootstrap')
 
-// const API_URL = 'http://localhost:5050'
-const API_URL = 'https://hml-thebestacai-api.herokuapp.com'
+const API_URL = envConfig.API_DASH
 
+console.log(API_URL)
 const api = axios.create({
   baseURL: API_URL,
   responseType: 'json',
 })
 
 api.interceptors.request.use(async (config) => {
-  const token = await UserService.getCurrentSession()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  const sessionUser = await GetSessionUserService.execute()
+  if (sessionUser) {
+    config.headers.Authorization = `Bearer ${sessionUser.access_token}`
   }
   return config
 })

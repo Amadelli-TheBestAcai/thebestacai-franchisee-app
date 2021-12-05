@@ -11,6 +11,6 @@ export interface CreateSaleDTO {
   total?: number
   quantity?: number
   to_integrate: boolean
-  is_current: boolean | number
+  is_current: boolean
   created_at: string
 }

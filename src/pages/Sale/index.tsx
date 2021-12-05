@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { withRouter, RouteComponentProps } from 'react-router-dom'
 import { ipcRenderer } from 'electron'
 
 import { UserRoles } from '../../models/enums/userRole'
@@ -10,7 +11,7 @@ import RouterDescription from '../../components/RouterDescription'
 import Spinner from '../../components/Spinner'
 import SaleItem from '../../components/Sale'
 
-import { Empty, message, Modal } from 'antd'
+import { Empty, message, Modal, Row, Button } from 'antd'
 
 import {
   Container,
@@ -25,36 +26,38 @@ import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse
 
 const { confirm } = Modal
 
-const Sale: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [hasPermission, setPermission] = useState(false)
+type IProps = RouteComponentProps
+
+const Sale: React.FC<IProps> = ({ history }) => {
+  const [shouldSearch, setShouldSearch] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const [pendingSales, setPendingSales] = useState<number>(0)
+  const [isIntegrating, setIsIntegrating] = useState<boolean>(false)
   const [sales, setSales] = useState<SalesHistory[]>([])
   const [isConected, setIsConected] = useState<boolean>(true)
 
   useEffect(() => {
-    ipcRenderer.send('sale:api:get')
-    ipcRenderer.once(
-      'sale:api:get:response',
-      (event, { isConnected, data }) => {
-        setIsLoading(false)
-        setIsConected(isConnected)
-        setSales(data)
-        ipcRenderer.send('user:get')
-      }
-    )
-    ipcRenderer.once('user:get:response', (event, user) => {
-      const { role } = user
-      setPermission(
-        [
-          UserRoles.Master,
-          UserRoles.Administrador,
-          UserRoles.Franqueado,
-          UserRoles.Gerente,
-        ].some((elem) => elem === role)
+    const fetchData = () => {
+      setIsLoading(true)
+      ipcRenderer.send('sale:api:get')
+      ipcRenderer.once(
+        'sale:api:get:response',
+        (event, { isConnected, data }) => {
+          setIsLoading(false)
+          setIsConected(isConnected)
+          setSales(data)
+        }
       )
-      setIsLoading(false)
-    })
-  }, [])
+      ipcRenderer.send('integrate:status')
+      ipcRenderer.once('integrate:status:response', (event, { sales }) => {
+        setPendingSales(sales?.length)
+      })
+      setShouldSearch(false)
+    }
+    if (shouldSearch) {
+      fetchData()
+    }
+  }, [shouldSearch])
 
   const onDelete = (id: number): void => {
     confirm({
@@ -70,13 +73,35 @@ const Sale: React.FC = () => {
           (event, { success, data }) => {
             setIsLoading(false)
             if (!success) {
-              message.warning('Falha ao remover movimentação')
+              message.warning('Falha ao remover venda')
             }
             setSales(data)
-            message.success('Movimentação removida com sucesso')
+            message.success('Venda removida com sucesso')
           }
         )
       },
+    })
+  }
+
+  const handleIntegrate = () => {
+    setIsIntegrating(true)
+    ipcRenderer.send('integrate:integrate')
+    ipcRenderer.once('integrate:integrate:response', (event, status) => {
+      setIsIntegrating(false)
+      if (status) {
+        Modal.confirm({
+          title: 'Integração de vendas concluida.',
+          content:
+            'As vendas foram enviadas com sucesso e estão sendo processadas. Pode levar alguns minutos até que todas sejam processadas e salvas pelo servidor.',
+          onOk() {
+            return history.push('/home')
+          },
+          cancelButtonProps: { hidden: true },
+        })
+      } else {
+        message.error('Houve um erro na tentativa de integrar as vendas.')
+      }
+      setPendingSales(sales?.length)
     })
   }
 
@@ -86,44 +111,68 @@ const Sale: React.FC = () => {
       {isLoading ? (
         <Spinner />
       ) : isConected ? (
-        sales.length ? (
-          <SalesContainer>
-            <SalesHeader>
-              <Column span={4}>
-                <Title>ID</Title>
-              </Column>
-              <Column span={4}>
-                <Title>Valor</Title>
-              </Column>
-              <Column span={4}>
-                <Title>Quantidade</Title>
-              </Column>
-              <Column span={4}>
-                <Title>Hora</Title>
-              </Column>
-              <Column span={4}>
-                <Title>Tipo</Title>
-              </Column>
-              <Column span={4}>
-                <Title>Ações</Title>
-              </Column>
-            </SalesHeader>
-            <SalesList>
-              {sales.map((sale) => (
-                <SaleItem
-                  key={sale.id}
-                  sale={sale}
-                  onDelete={onDelete}
-                  hasPermission={hasPermission}
-                />
-              ))}
-            </SalesList>
-          </SalesContainer>
-        ) : (
-          <Centralizer>
-            <Empty description="Nenhuma venda encontrada" />
-          </Centralizer>
-        )
+        <>
+          {pendingSales !== 0 && (
+            <Row
+              justify="center"
+              align="middle"
+              style={{ width: '100%', margin: '10px 0' }}
+            >
+              <Title style={{ color: '#969696' }}>
+                Há vendas que ainda não foram integradas. Clique em Enviar para
+                integrar.
+              </Title>
+              <Button
+                type="primary"
+                style={{ marginLeft: 10 }}
+                loading={isIntegrating}
+                onClick={() => handleIntegrate()}
+              >
+                Enviar
+              </Button>
+            </Row>
+          )}
+          <>
+            {sales?.length ? (
+              <SalesContainer>
+                <SalesHeader>
+                  <Column span={4}>
+                    <Title>ID</Title>
+                  </Column>
+                  <Column span={4}>
+                    <Title>Valor</Title>
+                  </Column>
+                  <Column span={4}>
+                    <Title>Quantidade</Title>
+                  </Column>
+                  <Column span={4}>
+                    <Title>Hora</Title>
+                  </Column>
+                  <Column span={4}>
+                    <Title>Tipo</Title>
+                  </Column>
+                  <Column span={4}>
+                    <Title>Ações</Title>
+                  </Column>
+                </SalesHeader>
+                <SalesList>
+                  {sales.map((sale) => (
+                    <SaleItem
+                      key={sale.id}
+                      sale={sale}
+                      onDelete={onDelete}
+                      setShouldSearch={setShouldSearch}
+                    />
+                  ))}
+                </SalesList>
+              </SalesContainer>
+            ) : (
+              <Centralizer>
+                <Empty description="Nenhuma venda encontrada" />
+              </Centralizer>
+            )}
+          </>
+        </>
       ) : (
         <DisconectedForm />
       )}
@@ -131,4 +180,4 @@ const Sale: React.FC = () => {
   )
 }
 
-export default Sale
+export default withRouter(Sale)

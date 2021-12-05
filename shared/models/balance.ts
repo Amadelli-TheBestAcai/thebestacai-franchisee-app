@@ -4,6 +4,7 @@ export interface Balance {
     money: number
     credit: number
     debit: number
+    pix: number
     ticket: number
   }
   delivery: {
@@ -11,6 +12,7 @@ export interface Balance {
     money: number
     credit: number
     debit: number
+    pix: number
     online: number
   }
   billing: {

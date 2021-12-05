@@ -10,6 +10,7 @@ export interface CashHistory {
   in_result: string
   out_result: string
   result_cash: string
+  observation: string
   created_at: string
   deleted_at: string
 }

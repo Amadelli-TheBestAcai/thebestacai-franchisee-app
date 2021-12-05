@@ -19,6 +19,7 @@ type ComponentProps = RouteComponentProps
 const UserInfo: React.FC<ComponentProps> = ({ history }) => {
   const [store, setStore] = useState<string>()
   const [cash, setCash] = useState<string>()
+
   useEffect(() => {
     ipcRenderer.send('store:get')
     ipcRenderer.once('store:get:response', (event, { store }) => {
@@ -26,7 +27,7 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
     })
     ipcRenderer.send('cashier:get', store)
     ipcRenderer.once('cashier:get:response', (event, { current }) => {
-      if (current?.is_opened === 1) {
+      if (current?.is_opened) {
         setCash('ABERTO')
       } else {
         setCash('FECHADO')
@@ -37,7 +38,7 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
   return store && cash ? (
     <Container>
       <UserContent>
-        <Store>{store}</Store>
+        <Store>{store.toUpperCase()}</Store>
         <Description>
           CAIXA:{' '}
           <Description

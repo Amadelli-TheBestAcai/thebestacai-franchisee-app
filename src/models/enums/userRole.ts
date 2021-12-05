@@ -3,5 +3,6 @@ export enum UserRoles {
   Administrador = 1,
   Franqueado = 2,
   Gerente = 3,
-  Funcionário = 4,
+  Encarregado = 4,
+  Funcionário = 5,
 }

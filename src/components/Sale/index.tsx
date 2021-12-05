@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { SetStateAction, Dispatch, useState } from 'react'
+import { ipcRenderer } from 'electron'
+import currentUser from '../../helpers/currentUser'
 
 import { SalesHistory } from '../../../shared/httpResponses/salesHistoryResponse'
 import { PaymentType } from '../../models/enums/paymentType'
-
+import { Modal } from 'antd'
+import NfeForm from '../../containers/NfeForm'
 import {
   Container,
   Row,
@@ -11,15 +14,18 @@ import {
   Panel,
   RemoveIcon,
   ColHeader,
+  PrinterIcon,
+  NfceIcon,
 } from './styles'
 
 type IProps = {
   sale: SalesHistory
   onDelete: (id: number) => void
-  hasPermission: boolean
+  setShouldSearch: Dispatch<SetStateAction<boolean>>
 }
 
-const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
+const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
+  const [nfceModal, setNfceModal] = useState(false)
   const {
     id,
     type,
@@ -28,11 +34,11 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
     quantity,
     change_amount,
     discount,
-    item,
+    items,
     payments,
   } = sale
+  console.log(sale)
   const time = created_at.split(' ')[1]
-
   const getType = (type: number): string => {
     if (type === 0) return 'Loja'
     if (type === 1) return 'IFOOD'
@@ -42,23 +48,67 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
     if (type === 5) return 'APP'
   }
 
+  const onPrinter = () => {
+    Modal.confirm({
+      title: 'Imprimir Venda',
+      content: 'Gostaria de prosseguir e imprir esta venda?',
+      okText: 'Sim',
+      okType: 'default',
+      cancelText: 'Não',
+      async onOk() {
+        const formatedItems = sale.items.map((item) => ({
+          category_id: +item.product.category_id,
+          name: item.product.name,
+          quantity: +item.quantity,
+          price_unit: +item.storeProduct.price_unit,
+        }))
+
+        const total = formatedItems.reduce(
+          (total, item) =>
+            total + +(item.quantity || 0) * +(item.price_unit || 0),
+          0
+        )
+
+        const formatedSale = {
+          id: sale.id,
+          items: formatedItems,
+          nfce_url: sale.nfce_url,
+          total,
+        }
+        ipcRenderer.send('sale:print', formatedSale)
+      },
+    })
+  }
+
+  const getTotalSold = (sale: SalesHistory) => {
+    return (
+      sale.payments.reduce((total, payment) => total + +payment.amount, 0) -
+      +sale.discount -
+      +sale.change_amount
+    )
+      .toFixed(2)
+      .replace('.', ',')
+  }
   return (
     <Container>
       <Panel
         header={
           <Row>
             <ColHeader span={4}>{id}</ColHeader>
-            <ColHeader span={4}>
-              {total_sold.toFixed(2).replace('.', ',')}R$
-            </ColHeader>
+            <ColHeader span={4}>{getTotalSold(sale)}R$</ColHeader>
             <ColHeader span={4}>{quantity}</ColHeader>
             <ColHeader span={4}>{time}</ColHeader>
             <ColHeader span={4}>{getType(type)}</ColHeader>
-            {hasPermission && (
-              <ColHeader span={4}>
+            <ColHeader span={4}>
+              <PrinterIcon onClick={() => onPrinter()} />
+              {currentUser.hasPermission('sales.remove_sale') && (
                 <RemoveIcon onClick={() => onDelete(id)} />
-              </ColHeader>
-            )}
+              )}
+              {currentUser.hasPermission('sales.emit_nfce') &&
+                !sale.nfce_id && (
+                  <NfceIcon onClick={() => setNfceModal(true)} />
+                )}
+            </ColHeader>
           </Row>
         }
         key={id}
@@ -75,26 +125,24 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
             R$
           </Col>
         </Row>
-        {item.length > 0 && (
+        {items?.length > 0 && (
           <Container>
             <Panel header="Itens" key="itens">
-              {item.map(
-                ({ id, product_id: { name: ProductName }, quantity }) => (
-                  <Row key={id}>
-                    <Col span={12}>{ProductName}</Col>
-                    <Col span={12}>
-                      <Description>Quantidade: </Description>{' '}
-                      {quantity.replace('.', ',')}
-                    </Col>
-                  </Row>
-                )
-              )}
+              {items.map((item) => (
+                <Row key={item?.id}>
+                  <Col span={12}>{item.product?.name}</Col>
+                  <Col span={12}>
+                    <Description>Quantidade: </Description>{' '}
+                    {item?.quantity?.toString().replace('.', ',')}
+                  </Col>
+                </Row>
+              ))}
             </Panel>
           </Container>
         )}
         <Container>
           <Panel header="Pagamentos" key="payments">
-            {payments.map(({ id, amount, type }) => (
+            {payments?.map(({ id, amount, type }) => (
               <Row key={id}>
                 <Col span={12}>{PaymentType[type]}</Col>
                 <Col span={12}>
@@ -106,6 +154,12 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, hasPermission }) => {
           </Panel>
         </Container>
       </Panel>
+      <NfeForm
+        setShouldSearch={setShouldSearch}
+        modalState={nfceModal}
+        setModalState={setNfceModal}
+        sale={sale}
+      />
     </Container>
   )
 }

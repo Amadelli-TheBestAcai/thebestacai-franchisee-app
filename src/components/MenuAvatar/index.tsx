@@ -1,12 +1,10 @@
 import React from 'react'
-
+import currentUser from '../../helpers/currentUser'
 import {
   Actions,
-  Content,
-  UserRole,
-  UserName,
   LogOutCircleIcon,
   ActionsContent,
+  SettingsIcon,
 } from './styles'
 import { Menu } from 'antd'
 
@@ -14,15 +12,9 @@ const redirect = (history: any, route?: string) => {
   return history.push(`/${route}`)
 }
 
-const MenuAvatar = (history: any, name?: string, role?: string) => {
+const MenuAvatar = (history: any) => {
   return (
     <Menu>
-      <Menu.Item>
-        <Content>
-          <UserName>{name}</UserName>
-          <UserRole>{role}</UserRole>
-        </Content>
-      </Menu.Item>
       <Menu.Item>
         <ActionsContent
           onClick={() => {
@@ -32,6 +24,16 @@ const MenuAvatar = (history: any, name?: string, role?: string) => {
           <LogOutCircleIcon />
           <Actions>Log out</Actions>
         </ActionsContent>
+        {currentUser.hasPermission('config.config_access') && (
+          <ActionsContent
+            onClick={() => {
+              redirect(history, 'settings')
+            }}
+          >
+            <SettingsIcon />
+            <Actions>Configurações</Actions>
+          </ActionsContent>
+        )}
       </Menu.Item>
     </Menu>
   )

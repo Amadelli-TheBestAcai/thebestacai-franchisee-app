@@ -12,5 +12,7 @@ export interface Sale {
   quantity: number
   to_integrate: boolean
   is_current: boolean | number
+  nfe_url?: string
+  nfe_id?: number
   created_at: string
 }

@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import currentUser from './helpers/currentUser'
+import { ipcRenderer } from 'electron'
 import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import { GlobalStyle } from './styles/GlobalStyle'

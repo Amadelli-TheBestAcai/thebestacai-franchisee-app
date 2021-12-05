@@ -34,12 +34,12 @@ export const Content = styled.div`
 export const Footer = styled.div`
   display: flex;
   justify-content: center;
-  /* align-items: center; */
+  align-items: center;
   height: 3vh;
   background: black;
 `
-export const TextFooter = styled.label`
-  font-size: 15px;
+export const TextFooter = styled.p`
+  font-size: 10px;
   color: white;
   font-weight: bold;
   display: flex;

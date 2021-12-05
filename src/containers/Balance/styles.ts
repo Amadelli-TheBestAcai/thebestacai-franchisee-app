@@ -2,6 +2,8 @@ import styled, { css } from 'styled-components'
 
 import MonetaryInput from '../../components/MonetaryInput'
 
+export const InputPrice = styled(MonetaryInput)``
+
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -29,8 +31,6 @@ export const TopContainer = styled.div`
     border: 1px solid #b0afae;
   }
 `
-
-export const InputPrice = styled(MonetaryInput)``
 
 export const BottomContainer = styled.div`
   width: 100%;
@@ -82,4 +82,11 @@ export const WeightContainer = styled.div`
   height: 80%;
   margin: 5px 10px 5px 10px;
   color: #9a9a9a;
+`
+export const DisabledInput = styled.input`
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 1;
+  caret-color: transparent;
 `

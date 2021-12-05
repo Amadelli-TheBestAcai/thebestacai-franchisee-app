@@ -1,44 +1,59 @@
-import React, { useState, useEffect } from 'react'
-import { ipcRenderer } from 'electron'
+import React, { Dispatch, SetStateAction } from 'react'
 
 import Spinner from '../../components/Spinner'
 
 import { Product } from '../../models/product'
+import { PaymentType } from '../../models/enums/paymentType'
+
+import { Spin } from 'antd'
 
 import {
   Container,
   TopContainer,
-  InputPrice,
   BottomContainer,
   Price,
   Weight,
   PriceContainer,
   Text,
   WeightContainer,
+  InputPrice,
+  DisabledInput,
 } from './styles'
 
 type IProps = {
   addItem: (product: Product, quantity?: number, total?: number) => void
+  amount: number
+  setAmount: Dispatch<SetStateAction<number>>
+  isLoading: boolean
+  shouldUseBalance: boolean
+  fetchingBalanceWeight: boolean
+  selfService: Product
+  getWeightByBalance: () => void
+  registerSale: () => void
+  openDiscoundModal: () => void
+  handleOpenPayment: (type: number, title: string) => void
 }
 
-const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
-  const [isLoading, setLoading] = useState(true)
-  const [amount, setAmount] = useState<number>()
-  const [selfService, setSelfService] = useState<Product>()
-  useEffect(() => {
-    ipcRenderer.send('products:get:selfService')
-    ipcRenderer.once('products:get:selfService:response', (event, item) => {
-      setSelfService(item)
-      setLoading(false)
-    })
-  }, [])
-
-  const handleSubmit = () => {
-    if (amount) {
-      document.getElementById('mainContainer').focus()
-      addItem(selfService, getQuantity(), amount)
-      setAmount(undefined)
+const BalanceContainer: React.FC<IProps> = ({
+  addItem,
+  amount,
+  setAmount,
+  getWeightByBalance,
+  isLoading,
+  selfService,
+  shouldUseBalance,
+  handleOpenPayment,
+  registerSale,
+  fetchingBalanceWeight,
+  openDiscoundModal,
+}) => {
+  const handleEnterToSubmit = () => {
+    if (!amount) {
+      return
     }
+    document.getElementById('mainContainer').focus()
+    addItem(selfService, getQuantity(), amount)
+    setAmount(undefined)
   }
 
   const getQuantity = (): number => {
@@ -48,6 +63,37 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
     return +(+amount / +selfService.price_unit).toFixed(4)
   }
 
+  const handlerEventKey = async (key: string): Promise<void> => {
+    const lowerKey = key.toLowerCase()
+    if (lowerKey === 'a') {
+      handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro')
+    }
+    if (lowerKey === 's') {
+      handleOpenPayment(PaymentType.CREDITO, 'Crédito')
+    }
+    if (lowerKey === 'd') {
+      handleOpenPayment(PaymentType.DEBITO, 'Débito')
+    }
+    if (lowerKey === 't') {
+      handleOpenPayment(PaymentType.TICKET, 'Ticket')
+    }
+    if (lowerKey === 'p') {
+      handleOpenPayment(PaymentType.PIX, 'PIX')
+    }
+    if (shouldUseBalance && key === 'Enter') {
+      handleEnterToSubmit()
+    }
+    if (lowerKey === 'f1') {
+      registerSale()
+    }
+    if (lowerKey === 'r') {
+      openDiscoundModal()
+    }
+    if (shouldUseBalance && lowerKey === 'b') {
+      await getWeightByBalance()
+    }
+  }
+
   return (
     <>
       {isLoading ? (
@@ -55,18 +101,34 @@ const BalanceContainer: React.FC<IProps> = ({ addItem }) => {
       ) : (
         <Container>
           <TopContainer>
-            <Text>Preço indicado na balança</Text>
-            <InputPrice
-              id="balanceInput"
-              getValue={(value) => setAmount(value)}
-              onEnterPress={handleSubmit}
-            />
+            <Text>
+              Preço indicado na balança{' '}
+              {fetchingBalanceWeight && <Spin size="small" />}
+            </Text>
+            {shouldUseBalance ? (
+              <DisabledInput
+                id="balanceInput"
+                value={amount?.toFixed(2).replace('.', ',') || '0,00'}
+                autoFocus={true}
+                className="ant-input"
+                onKeyPress={async (event) => await handlerEventKey(event.key)}
+                readOnly
+              />
+            ) : (
+              <InputPrice
+                autoFocus={true}
+                id="balanceInput"
+                getValue={(value) => setAmount(value)}
+                onEnterPress={handleEnterToSubmit}
+                onPressKey={handlerEventKey}
+              />
+            )}
           </TopContainer>
           <BottomContainer>
             <PriceContainer>
               <Text>Preço do KG</Text>
               <Price>
-                R$ {selfService.price_unit.toFixed(2).replace('.', ',')}
+                R$ {selfService?.price_unit?.toFixed(2).replace('.', ',')}
               </Price>
             </PriceContainer>
             <WeightContainer>

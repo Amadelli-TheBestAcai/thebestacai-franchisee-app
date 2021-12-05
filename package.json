@@ -1,10 +1,11 @@
 {
   "name": "gestor-de-vendas",
-  "version": "1.1.2",
+  "version": "3.2.0",
   "main": "./dist/main.js",
   "description": "Gestor de Vendas",
   "license": "MIT",
   "scripts": {
+    "install": "electron-rebuild",
     "dev": "npm-run-all -p dev:react electron:serve",
     "dev:electron": "cross-env NODE_ENV=development webpack --config webpack/electron.webpack.js --mode development && npm run start:electron",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config webpack/react.webpack.js --mode development",
@@ -20,13 +21,14 @@
     "predeploy": "yarn build",
     "deploy": "electron-builder build --win --publish always",
     "test": "jest",
-    "database": "npx knex migrate:latest"
+    "database": "rimraf resources/db.sqlite  && yarn typeorm migration:run",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
   },
   "keywords": [],
   "author": "Wirlley Delfino <wirlley_d@hotmail.com>",
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.9.4",
     "@babel/preset-typescript": "^7.9.0",
     "@commitlint/cli": "^9.0.1",
@@ -34,14 +36,18 @@
     "@commitlint/core": "^9.0.1",
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "^10.4.3",
+    "@types/amqplib": "^0.8.1",
     "@types/antd": "^1.0.0",
     "@types/bcrypt": "^3.0.0",
     "@types/electron-devtools-installer": "^2.2.0",
     "@types/jest": "^26.0.3",
     "@types/knex": "^0.16.1",
+    "@types/printer": "^0.4.0",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.6",
     "@types/react-router-dom": "^5.1.5",
+    "@types/rimraf": "^3.0.1",
+    "@types/serialport": "^8.0.1",
     "@types/styled-components": "^5.1.0",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^3.4.0",
@@ -54,6 +60,7 @@
     "electron": "^8.2.2",
     "electron-builder": "^20.28.4",
     "electron-devtools-installer": "^3.1.1",
+    "electron-rebuild": "^2.3.4",
     "electron-updater": "^3.0.2",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
@@ -81,24 +88,37 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@babel/plugin-transform-runtime": "^7.11.5",
-    "@babel/runtime": "^7.11.2",
+    "@babel/plugin-proposal-decorators": "^7.13.5",
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/runtime": "^7.13.10",
+    "amqplib": "^0.8.0",
     "antd": "^4.6.4",
     "axios": "^0.20.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-typescript-metadata": "^0.3.1",
     "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
     "glob": "^7.1.6",
     "jwt-decode": "^3.0.0-beta.2",
     "knex": "^0.21.5",
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.6.1",
+    "node-thermal-printer": "^4.1.2",
+    "printer": "git+https://github.com/tojocky/node-printer.git",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-hotkeys": "^2.0.0",
+    "react-input-mask": "^2.0.4",
     "react-intl-currency-input": "^0.2.5",
     "react-router-dom": "^5.2.0",
+    "reflect-metadata": "^0.1.13",
+    "serialport": "^9.0.4",
+    "socket.io-client": "^4.2.0",
     "sqlite3": "^5.0.0",
     "styled-components": "^5.1.1",
     "styled-icons": "^10.21.0",
+    "ts-node": "^9.1.1",
+    "typeorm": "^0.2.31",
     "url-loader": "^4.1.0",
     "uuid": "^8.3.0",
     "yarn": "^1.22.5"
@@ -126,7 +146,9 @@
       "amadelli_logo.icon",
       "db.sqlite"
     ],
-    "extraResources": ["db.sqlite"]
+    "extraResources": [
+      "db.sqlite"
+    ]
   },
   "config": {
     "commitizen": {

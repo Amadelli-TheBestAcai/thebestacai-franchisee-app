@@ -3,6 +3,7 @@ import {
   PaymentResponse,
 } from '../../../shared/httpResponses/salesHistoryResponse'
 import { Balance } from '../../../shared/models/balance'
+import { AppSale } from '../../../shared/models/appSales'
 import { PaymentType } from '../../../shared/enums/paymentType'
 
 export const getBalance = (sales: SalesHistory[]): Balance => {
@@ -12,6 +13,7 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
       money: 0,
       credit: 0,
       debit: 0,
+      pix: 0,
       ticket: 0,
     },
     delivery: {
@@ -19,6 +21,7 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
       money: 0,
       credit: 0,
       debit: 0,
+      pix: 0,
       online: 0,
     },
     billing: {
@@ -33,37 +36,40 @@ export const getBalance = (sales: SalesHistory[]): Balance => {
 
   sales.forEach((sale) => {
     if (sale.type === 0) {
-      const { total, money, credit, debit, ticket } = getPayments(sale.payments)
-      balance.store.total += +total - +sale.change_amount || 0
-      balance.store.money += +money
+      const { total, money, credit, debit, pix, ticket } = getPayments(
+        sale.payments
+      )
+      balance.store.total += +total - +sale.change_amount
+      balance.store.money += +money - +sale.change_amount
       balance.store.credit += +credit
       balance.store.debit += +debit
+      balance.store.pix += +pix
       balance.store.ticket += +ticket
       balance.billing.store_sales += 1
     } else {
-      const { total, money, credit, debit, online } = getPayments(sale.payments)
-      balance.delivery.total += +total - +sale.change_amount || 0
+      const { total, money, credit, debit, pix, online } = getPayments(
+        sale.payments
+      )
+      balance.delivery.total += +total - +sale.change_amount
       balance.delivery.money += +money
       balance.delivery.credit += +credit
       balance.delivery.debit += +debit
+      balance.delivery.pix += +pix
       balance.delivery.online += +online
       balance.billing.delivery_sales += 1
     }
   })
-  balance.billing.sales = sales.length
 
+  balance.billing.sales = sales.length
   balance.billing.total = +(
     balance.store.total + balance.delivery.total
   ).toFixed(2)
-
   balance.billing.delivery_ticket = +(
     balance.delivery.total / (balance.billing.delivery_sales || 1)
   ).toFixed(2)
-
   balance.billing.store_ticket = +(
     balance.store.total / (balance.billing.store_sales || 1)
   ).toFixed(2)
-
   return balance
 }
 
@@ -73,6 +79,7 @@ type PaymentResult = {
   credit: number
   debit: number
   ticket: number
+  pix: number
   online: number
 }
 
@@ -83,6 +90,7 @@ export const getPayments = (payments: PaymentResponse[]): PaymentResult => {
     credit: 0,
     debit: 0,
     ticket: 0,
+    pix: 0,
     online: 0,
   }
   payments.forEach((payment) => {
@@ -101,6 +109,9 @@ export const getPayments = (payments: PaymentResponse[]): PaymentResult => {
     if (payment.type === PaymentType.ONLINE) {
       result.online += +payment.amount
     }
+    if (payment.type === PaymentType.PIX) {
+      result.pix += +payment.amount
+    }
     result.total += +payment.amount
   })
 
@@ -110,6 +121,7 @@ export const getPayments = (payments: PaymentResponse[]): PaymentResult => {
     credit: +result.credit.toFixed(2),
     debit: +result.debit.toFixed(2),
     ticket: +result.ticket.toFixed(2),
+    pix: +result.pix.toFixed(2),
     online: +result.online.toFixed(2),
   }
 }

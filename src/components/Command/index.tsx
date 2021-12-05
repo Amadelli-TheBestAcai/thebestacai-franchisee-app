@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Sale } from '../../models/sale'
 
 import {
@@ -34,7 +33,6 @@ const Command: React.FC<IProps> = ({
   handleRemove,
 }) => {
   const { id, name, created_at, quantity, total } = sale
-  const formatedData = created_at.replace('T', ' ')
 
   return (
     <Container>
@@ -50,7 +48,7 @@ const Command: React.FC<IProps> = ({
             <Column>
               <Title>Data:</Title>
               <Description style={{ fontSize: '14px', color: 'white' }}>
-                {formatedData}
+                {`${created_at.toLocaleDateString()} - ${created_at.toLocaleTimeString()}`}
               </Description>
             </Column>
             <CommandName>{name}</CommandName>
@@ -66,7 +64,7 @@ const Command: React.FC<IProps> = ({
       <Column span={4}>
         <AmountContainer>
           <Title>Valor:</Title>
-          <Description>R$ {total.toFixed(2).replace('.', ',')}</Description>
+          <Description>R$ {total?.toFixed(2).replace('.', ',')}</Description>
         </AmountContainer>
       </Column>
       <Column span={3}>

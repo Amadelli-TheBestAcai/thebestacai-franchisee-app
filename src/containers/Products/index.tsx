@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { ipcRenderer } from 'electron'
-import { isOnline } from '../../helpers/InternetConnection'
 import { ProductByCategory } from '../../models/product'
 
 import Product from '../../components/Product'
@@ -24,18 +23,18 @@ const ProductsContainer: React.FC<IProps> = ({ handleItem }) => {
   const [products, setProducts] = useState<ProductByCategory[]>([])
 
   useEffect(() => {
-    setProducts(ipcRenderer.sendSync('products:get', isOnline()))
+    setProducts(ipcRenderer.sendSync('products:get'))
   }, [])
 
   return (
     <Container>
-      {!products.length ? (
+      {!products?.length ? (
         <LoadingContainer>
           <Spin />
         </LoadingContainer>
       ) : (
         <TabContainer defaultActiveKey="1">
-          {products.map((productCategory, index) => (
+          {products?.map((productCategory, index) => (
             <TabItem tab={productCategory.category} key={index + 1}>
               <ProductHeader>
                 <ProductHeaderCol span={8}>

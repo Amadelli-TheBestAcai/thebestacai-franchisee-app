@@ -1,49 +1,79 @@
-import knex from '../database'
-import { Sale } from '../models/Sale'
-import { CreateSaleDTO } from '../models/dtos/sales/CreateSaleDTO'
-import { UpdateSaleDTO } from '../models/dtos/sales/UpdateSaleDTO'
-class SalesRepository {
-  async create(sales: CreateSaleDTO): Promise<void> {
-    await knex('sales').insert(sales)
+import {
+  Repository,
+  getRepository,
+  DeepPartial,
+  EntityRepository,
+  Not,
+  IsNull,
+} from 'typeorm'
+import { ISalesRepository } from './interfaces/ISalesRepository'
+import { Sale } from '../models/entities'
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+
+@EntityRepository(Sale)
+class SalesRepository implements ISalesRepository {
+  private ormRepository: Repository<Sale>
+
+  constructor() {
+    this.ormRepository = getRepository(Sale)
+  }
+
+  async create(payload: DeepPartial<Sale>): Promise<Sale> {
+    const sale = await this.ormRepository.create(payload)
+    await this.ormRepository.save(sale)
+    return sale
   }
 
   async deleteById(id: string): Promise<void> {
-    await knex('sales').where({ id }).del()
+    await this.ormRepository.softDelete({ id })
   }
 
-  async getCurrentSale(): Promise<CreateSaleDTO> {
-    const sales = await knex('sales').where({ is_current: true })
-    return sales[0]
+  async getCurrentSale(): Promise<Sale> {
+    return this.ormRepository.findOne({ where: { is_current: true } })
   }
 
   async getToIntegrate(): Promise<Sale[]> {
-    return await knex('sales')
-      .where({ to_integrate: true })
-      .whereNotNull('cash_history_id')
+    return this.ormRepository.find({
+      where: { to_integrate: true, cash_history_id: Not(IsNull()) },
+    })
   }
 
-  async getPending(): Promise<Sale[]> {
-    return await knex('sales')
-      .where({ to_integrate: true })
-      .whereNull('cash_history_id')
+  async getOffline(): Promise<Sale[]> {
+    return this.ormRepository.find({
+      where: { to_integrate: true, cash_history_id: IsNull() },
+    })
   }
 
-  async update(id: string, payload: UpdateSaleDTO): Promise<void> {
-    await knex('sales').where({ id }).update(payload)
+  async update(
+    id: string,
+    payload: QueryDeepPartialEntity<Sale>
+  ): Promise<void> {
+    await this.ormRepository.update({ id }, payload)
   }
 
   async getCommands(): Promise<Sale[]> {
-    return await knex('sales').whereNotNull('name')
+    const sales = await this.ormRepository.find({
+      where: { name: Not(IsNull()) },
+    })
+
+    return sales.filter((sale) => !sale.is_current)
   }
 
   async createCommand(id: string, name: string): Promise<void> {
-    await knex('sales').where({ id }).update({ is_current: false, name })
+    await this.ormRepository.update({ id }, { is_current: false, name })
   }
 
   async getById(id: string): Promise<Sale> {
-    const sales = await knex('sales').where({ id })
-    return sales[0]
+    return this.ormRepository.findOne({
+      where: { id },
+    })
+  }
+
+  async getOnline(): Promise<Sale[]> {
+    return this.ormRepository.find({
+      where: { to_integrate: true, cash_history_id: Not(IsNull()) },
+    })
   }
 }
 
-export default new SalesRepository()
+export default SalesRepository

@@ -24,9 +24,13 @@ const Layout: React.FC = ({ children }) => {
     })
   }, [])
 
+  const sendFocusToMain = () => {
+    document.getElementById('mainContainer').focus()
+  }
+
   return (
     <Container>
-      <HeaderContainer>
+      <HeaderContainer onClick={() => sendFocusToMain()}>
         <Header />
       </HeaderContainer>
       <MainContainer>
@@ -35,7 +39,7 @@ const Layout: React.FC = ({ children }) => {
         </SideBarContainer>
         <Content>{children}</Content>
       </MainContainer>
-      <Footer>
+      <Footer onClick={() => sendFocusToMain()}>
         <TextFooter>{`DEVELOPED BY THE BEST AÇAI COMPANY v${version}`}</TextFooter>
       </Footer>
     </Container>

@@ -50,7 +50,7 @@ export const Button = styled.button`
   font-weight: 500;
   color: white;
   border: none;
-  width: 9vw;
+  width: 7vw;
   padding: 0;
   font-size: 12px;
 
@@ -71,7 +71,7 @@ export const Input = styled(MonetaryInput)``
 export const Header = styled(RowAnt)`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 25%;
 `

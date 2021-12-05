@@ -24,15 +24,17 @@ import {
   TicketIcon,
 } from './styles'
 
+import PixLogo from '../../assets/img/pix.png'
+
 interface IProps {
   payments: PaymentModel[]
-  handleOpenPayment: (type: number, defaultValue?: number) => void
+  handleOpenPayment: (type: number, title: string) => void
   addPayment
   removePayment
   setCurrentPayment
   modalState: boolean
   setModalState
-  totalSale
+  modalTitle: string
   quantity: number
   discount: number
   totalPaid: number
@@ -49,7 +51,7 @@ const PaymentsContainer: React.FC<IProps> = ({
   handleOpenPayment,
   addPayment,
   modalState,
-  totalSale,
+  modalTitle,
   removePayment,
   quantity,
   discount,
@@ -68,31 +70,45 @@ const PaymentsContainer: React.FC<IProps> = ({
       <Header>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 0)}
+          onClick={() => handleOpenPayment(PaymentType.DINHEIRO, 'Dinheiro')}
         >
           [A] DINHEIRO
           <MoneyIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.CREDITO, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.CREDITO, 'Crédito')}
         >
           [S] CRÉDITO
           <CreditIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.DEBITO, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.DEBITO, 'Débito')}
         >
           [D] DÉBITO
           <DebitIcon />
         </Button>
         <Button
           className="ant-btn"
-          onClick={() => handleOpenPayment(PaymentType.TICKET, totalSale)}
+          onClick={() => handleOpenPayment(PaymentType.TICKET, 'Ticket')}
         >
           [T] TICKET
           <TicketIcon />
+        </Button>
+
+        <Button
+          className="ant-btn"
+          onClick={() => handleOpenPayment(PaymentType.PIX, 'PIX')}
+        >
+          [P] PIX
+          <img
+            src={PixLogo}
+            style={{
+              width: '25px',
+              height: '25px',
+            }}
+          />
         </Button>
       </Header>
       <Content>
@@ -110,14 +126,19 @@ const PaymentsContainer: React.FC<IProps> = ({
       </Content>
       <Footer>
         <AmountContainer span={6}>
-          <AmountDescription>Valor Pago</AmountDescription>
-          <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
-        </AmountContainer>
-        <AmountContainer span={6}>
           <AmountDescription>Troco</AmountDescription>
-          <AmountValue style={{ color: changeAmount < 0 ? 'red' : '#5E5E5E' }}>
+          <AmountValue
+            style={{
+              color: changeAmount < 0 ? 'red' : '#fff',
+              background: '#FF9D0A',
+            }}
+          >
             R$ {changeAmount.toFixed(2).replace('.', ',')}
           </AmountValue>
+        </AmountContainer>
+        <AmountContainer span={6}>
+          <AmountDescription>Valor Pago</AmountDescription>
+          <AmountValue>R$ {totalPaid.toFixed(2).replace('.', ',')}</AmountValue>
         </AmountContainer>
         <AmountContainer span={6}>
           <AmountDescription>Desconto:</AmountDescription>
@@ -129,6 +150,7 @@ const PaymentsContainer: React.FC<IProps> = ({
         </AmountContainer>
       </Footer>
       <Modal
+        title={`Pagamento em ${modalTitle}`}
         width={250}
         visible={modalState}
         onCancel={onModalCancel}
@@ -139,6 +161,7 @@ const PaymentsContainer: React.FC<IProps> = ({
       >
         Valor:
         <Input
+          autoFocus={true}
           getValue={getAmount}
           onEnterPress={addPayment}
           defaultValue={valueToPay}

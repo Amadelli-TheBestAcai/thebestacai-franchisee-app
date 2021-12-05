@@ -1,22 +1,36 @@
-import knex from '../database'
+import { Repository, getRepository, DeepPartial } from 'typeorm'
+import Product from '../models/entities/Product'
 
-class ProductsRepository {
-  async create(products) {
-    return await knex('products').insert(products)
+import { IProductsRepository } from './interfaces/IProductsRepository'
+
+class ProductsRepository implements IProductsRepository {
+  private ormRepository: Repository<Product>
+
+  constructor() {
+    this.ormRepository = getRepository(Product)
   }
 
-  async deleteAll() {
-    return await knex('products').del()
+  async createMany(payload: DeepPartial<Product[]>): Promise<Product[]> {
+    const products = await this.ormRepository.create(payload)
+    await this.ormRepository.save(products)
+    return products
   }
 
-  async getSelfService() {
-    const item = await knex('products').where({ category_id: 1 })
-    return item[0]
+  async deleteAll(): Promise<void> {
+    await this.ormRepository.delete({})
   }
 
-  async getAll() {
-    return await knex('products')
+  async getSelfService(): Promise<Product> {
+    return await this.ormRepository.findOne({ where: { product_id: 1 } })
+  }
+
+  async getAll(): Promise<Product[]> {
+    return await this.ormRepository.find({ loadEagerRelations: true })
+  }
+
+  async getByProductId(id: number): Promise<Product> {
+    return await this.ormRepository.findOne({ where: { id } })
   }
 }
 
-export default new ProductsRepository()
+export default ProductsRepository

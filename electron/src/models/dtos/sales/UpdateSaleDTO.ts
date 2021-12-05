@@ -9,6 +9,6 @@ export interface UpdateSaleDTO {
   discount?: number
   total?: number
   quantity?: number
-  to_integrate: boolean
+  to_integrate?: boolean
   is_current?: boolean | number
 }

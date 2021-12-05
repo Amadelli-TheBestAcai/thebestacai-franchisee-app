@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, Dispatch, SetStateAction } from 'react'
 
 import InputForm from '../InputForm'
 import DiscountForm from '../DiscountForm'
 import InOutForm from '../InOutForm'
+import ChatForm from '../ChatForm'
 
 import { message } from 'antd'
 
@@ -16,35 +17,43 @@ import {
   EntryIcon,
   OutIcon,
   CommandIcon,
+  ChatIcon,
 } from './styles'
 
 type IProps = {
   haveItensOnSale: boolean
   addToQueue: (name: string) => void
   addDiscount: (value: number) => void
+  discountState: boolean
+  setDiscountState: Dispatch<SetStateAction<boolean>>
 }
 
 const Actions: React.FC<IProps> = ({
   haveItensOnSale,
   addToQueue,
   addDiscount,
+  discountState,
+  setDiscountState,
 }) => {
   const [commandState, setCommandState] = useState(false)
-  const [discountState, setDiscountState] = useState(false)
   const [handlerInState, setHandlerInState] = useState(false)
   const [handlerOutState, setHandlerOutState] = useState(false)
+  const [openChat, setOpenChat] = useState(false)
 
   const handleCommand = () => {
     if (!haveItensOnSale) {
-      return message.warning('A lista de items está vazia')
+      return message.warning('A lista de itens está vazia')
     }
     setCommandState(true)
   }
 
   return (
     <Container>
-      <DiscountButton onClick={() => setDiscountState(true)}>
-        DESCONTO
+      <DiscountButton
+        onClick={() => setDiscountState(true)}
+        style={{ fontSize: '12px' }}
+      >
+        [R] DESCONTO
         <OfferIcon />
       </DiscountButton>
       <EntryButton onClick={() => setHandlerInState(true)}>
@@ -59,6 +68,11 @@ const Actions: React.FC<IProps> = ({
         COMANDA
         <CommandIcon />
       </CommandButton>
+      <CommandButton onClick={() => setOpenChat(!openChat)}>
+        Chat
+        <ChatIcon />
+      </CommandButton>
+
       <InputForm
         placeHolder="Digite o nome do cliente"
         onFinish={addToQueue}
@@ -80,6 +94,7 @@ const Actions: React.FC<IProps> = ({
         modalState={handlerOutState}
         setModalState={setHandlerOutState}
       />
+      <ChatForm isVisible={openChat} setIsVisible={setOpenChat} />
     </Container>
   )
 }
