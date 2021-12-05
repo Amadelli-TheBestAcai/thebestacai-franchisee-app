@@ -25,6 +25,4 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Build Electron
-        env:
-          GH_TOKEN: { { secrets.GH_TOKEN } }
         run: yarn deploy
