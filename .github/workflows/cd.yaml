@@ -10,18 +10,20 @@ jobs:
       - uses: actions/setup-node@master
         with:
           node-version: 16.13.1
-      - name: install node tools
-        run: npm install --global --production windows-build-tools@4.0.0
-      - name: install node-gyp
-        run: npm install --global node-gyp@latest
-      - name: Set node config to use python2.7
-        run: npm config set python python2.7
-      - name: Set node config to set msvs_version to 2019
-        run: npm config set msvs_version 2019
-      - name: Work around for Windows Server 2019
-        run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
-      - name: Dir
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
+      # - name: install node tools
+      #   run: npm install --global --production windows-build-tools@4.0.0
+      # - name: install node-gyp
+      #   run: npm install --global node-gyp@latest
+      # - name: Set node config to use python2.7
+      #   run: npm config set python python2.7
+      # - name: Set node config to set msvs_version to 2019
+      #   run: npm config set msvs_version 2019
+      # - name: Work around for Windows Server 2019
+      # run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
+      - name: Dir 1
+        run: dir "C:\Program Files (x86)"
+      - name: Dir 2
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\"
       # - name: Install dependencies
       #   run: yarn install --network-timeout 600000
       - name: Build Electron
