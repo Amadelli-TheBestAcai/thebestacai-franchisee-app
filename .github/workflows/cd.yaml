@@ -21,9 +21,15 @@ jobs:
       # - name: Work around for Windows Server 2019
       # run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
       - name: Dir 1
-        run: dir "C:\Program Files (x86)"
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
       - name: Dir 2
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\"
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community"
+      - name: Dir 3
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild"
+      - name: Dir 4
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current"
+      - name: Dir 5
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin"
       # - name: Install dependencies
       #   run: yarn install --network-timeout 600000
       - name: Build Electron
