@@ -26,5 +26,5 @@ jobs:
       - name: Build Electron
         run: yarn deploy
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.electron-updater }}
           NODE_OPTIONS: '--max_old_space_size=4096'
