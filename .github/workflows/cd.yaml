@@ -20,10 +20,24 @@ jobs:
         run: npm config set msvs_version 2019
       - name: Work around for Windows Server 2019
         run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
-      - name: Install dependencies
-        run: yarn install --network-timeout 600000
-      - name: Build Electron
-        run: yarn deploy
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          NODE_OPTIONS: '--max_old_space_size=4096'
+      - name: dir 1
+        run: dir "C:\Program Files"
+      - name: dir 2
+        run: dir "C:\Program Files\Microsoft Visual Studio"
+      - name: dir 3
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
+      - name: dir 4
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
+      - name: dir 5
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild"
+      - name: dir 6
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current"
+      - name: dir 7
+        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
+      # - name: Install dependencies
+      #   run: yarn install --network-timeout 600000
+      # - name: Build Electron
+      #   run: yarn deploy
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      #     NODE_OPTIONS: '--max_old_space_size=4096'
