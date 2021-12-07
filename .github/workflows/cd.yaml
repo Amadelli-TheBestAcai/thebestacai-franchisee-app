@@ -22,18 +22,12 @@ jobs:
         run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
       - name: dir 1
         run: dir "C:\Program Files"
-      - name: dir 2
-        run: dir "C:\Program Files\Microsoft Visual Studio"
-      - name: dir 3
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019"
-      - name: dir 4
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"
       - name: dir 5
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild"
+        run: dir "C:\Program Files\MSBuild"
       - name: dir 6
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current"
+        run: dir "C:\Program Files\MSBuild\Current"
       - name: dir 7
-        run: dir "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
+        run: dir "C:\Program Files\MSBuild\Current\Bin"
       # - name: Install dependencies
       #   run: yarn install --network-timeout 600000
       # - name: Build Electron
