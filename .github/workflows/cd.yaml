@@ -18,20 +18,13 @@ jobs:
         run: npm config set python python2.7
       - name: Set node config to set msvs_version to 2019
         run: npm config set msvs_version 2019
-      - name: Work around for Windows Server 2019
-        run: set path=%path%;"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin"
-      - name: dir 1
-        run: dir "C:\Program Files"
-      - name: dir 5
-        run: dir "C:\Program Files\MSBuild"
-      - name: dir 6
-        run: dir "C:\Program Files\MSBuild\Microsoft"
-      - name: dir 7
-        run: dir "C:\Program Files\MSBuild\Microsoft\Current"
-      # - name: Install dependencies
-      #   run: yarn install --network-timeout 600000
-      # - name: Build Electron
-      #   run: yarn deploy
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      #     NODE_OPTIONS: '--max_old_space_size=4096'
+      - uses: microsoft/setup-msbuild@v1.1
+        with:
+          msbuild-architecture: x64
+      - name: Install dependencies
+        run: yarn install --network-timeout 600000
+      - name: Build Electron
+        run: yarn deploy
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NODE_OPTIONS: '--max_old_space_size=4096'
