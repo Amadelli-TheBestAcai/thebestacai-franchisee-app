@@ -5,7 +5,7 @@
   "description": "Gestor de Vendas",
   "license": "MIT",
   "scripts": {
-    "install": "electron-rebuild",
+    "postinstall": "electron-builder install-app-deps",
     "dev": "npm-run-all -p dev:react electron:serve",
     "dev:electron": "cross-env NODE_ENV=development webpack --config webpack/electron.webpack.js --mode development && npm run start:electron",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config webpack/react.webpack.js --mode development",
@@ -59,7 +59,7 @@
     "electron": "^8.2.2",
     "electron-builder": "^20.28.4",
     "electron-devtools-installer": "^3.1.1",
-    "electron-rebuild": "^3.2.5",
+    "electron-rebuild": "^2.3.4",
     "electron-updater": "^3.0.2",
     "eslint": "^7.3.1",
     "eslint-config-prettier": "^6.11.0",
