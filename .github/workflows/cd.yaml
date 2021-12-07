@@ -25,9 +25,9 @@ jobs:
       - name: dir 5
         run: dir "C:\Program Files\MSBuild"
       - name: dir 6
-        run: dir "C:\Program Files\MSBuild\Current"
+        run: dir "C:\Program Files\MSBuild\Microsoft"
       - name: dir 7
-        run: dir "C:\Program Files\MSBuild\Current\Bin"
+        run: dir "C:\Program Files\MSBuild\Microsoft\Current"
       # - name: Install dependencies
       #   run: yarn install --network-timeout 600000
       # - name: Build Electron
