@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --network-timeout 600000
       - name: Build Electron
-        run: yarn deploy
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NODE_OPTIONS: '--max_old_space_size=4096'
+        run: yarn deploy
