@@ -1,6 +1,6 @@
 {
   "name": "gestor-de-vendas",
-  "version": "3.2.0",
+  "version": "4.2.0",
   "main": "./dist/main.js",
   "description": "Gestor de Vendas",
   "license": "MIT",
@@ -18,7 +18,7 @@
     "package": "npm-run-all build package:dist",
     "package:dist": "electron-builder --dir",
     "predeploy": "yarn build",
-    "deploy": "electron-builder build --win --publish never",
+    "deploy": "electron-builder build --win --publish always",
     "test": "jest",
     "database": "rimraf resources/db.sqlite  && yarn typeorm migration:run",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
