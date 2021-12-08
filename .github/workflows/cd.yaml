@@ -10,28 +10,24 @@ jobs:
       - name: create config-env
         run: |
           echo export default {API_LOG: "${{ secrets.API_LOG }}",NFCe_AMBIENTE: ${{ secrets.NFCE_AMBIENTE }},NFCe_Token: "${{ secrets.NFCE_Token }}",API_DASH: "${{ secrets.API_DASH }}",API_AUTH: "${{ secrets.API_AUTH }}",API_SALES_HANDLER: "${{ secrets.API_SALES_HANDLER }}",CHAT_DASH: "${{ secrets.CHAT_DASH }}"} > env-config.js
-      - name: dir
-        run: dir
-      - name: echo
-        run: type env-config.js
-      # - uses: actions/setup-node@master
-      #   with:
-      #     node-version: 14.15.0
-      # - name: install node tools
-      #   run: npm install --global --production windows-build-tools@4.0.0
-      # - name: install node-gyp
-      #   run: npm install --global node-gyp@latest
-      # - name: Set node config to use python2.7
-      #   run: npm config set python python2.7
-      # - name: Set node config to set msvs_version to 2019
-      #   run: npm config set msvs_version 2019
-      # - uses: microsoft/setup-msbuild@v1.1
-      #   with:
-      #     msbuild-architecture: x64
-      # - name: Install dependencies
-      #   run: yarn install --network-timeout 600000
-      # - name: Build Electron
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      #     NODE_OPTIONS: '--max_old_space_size=4096'
-      #   run: yarn deploy
+      - uses: actions/setup-node@master
+        with:
+          node-version: 14.15.0
+      - name: install node tools
+        run: npm install --global --production windows-build-tools@4.0.0
+      - name: install node-gyp
+        run: npm install --global node-gyp@latest
+      - name: Set node config to use python2.7
+        run: npm config set python python2.7
+      - name: Set node config to set msvs_version to 2019
+        run: npm config set msvs_version 2019
+      - uses: microsoft/setup-msbuild@v1.1
+        with:
+          msbuild-architecture: x64
+      - name: Install dependencies
+        run: yarn install --network-timeout 600000
+      - name: Build Electron
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NODE_OPTIONS: '--max_old_space_size=4096'
+        run: yarn deploy
