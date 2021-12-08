@@ -12,7 +12,7 @@ jobs:
       - name: dir
         run: dir
       - name: echo
-        run: echo env-config.js
+        run: type env-config.js
       # - uses: actions/setup-node@master
       #   with:
       #     node-version: 14.15.0
