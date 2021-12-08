@@ -49,47 +49,34 @@ export const printHandler = async (handler: HandlersDto): Promise<void> => {
     },
   ])
   printerFormater.drawLine()
+  // TIPO
   printerFormater.tableCustom([
-    { text: 'TIPO', align: 'LEFT', cols: 30 },
-    { text: '', align: 'CENTER', cols: 10 },
-    {
-      text: handler.type === 0 ? 'ENTRADA' : 'SAIDA',
-      align: 'CENTER',
-      bold: true,
-      cols: 10,
-    },
+    { text: 'TIPO:', align: 'LEFT', cols: 50 }
   ])
   printerFormater.tableCustom([
-    { text: 'VALOR', align: 'LEFT', cols: 30 },
-    { text: '', align: 'CENTER', cols: 10 },
-    {
-      text: handler.amount.replace('.', ','),
-      align: 'CENTER',
-      bold: true,
-      cols: 10,
-    },
+    { text: handler.type === 0 ? 'ENTRADA' : 'SAIDA', align: 'LEFT', cols: 50 }
+  ])
+  // VALOR
+  printerFormater.tableCustom([
+    { text: 'VALOR:', align: 'LEFT', cols: 50 }
   ])
   printerFormater.tableCustom([
-    { text: 'DATA', align: 'LEFT', cols: 30 },
-    { text: '', align: 'CENTER', cols: 10 },
-    {
-      text: handler.created_at,
-      align: 'CENTER',
-      bold: true,
-      cols: 10,
-    },
+    { text: handler.amount.replace('.', ','), align: 'LEFT', cols: 50 }
+  ])
+  // DATA
+  printerFormater.tableCustom([
+    { text: 'DATA:', align: 'LEFT', cols: 50 }
   ])
   printerFormater.tableCustom([
-    { text: 'RAZAO', align: 'LEFT', cols: 15 },
-    { text: '', align: 'CENTER', cols: 5 },
-    {
-      text: handler.reason,
-      align: 'CENTER',
-      bold: true,
-      cols: 10,
-    },
+    { text: handler.created_at, align: 'LEFT', cols: 50 }
   ])
-
+  // RAZAO
+  printerFormater.tableCustom([
+    { text: 'RAZAO:', align: 'LEFT', cols: 50 }
+  ])
+  printerFormater.tableCustom([
+    { text: handler.reason, align: 'LEFT', cols: 50 }
+  ])
   printerFormater.drawLine()
   printerFormater.cut()
   Printer.printDirect({
