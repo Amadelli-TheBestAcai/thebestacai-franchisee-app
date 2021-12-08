@@ -11,7 +11,7 @@ jobs:
         run: |
          echo module.exports={API_LOG: '${{ secrets.API_LOG }}',NFCe_AMBIENTE: ${{ secrets.NFCE_AMBIENTE }},NFCe_Token: '${{ secrets.NFCE_Token }}',API_DASH: '${{ secrets.API_DASH }}',API_AUTH: '${{ secrets.API_AUTH }}',API_SALES_HANDLER: '${{ secrets.API_SALES_HANDLER }}',CHAT_DASH: '${{ secrets.CHAT_DASH }}'} > env-config.js
       - name: read env-config
-        run: more ./env-config.js
+        run: more env-config.js
       # - uses: actions/setup-node@master
       #   with:
       #     node-version: 14.15.0
