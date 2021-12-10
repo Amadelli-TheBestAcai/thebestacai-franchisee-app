@@ -12,7 +12,9 @@ export const Container = styled(Collapse)`
 
 export const Panel = styled(PanelAnt)``
 
-export const Row = styled(RowAnt)``
+export const Row = styled(RowAnt)`
+  width: 100%;
+`
 
 export const ColHeader = styled(ColAnt)`
   display: flex;

@@ -98,9 +98,9 @@ const NfeForm: React.FC<IProps> = ({
 
       const getTotalSold = (sale: SalesHistory) => {
         return (
-          sale.payments.reduce((total, payment) => total + +payment.amount, 0) -
-          +sale.discount -
-          +sale.change_amount
+          (sale.payments?.reduce((total, payment) => total + +payment.amount, 0) || 0) -
+          (+sale.discount || 0) -
+          (+sale.change_amount || 0)
         )
           .toFixed(2)
           .replace('.', ',')

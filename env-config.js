@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 
-const path = '.env'
+const path = 'resources/.env'
 
 const { parsed } = dotenv.config({ path })
 

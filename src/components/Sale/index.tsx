@@ -17,7 +17,7 @@ import {
   PrinterIcon,
   NfceIcon,
 } from './styles'
-
+import moment from 'moment'
 type IProps = {
   sale: SalesHistory
   onDelete: (id: number) => void
@@ -37,8 +37,7 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
     items,
     payments,
   } = sale
-  console.log(sale)
-  const time = created_at.split(' ')[1]
+  const time = moment(created_at).format('HH:mm:ss')
   const getType = (type: number): string => {
     if (type === 0) return 'Loja'
     if (type === 1) return 'IFOOD'
@@ -106,8 +105,8 @@ const Sale: React.FC<IProps> = ({ sale, onDelete, setShouldSearch }) => {
               )}
               {currentUser.hasPermission('sales.emit_nfce') &&
                 !sale.nfce_id && (
-                  <NfceIcon onClick={() => setNfceModal(true)} />
-                )}
+                <NfceIcon onClick={() => setNfceModal(true)} />
+              )}
             </ColHeader>
           </Row>
         }
