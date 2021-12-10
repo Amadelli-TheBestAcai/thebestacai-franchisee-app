@@ -12,7 +12,7 @@ jobs:
          echo API_DASH=${{ secrets.API_DASH }} > .env
          echo NFCe_Token=${{ secrets.NFCE_Token }} >> .env
          echo NFCe_AMBIENTE=${{ secrets.NFCE_AMBIENTE }} >> .env
-         echo API_LOG= ${{ secrets.API_LOG }} >> .env 
+         echo API_LOG=${{ secrets.API_LOG }} >> .env 
          echo API_AUTH=${{ secrets.API_AUTH }} >> .env
          echo CHAT_DASH=${{ secrets.CHAT_DASH }} >> .env
          echo API_SALES_HANDLER=${{ secrets.API_SALES_HANDLER }} >> .env
