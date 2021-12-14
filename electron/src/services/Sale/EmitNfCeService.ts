@@ -23,7 +23,7 @@ import IntegrateOnlineService from '../Integration/IntegrateOnlineService'
 
 import { Nfe } from '../../../../shared/models/nfe'
 
-const ambiente = envConfig.NFCe_AMBIENTE
+const ambiente = +envConfig.NFCe_AMBIENTE
 
 class EmitNfCeService {
   private _itemRepository: IItemsRepository
