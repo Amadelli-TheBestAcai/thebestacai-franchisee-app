@@ -149,9 +149,9 @@ const ChatForm: React.FC<IProps> = ({ isVisible, setIsVisible }) => {
 
                         <span>
                           {' '}
-                          {moment(message.created_at).format(
-                            'DD/MM/YYYY hh:mm'
-                          )}{' '}
+                          {moment(message.created_at)
+                            .add(3, 'hours')
+                            .format('DD/MM/YYYY hh:mm')}{' '}
                         </span>
                       </MessageBalloon>
                     </MessageContent>
