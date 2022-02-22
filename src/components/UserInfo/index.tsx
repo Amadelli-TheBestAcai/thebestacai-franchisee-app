@@ -25,8 +25,8 @@ const UserInfo: React.FC<ComponentProps> = ({ history }) => {
     ipcRenderer.once('store:get:response', (event, { store }) => {
       setStore(store?.company_name)
     })
-    ipcRenderer.send('cashier:get', store)
-    ipcRenderer.once('cashier:get:response', (event, { current }) => {
+    ipcRenderer.send('cashier:getCurrent', store)
+    ipcRenderer.once('cashier:getCurrent:response', (event, current) => {
       if (current?.is_opened) {
         setCash('ABERTO')
       } else {

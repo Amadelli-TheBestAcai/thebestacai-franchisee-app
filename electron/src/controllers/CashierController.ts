@@ -36,6 +36,20 @@ ipcMain.on('cashier:get', async (event) => {
   }
 })
 
+ipcMain.on('cashier:getCurrent', async (event) => {
+  try {
+    const current = await GetCurrentStoreCashService.execute()
+    event.reply('cashier:getCurrent:response', current)
+  } catch (err) {
+    sendLog({
+      title: 'Erro ao obter caixa atual',
+      payload: err.message,
+    })
+    console.error(err)
+    event.reply('cashier:getCurrent:response', null)
+  }
+})
+
 ipcMain.on('cashier:open', async (event, { ...cashier }) => {
   try {
     await OpenStoreCashService.execute(cashier)

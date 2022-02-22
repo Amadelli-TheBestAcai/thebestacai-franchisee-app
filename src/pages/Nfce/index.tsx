@@ -71,13 +71,12 @@ const Nfce: React.FC = () => {
   useEffect(() => {
     ipcRenderer.send('products:nfe')
     ipcRenderer.once('products:nfe:response', (event, { error, content }) => {
-      console.log(content)
       if (error) {
         messageAnt.error('Falha ao obter produtos para NFe')
       }
       setProducts(content)
-      ipcRenderer.send('cashier:get')
-      ipcRenderer.once('cashier:get:response', (event, { current }) => {
+      ipcRenderer.send('cashier:getCurrent')
+      ipcRenderer.once('cashier:getCurrent:response', (event, current) => {
         if (current?.is_opened) {
           setCashIsOpen(true)
         } else {
